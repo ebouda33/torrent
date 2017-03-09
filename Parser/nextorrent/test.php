@@ -16,9 +16,15 @@ foreach ($resultat as $row){
     echo '<br>';
 }
 try{
-    $transmission = new TransmissionRPC('new.nabous.fr:10001/rpc/', 'ebouda', '$password');
+    $transmission = new TransmissionRPC('http://new.nabous.fr:10001/rpc', 'ebouda', 'eaboud');
+    
     echo $transmission->GetSessionID();
     
+    $torrent_location = $resultat[0]['url'];
+    $result =  $transmission->add($torrent_location,'/mnt/data/download');
+    $id = $result->arguments->torrent_added->id;
+    print "ADD TORRENT TEST... [{$result->result}] (id=$id)\n";
+//    
 } catch (Exception $ex) {
     echo $ex;
 }

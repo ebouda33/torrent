@@ -27,6 +27,10 @@ class CurlUrl {
         }
         curl_setopt($this->curl,CURLOPT_HEADER,0);
         curl_setopt($this->curl, CURLINFO_HEADER_OUT, 0);
+        curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, false);
+        
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, false); // false for https
     }
     
     
@@ -34,10 +38,7 @@ class CurlUrl {
         $ch = $this->curl;
         $proxy = "127.0.0.1:3128";
         curl_setopt($ch, CURLOPT_PROXY, $proxy);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // false for https
     }
     
     public function read(){

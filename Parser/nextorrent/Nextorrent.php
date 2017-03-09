@@ -21,7 +21,7 @@ use DOMDocument;
 class Nextorrent {
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
-    private $proxy = true;
+    private $proxy = false;
     
     private $result=array();
     

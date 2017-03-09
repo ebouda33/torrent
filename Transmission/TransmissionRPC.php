@@ -520,7 +520,7 @@ class TransmissionRPC
     
     $arguments = $this->cleanRequestData( $arguments );	// Sanitize input
     
-    // Grab the X-Transmission-Session-Id if we don't have it already
+// Grab the X-Transmission-Session-Id if we don't have it already
     if( !$this->session_id )
       if( !$this->GetSessionID() )
         throw new TransmissionRPCException( 'Unable to acquire X-Transmission-Session-Id', TransmissionRPCException::E_SESSIONID );
@@ -596,8 +596,10 @@ class TransmissionRPC
     if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream context created with options:".
                             PHP_EOL . print_r( $contextopts, true );
     
-    $context  = stream_context_create( $contextopts );	// Create the context for this request
-    if ( ! $fp = @fopen( $this->url, 'r', false, $context ) )	// Open a filepointer to the data, and use fgets to get the result
+    $context  = stream_context_create( $contextopts );
+    
+// Create the context for this request
+    if ( ! $fp = fopen( $this->url, 'r', false, $context ) )	// Open a filepointer to the data, and use fgets to get the result
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
     
     // Check the response (headers etc)
