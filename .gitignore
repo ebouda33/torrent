@@ -1,3 +1,5 @@
 /nbproject/private/
 /nbproject/
 test*
+/config/config_appli.ini
+/config/config_appli.crypt

@@ -114,6 +114,12 @@ class TransmissionRPC
                                        );
 
   /**
+   * Default values for proxy context
+   * @var boolean
+   */
+  private $proxy = false;
+  
+  /**
    * Constants for torrent status
    */
   const TR_STATUS_STOPPED       = 0;
@@ -585,7 +591,7 @@ class TransmissionRPC
     
     // Setup the context
     $contextopts = $this->default_context_opts;	// Start with the defaults
-    
+   
     // Make sure it's blank/empty (reset)
     $this->session_id = null;
     
@@ -604,7 +610,9 @@ class TransmissionRPC
     
     // Check the response (headers etc)
     $stream_meta = stream_get_meta_data( $fp );
-    fclose( $fp );
+//    fclose( $fp );
+//    var_dump($stream_meta['wrapper_data']);
+//    exit(0);
     if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream meta info: ".
                             PHP_EOL . print_r( $stream_meta, true );
     if( $stream_meta['timed_out'] )
@@ -634,6 +642,15 @@ class TransmissionRPC
   }
 
   /**
+   * 
+   */
+  private function defineProxy(){
+    if($this->proxy){
+          $this->default_context_opts['http']['proxy'] = 'tcp://127.0.0.1:3128' ;
+    }
+  }
+  
+  /**
    * Takes the connection parameters
    *
    * TODO: Sanitize username, password, and URL
@@ -642,16 +659,18 @@ class TransmissionRPC
    * @param string $username
    * @param string $password
    */
-  public function __construct( $url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null, $return_as_array = false )
+  public function __construct( $url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null,$proxy=false, $return_as_array = false )
   {
     // server URL
     $this->url = $url;
     
+    $this->proxy = $proxy;
+    $this->defineProxy();
     // Username & password
     $this->username = $username;
     $this->password = $password;
     
-    // Get the Transmission RPC_version
+   // Get the Transmission RPC_version
     $this->rpc_version = self::sget()->arguments->rpc_version;
     
     // Return As Array
@@ -659,5 +678,7 @@ class TransmissionRPC
     
     // Reset X-Transmission-Session-Id so we (re)fetch one
     $this->session_id = null;
+    
+    
   }
 }
