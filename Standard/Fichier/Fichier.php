@@ -9,8 +9,6 @@ namespace Standard\Fichier;
  * 
  */
 
-use \Exception;
-
 use Standard\Fichier\Explorer;
 
 class ReaderException extends \Exception {
@@ -174,7 +172,6 @@ class Fichier {
 			}else{
 				$mode = 0775;
 				$mk = mkdir($nom,$mode,true) ;
-				chgrp($nom, "gp63swas");
 				chmod($nom,$mode);
 				return $mk;
 			}

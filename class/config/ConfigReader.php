@@ -7,7 +7,7 @@ namespace config;
  * and open the template in the editor.
  */
 
-
+use Exception;
 use Standard\Fichier\Fichier;
 
 /**
@@ -18,19 +18,26 @@ use Standard\Fichier\Fichier;
 class ConfigReader {
    //put your code here
     private $config = array();
+    private $crypt = true;
     
-    public function __construct(Fichier $file) {
+    public function __construct(Fichier $file,$crypt=true) {
+        
         $this->config = array();
-        if(!$file->presenceFichier() && $file->getExtension() === '.ini'){
-            $file->finalize();
-            $file = new \Standard\Fichier\Fichier(dirname($file->genererChemin()), $file->getNomFichierWithoutExtension().'.crypt');
-        }
-
+//        if(!$file->presenceFichier() && $file->getExtension() === '.ini'){
+//            $file->finalize();
+//            $file = new Fichier(dirname($file->genererChemin()), $file->getNomFichierWithoutExtension().'.crypt');
+//            if(!$file->presenceFichier()){
+//                throw new Exception('Aucun fichier de config présent...');
+//                
+//            }
+//        }
+        $this->crypt = $crypt;
         $this->read($file);
     }
     
     private function read(Fichier $filesrc){
-        $file = $this->decryptFile($filesrc);
+        $file = \Standard\crypt\Crypter::decrypt_file($filesrc, "eric");
+//        $file = $this->decryptFile($filesrc);
         //le fichier doit etre lisible pour passer
        while(($ligne = $file->lireLigneCouranteCsv(":")) !== Fichier::finFichier){
             for($i=2;$i < count($ligne);$i++){
@@ -43,8 +50,9 @@ class ConfigReader {
         if(count($this->config) === 0){
             throw new Exception('Configuration erroné controle votre fichier.');
         }
-        
-        $this->cryptFile($file);
+//        if($this->crypt){
+//            $this->cryptFile($file);
+//        }
     }
     
     public function __get($name){
