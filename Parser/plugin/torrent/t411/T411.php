@@ -86,7 +86,7 @@ class T411 implements TorrentInterface{
     public function search($search){
         $answer = $this->curl->read($this->urlSearch.$search);
         
-        return json_decode($answer);
+        return json_decode($answer,true);
     }
     
     public function getToken(){
@@ -94,9 +94,15 @@ class T411 implements TorrentInterface{
     }
     
     public function getCategories(){
-        $answer = $this->curl->read($this->urlApi.'/categories/tree');
+        $answer = $this->curl->read($this->urlApi.'/categories/tree/');
         
-        return json_decode($answer);
+        return json_decode($answer,true);
         
+    }
+    
+    public function download($id){
+        $answer = $this->curl->read($this->urlApi.'/torrents/download/'.$id);
+        
+        return $answer;
     }
 }
