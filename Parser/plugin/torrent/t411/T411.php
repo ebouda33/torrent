@@ -92,4 +92,11 @@ class T411 implements TorrentInterface{
     public function getToken(){
         return $this->token;
     }
+    
+    public function getCategories(){
+        $answer = $this->curl->read($this->urlApi.'/categories/tree');
+        
+        return json_decode($answer);
+        
+    }
 }
