@@ -32,8 +32,11 @@ class T411 implements TorrentInterface{
     
     function __construct(ConfigReader $config,$search) {
         $this->config = $config->getConfig();
-        $this->urlSearch = $this->urlApi . '/search?'.$search;
+        $this->urlSearch = $this->urlApi . '/torrents/search/';
         $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
+        
+        $this->login();
+        $this->search($search);
     }
 
     public function getResult() {
@@ -78,5 +81,15 @@ class T411 implements TorrentInterface{
         ]);
         **/
          
+    }
+    
+    public function search($search){
+        $answer = $this->curl->read($this->urlSearch.$search);
+        
+        return json_decode($answer);
+    }
+    
+    public function getToken(){
+        return $this->token;
     }
 }

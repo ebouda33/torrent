@@ -64,8 +64,6 @@ class CurlUrl {
         }
         $stream =  curl_exec($this->handler);
         
-        print_r(curl_getinfo($this->handler));
-        
         $this->close = false;
         
         //on reinitialise les params jusqu a la prochaine fois
