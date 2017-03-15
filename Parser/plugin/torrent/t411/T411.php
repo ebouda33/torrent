@@ -21,7 +21,7 @@ class T411 implements TorrentInterface{
     //put your code here
     private $urlApi = "http://api.t411.li";
     private $urlSearch;
-    private $proxy = true;
+    private $proxy = false;
     private $curl ;
     private $result=array();
     
