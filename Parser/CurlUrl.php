@@ -14,7 +14,7 @@ namespace Parser;
 class CurlUrl {
     //put your code here
     
-    private $handler ;
+    public $handler ;
     private $close=true;
     
     
@@ -25,8 +25,8 @@ class CurlUrl {
         if($useProxy){
             $this->defineProxy();
         }
-        curl_setopt($this->handler,CURLOPT_HEADER,0);
-        curl_setopt($this->handler, CURLINFO_HEADER_OUT, 0);
+        curl_setopt($this->handler,CURLOPT_HEADER,false);
+        curl_setopt($this->handler, CURLINFO_HEADER_OUT, true);
         curl_setopt($this->handler, CURLOPT_FOLLOWLOCATION, false);
         
         curl_setopt($this->handler, CURLOPT_RETURNTRANSFER, true);
@@ -46,7 +46,15 @@ class CurlUrl {
     }
     
     public function definePost($post){
-        curl_setopt($this->handler, CURLOPT_POSTFIELDS, $post);
+       $string = $post;
+        if (is_array($post))
+        {
+            $string = '';
+            foreach ($post as $key => $value){
+                $string .= "$key=$value&";
+            }
+        }
+        curl_setopt($this->handler, CURLOPT_POSTFIELDS, $string);
         curl_setopt($this->handler, CURLOPT_POST, true);
     }
     
@@ -55,6 +63,9 @@ class CurlUrl {
             curl_setopt($this->handler, CURLOPT_URL, $url);
         }
         $stream =  curl_exec($this->handler);
+        
+        print_r(curl_getinfo($this->handler));
+        
         $this->close = false;
         
         //on reinitialise les params jusqu a la prochaine fois

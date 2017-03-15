@@ -22,7 +22,7 @@ class T411 implements TorrentInterface{
     private $urlApi = "http://api.t411.li";
     private $urlSearch;
     private $proxy = false;
-    private $curl ;
+    public $curl ;
     private $result=array();
     private $config;
     
@@ -43,8 +43,6 @@ class T411 implements TorrentInterface{
     
     function login(){
         $answer = $this->auth();
-        echo "login:".print_r($answer);
-        var_dump($answer);
         
         $this->uid   = $answer->uid;
         $this->token = $answer->token;
@@ -56,13 +54,12 @@ class T411 implements TorrentInterface{
     private function auth(){
         $this->username = $this->config['t411_user'];
         $this->password = $this->config['t411_password'];
-        var_dump($this->username , $this->password)    ;
         $this->curl->definePost([
                 'username' => $this->username,
                 'password' => $this->password,
             ]);
         $answer = $this->curl->read($this->urlApi.'/auth');
-        var_dump($answer);
+        
         return json_decode($answer);
     }
     
