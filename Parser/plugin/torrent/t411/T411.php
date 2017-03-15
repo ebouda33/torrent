@@ -24,12 +24,14 @@ class T411 implements TorrentInterface{
     private $proxy = false;
     private $curl ;
     private $result=array();
+    private $config;
     
     private $token;
     private $username;
     private $password;
     
     function __construct(ConfigReader $config,$search) {
+        $this->config = $config;
         $this->urlSearch = $this->urlApi . '/search?'.$search;
         $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
     }
@@ -52,6 +54,8 @@ class T411 implements TorrentInterface{
     }
     
     private function auth(){
+        $this->username = $this->config->t411_user;
+        $this->password = $this->config->t411_password;
         $this->curl->definePost([
                 'username' => $this->username,
                 'password' => $this->password,
