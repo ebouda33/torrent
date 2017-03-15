@@ -9,15 +9,17 @@
 namespace Parser\plugin\torrent\nextorrent;
 
 use DOMElement;
+use DOMDocument;
 use Parser\CurlUrl;
 use Parser\DOM\DOMNodeRecursiveIterator;
+use Parser\plugin\torrent\TorrentInterface;
 
 /**
  * Description of Nextorrent
  *
  * @author xgld8274
  */
-class Nextorrent {
+class Nextorrent implements TorrentInterface{
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
     private $proxy = true;
@@ -36,7 +38,7 @@ class Nextorrent {
         //echo(htmlentities($page));
 
         if($page !== false){
-            $arbre = new DomDocument();
+            $arbre = new DOMDocument();
             @$arbre->loadHTML($page);
             $elements = $arbre->getElementsByTagName('table');
             foreach ($elements as $elem) {
