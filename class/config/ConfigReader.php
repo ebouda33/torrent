@@ -1,6 +1,6 @@
 <?php
 namespace config;
-
+ini_set("auto_detect_line_endings", true);
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -18,41 +18,44 @@ use Standard\Fichier\Fichier;
 class ConfigReader {
    //put your code here
     private $config = array();
-    private $crypt = true;
-    
-    public function __construct(Fichier $file,$crypt=true) {
-        
+    private $file ;
+   
+    public function __construct(Fichier $file) {
+        $this->file = $file;
         $this->config = array();
-//        if(!$file->presenceFichier() && $file->getExtension() === '.ini'){
-//            $file->finalize();
-//            $file = new Fichier(dirname($file->genererChemin()), $file->getNomFichierWithoutExtension().'.crypt');
-//            if(!$file->presenceFichier()){
-//                throw new Exception('Aucun fichier de config présent...');
-//                
-//            }
-//        }
-        $this->crypt = $crypt;
-        $this->read($file);
+        
+        
     }
     
-    private function read(Fichier $filesrc){
-        $file = \Standard\crypt\Crypter::decrypt_file($filesrc, "eric");
-//        $file = $this->decryptFile($filesrc);
-        //le fichier doit etre lisible pour passer
+    public function read(){
+        $file = $this->file;
+       if(!$file->presenceFichier()){
+                throw new Exception('Aucun fichier de config présent...');
+        }
+        $file->initialize();
        while(($ligne = $file->lireLigneCouranteCsv(":")) !== Fichier::finFichier){
-            for($i=2;$i < count($ligne);$i++){
+           for($i=2;$i < count($ligne);$i++){
+                
                  $ligne[1] .= ':'.$ligne[$i];
             }
+           if(strripos($ligne[0],'[]') !== false){
+                $ligne[0] = str_replace('[]', '', $ligne[0]);
+               if(!isset($this->config[$ligne[0]])){
+                    $this->config[$ligne[0]] = array();
+                }
+            }
             if(count($ligne) >= 2){
-                $this->config[$ligne[0]] = $ligne[1];
+                if(isset($this->config[$ligne[0]]) && is_array($this->config[$ligne[0]])){
+                    $this->config[$ligne[0]][] = $ligne[1];
+                }else{
+                    $this->config[$ligne[0]] = $ligne[1];
+                }
             }
         }
         if(count($this->config) === 0){
             throw new Exception('Configuration erroné controle votre fichier.');
         }
-//        if($this->crypt){
-//            $this->cryptFile($file);
-//        }
+
     }
     
     public function __get($name){
@@ -67,46 +70,26 @@ class ConfigReader {
     }
     
     public function getConfig(){
+        if(count($this->config) === 0){
+            $this->read();
+        }
         return $this->config;
     }
     
-    private function cryptFile(Fichier $file){
-        if($file->getExtension() === '.ini'){
-            $this->encode_decode($file,true,'.crypt');
+    public function configFileIsCrypted(){
+        $file = $this->file;
+        $crypt = false;
+        try{
+            $this->read($file);
+            $this->config = array();
+        } catch (Exception $ex) {
+            echo $ex;
+            $crypt = true;
         }
-    }
-    private function decryptFile(Fichier $file){
-     if($file->getExtension() === '.crypt'){
-            return $this->encode_decode($file,false,'.ini');
-        }
-       return $file;
+        
+        return $crypt;
+        
     }
     
     
-    private function encode_decode($file,$encode,$ext){
-       $contenu = $file->lireFichierDansTableau();
-        $contenuE = array();
-        
-        foreach ($contenu as $ligne){
-            if($encode){
-                array_push($contenuE, base64_encode($ligne));
-            }else{
-                array_push($contenuE, base64_decode($ligne));
-            }
-        }
-        $file->effaceContenuFichier();
-        foreach ($contenuE as $ligne){
-            if($encode){
-                $file->ecrireLigneDansFichier($ligne,true);
-            }else{
-                $file->ecrireDansFichier($ligne,true);
-                
-            }
-        }
-        $file->finalize();
-        
-        $file->deplacerFichier(Fichier::_validerPath(dirname($file->genererChemin())).$file->getNomFichierWithoutExtension().$ext);
-        return new Fichier(Fichier::_validerPath(dirname($file->genererChemin())),$file->getNomFichierWithoutExtension().$ext);
-        
-    }
 }

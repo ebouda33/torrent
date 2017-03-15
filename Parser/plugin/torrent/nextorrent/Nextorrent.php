@@ -6,12 +6,11 @@
  * and open the template in the editor.
  */
 
-namespace Parser\nextorrent;
+namespace Parser\plugin\torrent\nextorrent;
 
 use DOMElement;
 use Parser\CurlUrl;
 use Parser\DOM\DOMNodeRecursiveIterator;
-use DOMDocument;
 
 /**
  * Description of Nextorrent
@@ -21,7 +20,7 @@ use DOMDocument;
 class Nextorrent {
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
-    private $proxy = false;
+    private $proxy = true;
     
     private $result=array();
     
@@ -57,8 +56,7 @@ class Nextorrent {
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
-        
-       foreach ($nodes as $node){
+        foreach ($nodes as $node){
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
             $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
             $index = count($this->result);
@@ -67,7 +65,10 @@ class Nextorrent {
             }
             $this->result[$index]['titre'] =  $urlTorrent['caption'];
             $this->result[$index]['url'] =  $urlMagnet['url'];
-            
+            $this->result[$index]['size'] =  $urlTorrent['size'];
+            $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
+            $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
+
         }
 
         
@@ -78,12 +79,20 @@ class Nextorrent {
     }
 
     private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
-        $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
-        $url = $td[2]->getAttribute('href');
+       $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
+       $url = $td[2]->getAttribute('href');
         $caption = $td[2]->textContent;
 
-
-        return array("url"=>$url,"caption"=>$caption);
+       $td = new DOMNodeRecursiveIterator($tr[2]->childNodes);
+       $size = $td[0]->textContent;
+       
+        $td = new DOMNodeRecursiveIterator($tr[4]->childNodes);
+        $seeder=$td[1]->textContent;
+                
+        $td = new DOMNodeRecursiveIterator($tr[6]->childNodes);
+        $leecher=$td[1]->textContent;
+        
+        return array("url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
 
 
     }

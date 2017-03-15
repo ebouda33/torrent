@@ -17,13 +17,13 @@ class Crypter {
     //put your code here
     
     public static function encrypt_file(Fichier $fichier,$key){
-        self::crypt($fichier, $key, true);
+        return self::crypt($fichier, $key, true);
     } 
     public static function decrypt_file(Fichier $fichier,$key){
-        self::crypt($fichier, $key, false);
+        return self::crypt($fichier, $key, false);
     }
     
-    public static function crypt(Fichier $fichier , $key,$crypt){
+    private static function crypt(Fichier $fichier , $key,$crypt){
         $fichierFinal = new Fichier(dirname($fichier->genererChemin()), $fichier->getNomFichierWithoutExtension().".tmp");
         $fichier->initialize();
         $ligne = $fichier->lireLigneCourante();
@@ -32,14 +32,18 @@ class Crypter {
                 $ligne = self::encrypt($ligne, $key);
             }else{
                $ligne = self::decrypt($ligne, $key); 
+            }if($crypt){
+                $fichierFinal->ecrireLigneDansFichier($ligne, true);
+            }else{
+                $fichierFinal->ecrireDansFichier($ligne, true);
             }
-            $fichierFinal->ecrireLigneDansFichier($ligne, true);
             $ligne = $fichier->lireLigneCourante();
         }
         $fichier->finalize();
         $fichierFinal->finalize();
         
-//        $fichier->effacerFichier();
+        $fichier->effacerFichier();
+        $fichierFinal->deplacerFichier(dirname($fichier->genererChemin()).DIRECTORY_SEPARATOR. $fichier->getNomFichier(), true);
         
         return $fichierFinal;
     }

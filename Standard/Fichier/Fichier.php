@@ -281,15 +281,9 @@ class Fichier {
 		if($convertUTF8){
 			$contenu = utf8_encode($contenu);
 		}
-		if(!is_resource($this->handle)){
-			$this->creerFichier();
-		}
-		$handler = $this->handle;
-		$retour = fwrite($handler,$contenu.PHP_EOL);
-		if(!$ouvert)
-			$this->finalize();
-	
-		return $retour;
+                $contenu .= PHP_EOL;
+                return  $this->ecrireDansFichier($contenu);
+		
 	}
 
 	function ecrireLigneCSVDansFichier(array $contenu,$delimiter=";",$ouvert=false,$convertUTF8=true){
