@@ -1,2 +1,2 @@
 // @tag full-page
-// @require /var/vhosts/torrent/www/app.js
+// @require /mnt/data/vhosts/torrent/www/app.js
