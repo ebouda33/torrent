@@ -14,7 +14,8 @@ Ext.define('MyTorrent.view.main.Main', {
 
         'MyTorrent.view.main.MainController',
         'MyTorrent.view.main.MainModel',
-        'MyTorrent.view.main.List'
+        'MyTorrent.view.liste.ListeResultat',
+        'MyTorrent.view.main.Accueil'
     ],
 
     controller: 'main',
@@ -28,18 +29,18 @@ Ext.define('MyTorrent.view.main.Main', {
     },
 
     tabBarPosition: 'bottom',
-
+    
     items: [
         {
-            title: 'Home',
+            title: 'Accueil',
             iconCls: 'x-fa fa-home',
             layout: 'fit',
             // The following grid shares a store with the classic version's grid as well!
             items: [{
-                xtype: 'mainlist'
+                xtype: 'panelAccueil'
             }]
         },{
-            title: 'Users',
+            title: 'Profil',
             iconCls: 'x-fa fa-user',
             bind: {
                 html: '{loremIpsum}'

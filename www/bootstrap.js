@@ -1187,6 +1187,7 @@ Ext.Boot = Ext.Boot || (function (emptyFn) {
                     if (delay === 0 || delay > 0) {
                         // Free the stack (and defer the next script)
                         setTimeout(function () {
+//                            console.log(scope,me);
                             fn.call(scope, me);
                         }, delay);
                     } else {

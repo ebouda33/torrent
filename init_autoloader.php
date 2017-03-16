@@ -12,6 +12,7 @@ $config = array("ns"=>array(
                 "Parser"=>dirname(__FILE__).DIRECTORY_SEPARATOR,
                 "Transmission"=>dirname(__FILE__).DIRECTORY_SEPARATOR,
                 "config"=>dirname(__FILE__).DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR,
+                "myClass"=>dirname(__FILE__).DIRECTORY_SEPARATOR.'class'.DIRECTORY_SEPARATOR,
                 "Standard"=>dirname(__FILE__).DIRECTORY_SEPARATOR,
 ));
 Autoloader::register($config);
