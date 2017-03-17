@@ -9,7 +9,9 @@ Ext.define('MyTorrent.view.main.Recherche',{
     extend: 'Ext.panel.Panel'
     ,xtype: 'panelRecherche'
     
-    
+    ,requires :[
+        'MyTorrent.view.recherche.Torrent'
+    ]
 //    tpl:[
 //        'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
 //            \n\<br>Actuellement gestion de {name}'
@@ -24,7 +26,11 @@ Ext.define('MyTorrent.view.main.Recherche',{
         
     }
     
-    ,items : []
+    ,items : [
+        {
+            xtype : 'rechercheTorrent'
+        }
+    ]
     
 //    items:[{
 //        html : 'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\

@@ -21,6 +21,7 @@ abstract class TorrentGenerique implements TorrentInterface{
     protected $icone;
     protected $description;
     protected $name;
+    protected $options=array();
     
     public static function getListe(){
         $explorer = new Explorer(dirname(__FILE__));
@@ -37,6 +38,14 @@ abstract class TorrentGenerique implements TorrentInterface{
     }
     public function getResult() {
         throw new \Exception('Not yet Implemented');
+    }
+    
+    
+    /**
+     * permet de savoir si un torrent a des options comme les categories etc ...
+     */
+    public function getOptions(){
+        return $this->options;
     }
 
     

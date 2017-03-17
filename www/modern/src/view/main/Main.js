@@ -11,13 +11,12 @@ Ext.define('MyTorrent.view.main.Main', {
 
     requires: [
         'Ext.MessageBox',
-
         'MyTorrent.view.main.MainController',
         'MyTorrent.view.main.MainModel',
         'MyTorrent.view.liste.ListeResultat',
         'MyTorrent.view.main.Accueil',
         'MyTorrent.view.main.Profil',
-        'MyTorrent.view.main.Recherche',
+        'MyTorrent.view.main.Recherche'
     ],
 
     controller: 'main',
