@@ -26,19 +26,7 @@ Ext.define('MyTorrent.view.main.Accueil',{
     
     ,listeners :{
         initialize : function (panel,eOpts){
-            Ext.Ajax.request({
-               url :  'torrentJson.php'
-               ,method : 'GET'
-               ,params : 'plugin'
-               ,success :function (response,opts){
-                   var obj = Ext.decode(response.responseText);
-                   panel.majTpl(obj[0].data);
-               }
-               ,failure : function(response,opts){
-                   console.log('failure');
-               }
-                   
-            });
+            MyTorrent.getApplication().setListenersPlugins(panel);
             
 
         }
@@ -52,9 +40,8 @@ Ext.define('MyTorrent.view.main.Accueil',{
     }
     ,items : []
     
-//    items:[{
-//        html : 'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
-//                <br>Actuellement gestion de Nextorrent et T411.'
-//    }]
+    ,setPlugins : function(data){
+        this.majTpl(data);
+    }
     
 });

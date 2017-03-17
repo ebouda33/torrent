@@ -11,6 +11,9 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
     ,requires : [
          'Ext.form.FieldSet'
      ]
+     ,style : {
+                border: 'none'
+            }
    ,items :[
        {
             xtype: 'fieldset',
@@ -18,26 +21,32 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
             defaultType : 'checkboxfield',
             width : 150,
             items : [
-                {
-                    label : 'plugin1',
-                    name : 'plugin1',
-                    inputValue : 654446,
-                    id : 'plugin1',
-                    labelAlign : 'right',
-
-                },
-                {
-                    label : 'plugin2',
-                    name : 'plugin2',
-                    inputValue : 654446,
-                    id : 'plugin2',
-                    labelAlign : 'right',
-
-                }
+                
             ]
         }
     ]
-//       
-       
+  ,listeners :{
+        initialize : function (panel,eOpts){
+            MyTorrent.getApplication().setListenersPlugins(panel);
+
+        }
+        
+    }     
+    ,setPlugins : function(data)  {
+        var items = this.getItems().items;
+        var plugins = [];
+        Ext.each(data,function(plugin){
+            plugins.push({
+                label : plugin.name,
+                name : plugin.name,
+                inputValue : 654446,
+                id : plugin.name,
+                labelTextAlign : 'left',
+                labelWidth : '80%'
+            });
+        });
+        items[0].setItems(plugins);
+        
+    }
    
 });
