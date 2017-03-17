@@ -9,6 +9,7 @@ Ext.define('MyTorrent.view.main.Accueil',{
     extend: 'Ext.panel.Panel'
     ,xtype: 'panelAccueil'
     
+    
 //    tpl:[
 //        'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
 //            \n\<br>Actuellement gestion de {name}'
@@ -25,23 +26,29 @@ Ext.define('MyTorrent.view.main.Accueil',{
     
     ,listeners :{
         initialize : function (panel,eOpts){
-            console.log(eOpts);
-//            panel.setHtml('before show');
-            eric = panel;
-            panel.data = [{
-                    name :"T411"
-                },{
-                    name : 'nexTorrent'
-                }
-                ];
-                var t = panel.getTpl();
-                panel.setHtml(t.apply(panel.data));
-//            panel.update(panel.data);
-//            panel.doLayout();
+            Ext.Ajax.request({
+               url :  'torrentJson.php'
+               ,method : 'GET'
+               ,params : 'plugin'
+               ,success :function (response,opts){
+                   var obj = Ext.decode(response.responseText);
+                   panel.majTpl(obj[0].data);
+               }
+               ,failure : function(response,opts){
+                   console.log('failure');
+               }
+                   
+            });
+            
+
         }
-        ,click : function(){
-            console.log('click panel');
-        }
+        
+    }
+    ,majTpl : function(data){
+        var panel = this;
+        var t = panel.getTpl();
+        panel.data = data;
+        panel.setHtml(t.apply(panel.data));
     }
     ,items : []
     

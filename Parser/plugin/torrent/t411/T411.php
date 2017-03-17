@@ -10,14 +10,14 @@ namespace Parser\plugin\torrent\t411;
 
 use config\ConfigReader;
 use Parser\CurlUrl;
-use Parser\plugin\torrent\TorrentInterface;
+use Parser\plugin\torrent\TorrentGenerique;
 
 /**
  * Description of T411
  *
  * @author xgld8274
  */
-class T411 implements TorrentInterface{
+class T411 extends TorrentGenerique{
     //put your code here
     private $urlApi = "http://api.t411.li";
     private $urlSearch;

@@ -20,11 +20,11 @@ class ResponseJson {
     
     
     public static function returnResponse($query){
+        
         $retour =array();
-        switch (strtolower($query)){
-            case self::$PLUGIN:
-                array_push($retour , 'Liste des plugins');
-                break;
+        if(strripos($query,self::$PLUGIN) !== false){
+            $plugins = \Parser\plugin\torrent\TorrentGenerique::getListe();
+            array_push($retour , array('success'=>true,'data'=>$plugins));
             
         }
         

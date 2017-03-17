@@ -8,10 +8,11 @@
 
 namespace Parser\plugin\torrent\nextorrent;
 
-use DOMElement;
 use DOMDocument;
+use DOMElement;
 use Parser\CurlUrl;
 use Parser\DOM\DOMNodeRecursiveIterator;
+use Parser\plugin\torrent\TorrentGenerique;
 use Parser\plugin\torrent\TorrentInterface;
 
 /**
@@ -19,7 +20,7 @@ use Parser\plugin\torrent\TorrentInterface;
  *
  * @author xgld8274
  */
-class Nextorrent implements TorrentInterface{
+class Nextorrent extends TorrentGenerique{
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
     private $proxy = true;
@@ -27,6 +28,7 @@ class Nextorrent implements TorrentInterface{
     private $result=array();
     
     public function __construct($search) {
+        $this->id = uniqid();
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         
@@ -52,6 +54,8 @@ class Nextorrent implements TorrentInterface{
             }
         }
     }
+    
+    
     
     function parcoursDomPagination(){
 

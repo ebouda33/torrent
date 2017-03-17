@@ -15,7 +15,9 @@ Ext.define('MyTorrent.view.main.Main', {
         'MyTorrent.view.main.MainController',
         'MyTorrent.view.main.MainModel',
         'MyTorrent.view.liste.ListeResultat',
-        'MyTorrent.view.main.Accueil'
+        'MyTorrent.view.main.Accueil',
+        'MyTorrent.view.main.Profil',
+        'MyTorrent.view.main.Recherche',
     ],
 
     controller: 'main',
@@ -40,11 +42,11 @@ Ext.define('MyTorrent.view.main.Main', {
                 xtype: 'panelAccueil'
             }]
         },{
-            title: 'Profil',
+            title: 'Recherche',
             iconCls: 'x-fa fa-user',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            items: [{
+                xtype: 'panelRecherche'
+            }]
         },{
             title: 'Groups',
             iconCls: 'x-fa fa-users',
@@ -54,9 +56,9 @@ Ext.define('MyTorrent.view.main.Main', {
         },{
             title: 'Settings',
             iconCls: 'x-fa fa-cog',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            items: [{
+                xtype: 'panelProfil'
+            }]
         }
     ]
 });

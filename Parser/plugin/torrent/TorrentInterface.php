@@ -16,4 +16,9 @@ interface TorrentInterface {
     //put your code here
     
     public function getResult();
+    
+    /**
+     * @static recupere les infos inherent au torrent
+     */
+    public function getInfo();
 }
