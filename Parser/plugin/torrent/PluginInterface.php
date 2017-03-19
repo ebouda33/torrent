@@ -12,7 +12,7 @@ namespace Parser\plugin\torrent;
  *
  * @author xgld8274
  */
-interface TorrentInterface {
+interface PluginInterface {
     //put your code here
     
     public function getResult();

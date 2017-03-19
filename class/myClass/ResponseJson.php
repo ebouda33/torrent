@@ -16,16 +16,19 @@ namespace myClass;
 class ResponseJson {
     //put your code here
     private static $PLUGIN = 'plugin';
-    
+    private static $SEARCH = 'search';
     
     
     public static function returnResponse($query){
         
         $retour =array();
         if(strripos($query,self::$PLUGIN) !== false){
-            $plugins = \Parser\plugin\torrent\TorrentGenerique::getListe();
+            $plugins = \Parser\plugin\torrent\PluginGenerique::getListe();
             array_push($retour , array('success'=>true,'data'=>$plugins));
             
+        }
+        if(strripos($query,self::$SEARCH) !== false){
+            //on execute la recherche sur tout les plugin demandé
         }
         
         return json_encode($retour);

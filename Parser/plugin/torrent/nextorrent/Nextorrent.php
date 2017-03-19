@@ -12,23 +12,27 @@ use DOMDocument;
 use DOMElement;
 use Parser\CurlUrl;
 use Parser\DOM\DOMNodeRecursiveIterator;
-use Parser\plugin\torrent\TorrentGenerique;
-use Parser\plugin\torrent\TorrentInterface;
+use Parser\plugin\torrent\PluginGenerique;
 
 /**
  * Description of Nextorrent
  *
  * @author xgld8274
  */
-class Nextorrent extends TorrentGenerique{
+class Nextorrent extends PluginGenerique{
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
     private $proxy = true;
     
     private $result=array();
     
-    public function __construct($search) {
-        $this->id = uniqid();
+    /**
+     * 
+     * @param type $search
+     */
+    public function __construct($search=null) {
+        
+        $this->name = 'NextTorrent';
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         

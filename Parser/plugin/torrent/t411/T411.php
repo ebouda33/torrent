@@ -10,14 +10,14 @@ namespace Parser\plugin\torrent\t411;
 
 use config\ConfigReader;
 use Parser\CurlUrl;
-use Parser\plugin\torrent\TorrentGenerique;
+use Parser\plugin\torrent\PluginGenerique;
 
 /**
  * Description of T411
  *
  * @author xgld8274
  */
-class T411 extends TorrentGenerique{
+class T411 extends PluginGenerique{
     //put your code here
     private $urlApi = "http://api.t411.li";
     private $urlSearch;
@@ -30,13 +30,18 @@ class T411 extends TorrentGenerique{
     private $username;
     private $password;
     
-    function __construct(ConfigReader $config,$search) {
-        $this->config = $config->getConfig();
-        $this->urlSearch = $this->urlApi . '/torrents/search/';
-        $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
+    function __construct(ConfigReader $config=null,$search=null) {
         
-        $this->login();
-        $this->search($search);
+        $this->name = 'T411';
+        if(!empty($config)){
+            $this->config = $config->getConfig();
+            $this->urlSearch = $this->urlApi . '/torrents/search/';
+            $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
+
+            $this->login();
+            $this->search($search);
+        
+        }
     }
 
     public function getResult() {

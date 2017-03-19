@@ -25,10 +25,16 @@ Ext.define('MyTorrent.view.main.Recherche',{
         }
         
     }
-    
+    ,layout : 'hbox'
     ,items : [
         {
-            xtype : 'rechercheTorrent'
+            xtype : 'rechercheTorrent',
+            width : '50%'
+        },
+        {
+            xtype : 'panel',
+            title : 'resultat',
+            layout : 'fit'
         }
     ]
     

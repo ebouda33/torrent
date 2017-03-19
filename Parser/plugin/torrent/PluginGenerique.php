@@ -15,7 +15,7 @@ use Standard\Fichier\Explorer;
  *
  * @author xgld8274
  */
-abstract class TorrentGenerique implements TorrentInterface{
+abstract class PluginGenerique implements PluginInterface{
     //put your code here
     protected $id;
     protected $icone;
@@ -28,13 +28,22 @@ abstract class TorrentGenerique implements TorrentInterface{
         $result = array();
         foreach ($explorer->toArray() as $explore){
             if($explore['type'] === Explorer::FOLDER){
-                array_push($result, array('name'=> strtoupper($explore['name'])));
+                $classname = 'Parser\\plugin\\torrent\\'.$explore['name'] . '\\'.ucfirst($explore['name']);
+                $torrent = new $classname();
+                
+                $fichier = new \Standard\Fichier\Fichier($explore['path'].DIRECTORY_SEPARATOR,'iconeBase64.php');
+                $torrent->id = $fichier->getDatecreation();
+                $torrent->icone =  $fichier->lireFichierEntier();
+                array_push($result, $torrent->getInfo());
+                
+                $torrent->__destruct();
             }
         }
         return $result;
     }
     public function getInfo() {
-        return array('name'=>$this->name,'id'=>$this->id,'icone'=>$this->icone,'description'=>$this->description);     
+        
+        return array('name'=> $this->name,'id'=>$this->id,'icone'=>$this->icone,'description'=>$this->description);     
     }
     public function getResult() {
         throw new \Exception('Not yet Implemented');
@@ -46,6 +55,10 @@ abstract class TorrentGenerique implements TorrentInterface{
      */
     public function getOptions(){
         return $this->options;
+    }
+    
+    public function __destruct() {
+        unset($this);
     }
 
     

@@ -18,7 +18,7 @@ Ext.define('MyTorrent.view.main.Accueil',{
         'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.<br>',
         'Actuellement gestion de',
         '<tpl for=".">',
-        '<div>{name}</div>',
+        '<div><img src="data:image/jpg;base64,{icone}" alt="{name}"/>{name}</div>',
         '</tpl>'
         
     )
