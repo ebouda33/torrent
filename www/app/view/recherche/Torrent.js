@@ -57,19 +57,93 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                 // Handle enter key presses, execute the search if the field has a value
                 checkEnterKey: function(field, e) {
                     var value = field.getValue();
-                    if (e.getKey() === e.ENTER && !Ext.isEmpty(value)) {
+                    if (e.getKey() === e.ENTER && !Ext.isEmpty(value) && field.getPluginsUse() !== undefined && field.getPluginsUse().length > 0 ) {
                         var p = Ext.encode(field.getPluginsUse(field));
-                        console.log(Ext.String.format(field.searchUrl, value,p));
+                        var url = Ext.String.format(field.searchUrl, value,p);
+                        this.executeSearch(url,value,p);
 //                        location.href = Ext.String.format(field.searchUrl, value);
+                        field.setDisabled(true);
                     }
                 },
-                getPluginsUse : function(field){
-                    var ancestor = field.getBubbleParent().getBubbleParent().getItems();
-                    var plugins = ancestor.items[0].items.items;
-                    
-                    plugins = [{id:2323},{id:98988}];
-                    
+                getPluginsUse : function(){
+//                    var plugins = MyTorrent.getApplication().getPlugins();
+                    var plugins = [];
+                    var ancestor = this.getBubbleParent().getBubbleParent();
+                    var enfants = ancestor.getItems().items;
+                    //prise en compte que des checkbox
+                    var plugSelect = enfants[0].getItems().items;
+                    //demarre a 1 a cause du titre
+                    for(var i =1;i < plugSelect.length;i++){
+                        if(plugSelect[i].isChecked()){
+                            plugins.push({name: plugSelect[i].getName(),id:plugSelect[i].getValue()});
+                        }
+                    }
                     return plugins;
+                },
+                executeSearch : function(url,value,p){
+//                    console.log(url);
+                    var me = this;
+                    var urlFull = url.split("?");
+                    
+                    var store = Ext.create('Ext.data.JsonStore', {
+                                fields: [
+                                   {name: 'titre'},
+                                   {name: 'size'},
+                                   {name: 'url'},
+                                   {name: 'leecher'},
+                                   {name: 'seeder'}
+
+                                ],
+                                proxy : {
+                                    type : 'ajax',
+                                    url :  urlFull[0]
+                                    ,method : 'GET'
+                                    ,extraParams : {'search':value,'plugins':p}
+                                    
+                                    ,reader : {
+                                        type : 'json',
+                                        rootProperty : 'data'
+                                    }
+                                }
+                                
+                    });
+                    var gridResultat = me.getBubbleParent().getBubbleParent().grid;
+                    gridResultat.setStore(store);
+                    store.load();
+                    this.setDisabled(false);
+//                    Ext.Ajax.request({
+//                        url :  urlFull[0]
+//                        ,method : 'GET'
+//                        ,params : urlFull[1]
+//                        ,success :function (response,opts){
+//                            var obj = Ext.decode(response.responseText);
+////                            console.log(response,opts);
+//                            var store = Ext.create('Ext.data.JsonStore', {
+//                                fields: [
+//                                   {name: 'titre'},
+//                                   {name: 'size'},
+//                                   {name: 'url'},
+//                                   {name: 'leecher'},
+//                                   {name: 'seeder'}
+//
+//                                ],
+//                                root : 'data',
+//                                
+//                                
+//                            });
+//                            eric = store;
+//                            var gridResultat = me.getBubbleParent().getBubbleParent().grid;
+//                            
+//                            gridResultat.setStore(store);
+//                            
+//
+//                        }
+//                        ,failure : function(response,opts){
+//                            console.log('failure plugins');
+//                            console.log(response,opts);
+//                        }
+//
+//                     });
                 }
             }
             ]
@@ -90,8 +164,8 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
             plugins.push({
                 label : '<div><img src="data:image/jpg;base64,'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
                 name : plugin.name,
-                inputValue : 654446,
-                id : ''+plugin.name,
+                inputValue : plugin.id,
+                id : plugin.name,
                 labelTextAlign : 'left',
                 labelWidth : '80%',
                 value : plugin.id
@@ -99,6 +173,9 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
         });
         items[0].setItems(plugins);
         
+    }
+    ,setZoneResultat : function(grid){
+        this.grid = grid;
     }
    
 });

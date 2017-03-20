@@ -30,12 +30,17 @@ class Nextorrent extends PluginGenerique{
      * 
      * @param type $search
      */
-    public function __construct($search=null) {
+    public function __construct() {
         
-        $this->name = 'NextTorrent';
+        $this->name = 'NexTorrent';
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         
+        
+    }
+    
+    
+    public function search($search, array $options = null) {
         $searchPageUrl = $this->urlSearch.$search;
 
         $curl = new CurlUrl($searchPageUrl,$this->proxy);
@@ -58,7 +63,7 @@ class Nextorrent extends PluginGenerique{
             }
         }
     }
-    
+
     
     
     function parcoursDomPagination(){

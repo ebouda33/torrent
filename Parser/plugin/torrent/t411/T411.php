@@ -30,7 +30,7 @@ class T411 extends PluginGenerique{
     private $username;
     private $password;
     
-    function __construct(ConfigReader $config=null,$search=null) {
+    function __construct(ConfigReader $config=null) {
         
         $this->name = 'T411';
         if(!empty($config)){
@@ -39,7 +39,6 @@ class T411 extends PluginGenerique{
             $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
 
             $this->login();
-            $this->search($search);
         
         }
     }
@@ -88,11 +87,12 @@ class T411 extends PluginGenerique{
          
     }
     
-    public function search($search){
+    public function search($search,array $options=null){
         $answer = $this->curl->read($this->urlSearch.$search);
+        $this->result = json_decode($answer,true);
         
-        return json_decode($answer,true);
     }
+    
     
     public function getToken(){
         return $this->token;
@@ -110,4 +110,6 @@ class T411 extends PluginGenerique{
         
         return $answer;
     }
+    
+    
 }

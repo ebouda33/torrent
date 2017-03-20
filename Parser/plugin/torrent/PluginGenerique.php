@@ -28,11 +28,11 @@ abstract class PluginGenerique implements PluginInterface{
         $result = array();
         foreach ($explorer->toArray() as $explore){
             if($explore['type'] === Explorer::FOLDER){
-                $classname = 'Parser\\plugin\\torrent\\'.$explore['name'] . '\\'.ucfirst($explore['name']);
+                $classname = self::getClassName($explore['name'] );
                 $torrent = new $classname();
                 
                 $fichier = new \Standard\Fichier\Fichier($explore['path'].DIRECTORY_SEPARATOR,'iconeBase64.php');
-                $torrent->id = $fichier->getDatecreation();
+                $torrent->id = $fichier->getDatecreation().$explore['name'];
                 $torrent->icone =  $fichier->lireFichierEntier();
                 array_push($result, $torrent->getInfo());
                 
@@ -60,7 +60,26 @@ abstract class PluginGenerique implements PluginInterface{
     public function __destruct() {
         unset($this);
     }
-
     
+    public static function getPluginClassName($id){
+        $plugins = self::getListe();
+        $classname = "";
+        foreach ($plugins as $plugin){
+            if($plugin['id'] === $id){
+                $classname = self::getClassName($plugin['name']);
+            }
+        }
+        return $classname;
+    }
+
+    private static function getClassName($namePlugin){
+        $name = strtolower($namePlugin);
+        $classname = 'Parser\\plugin\\torrent\\'.$name . '\\'.\ucfirst($name);
+        return $classname;
+    }
+    
+    public function search($motif,array $options=null){
+        throw new Exception('Not Yet Implemented');
+    }
 
 }

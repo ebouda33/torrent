@@ -21,4 +21,8 @@ interface PluginInterface {
      * @static recupere les infos inherent au torrent
      */
     public function getInfo();
+    
+    public function search($motif,array $options=null);
+        
+    
 }

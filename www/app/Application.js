@@ -43,13 +43,14 @@ Ext.define('MyTorrent.Application', {
                ,params : 'plugin'
                ,success :function (response,opts){
                    var obj = Ext.decode(response.responseText);
-                   me.setPlugins(obj[0].data);
+                   me.setPlugins(obj.data);
                    me.pushListenersPlugins();
                    
                    
                }
                ,failure : function(response,opts){
                    console.log('failure plugins');
+                   console.log(response,opts);
                }
                    
             });

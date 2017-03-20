@@ -8,8 +8,8 @@ Ext.define('MyTorrent.view.main.MainView',{
     extend: 'Ext.panel.Panel',
     
     requires: [
-        'Ext.MessageBox',
-        'Ext.layout.Fit',
+//        'Ext.MessageBox',
+//        'Ext.layout.Fit',
         'MyTorrent.view.main.Main',
         'MyTorrent.view.main.MainController',
         'MyTorrent.view.main.MainModel',

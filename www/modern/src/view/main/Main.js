@@ -30,7 +30,6 @@ Ext.define('MyTorrent.view.main.Main', {
     },
 
     tabBarPosition: 'bottom',
-    
     items: [
         {
             title: 'Accueil',
@@ -42,16 +41,22 @@ Ext.define('MyTorrent.view.main.Main', {
             }]
         },{
             title: 'Recherche',
-            iconCls: 'x-fa fa-user',
+            iconCls: 'x-fa fa-search',
+            layout: 'fit',
             items: [{
                 xtype: 'panelRecherche'
             }]
         },{
             title: 'Groups',
             iconCls: 'x-fa fa-users',
-            bind: {
-                html: '{loremIpsum}'
-            }
+            items: [{
+                xtype: 'panel',
+                collapsible : true,
+                title : 'TEST'
+            }]
+//            bind: {
+//                html: '{loremIpsum}'
+//            }
         },{
             title: 'Settings',
             iconCls: 'x-fa fa-cog',

@@ -8,15 +8,10 @@
 Ext.define('MyTorrent.view.main.Recherche',{
     extend: 'Ext.panel.Panel'
     ,xtype: 'panelRecherche'
-    
+    ,scrollable : true
     ,requires :[
         'MyTorrent.view.recherche.Torrent'
     ]
-//    tpl:[
-//        'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
-//            \n\<br>Actuellement gestion de {name}'
-//    ]
-    
     ,listeners :{
         initialize : function (panel,eOpts){
             
@@ -26,15 +21,83 @@ Ext.define('MyTorrent.view.main.Recherche',{
         
     }
     ,layout : 'hbox'
+    ,align : 'stretch'
     ,items : [
         {
             xtype : 'rechercheTorrent',
-            width : '50%'
+            width : '35%'
         },
         {
-            xtype : 'panel',
-            title : 'resultat',
-            layout : 'fit'
+            xtype : 'grid',
+            title : 'Résultat',
+            collapsible : true,
+            layout : 'fit',
+            minHeight : 100,
+            height : 400,
+            width : '64%',
+            scrollable : true,
+            deferEmptyText : 'Aucune recherche exécutée.',
+            store : null ,
+//            fullscreen : true,
+//            columnLines: true,
+            plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'}],
+            
+            viewConfig: {
+                trackOver: false,
+                emptyText: '<h1 style="margin:20px">No matching results</h1>'
+            },
+            listeners : {
+              initialize : function(grid,eOpts){
+                  ancestor = grid.getBubbleParent().getItems().items;
+                  ancestor[0].setZoneResultat(grid);
+              }  
+            },
+            style : {textAlign : 'left'},
+            columns: [
+                {
+                    text: 'Torrent',
+                    dataIndex: 'titre',
+//                    sortable: false,  // column cannot be sorted
+                    width: 250,
+                    flex : 1,
+                    resizable : true,
+                    align : 'left',
+                },
+                {
+                    text: 'Size',
+                    dataIndex: 'size',
+//                    hidden: true  // column is initially hidden
+                    resizable : true,
+                    width : 100,
+                    align : 'left',
+                    
+                },
+                {
+                    text: 'Seeder',
+                    dataIndex: 'seeder',
+                    width: 100,
+                    resizable : false,
+                    align : 'left',
+                },
+                {
+                    text: 'Leecher',
+                    dataIndex: 'leecher',
+                    width: 100,
+                    resizable : false,
+                    align : 'left',
+                },
+                {
+                    text : 'Use Transmission',
+                    dataIndex: 'url',
+                    width: 200,
+                    resizable : true,
+                    align : 'left',
+                    renderer : function (container,position){
+//                        console.log(container,position);
+                        return 'MAgnet';
+                    }
+                }
+            ]
         }
     ]
     
