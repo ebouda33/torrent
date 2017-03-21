@@ -68,7 +68,13 @@ class ResponseJson {
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
             $result =  $transmission->add($url,'/mnt/data/videos/adulte');
-            $id = $result->arguments->torrent_added->id;
+            $id = 0;
+            if(isset($result->arguments->torrent_duplicate)){
+                $id = $result->arguments->torrent_duplicate->id;
+                $retour['duplicate'] = true;
+            }else{
+                $id = $result->arguments->torrent_added->id;
+            }
             $retour['success'] =true ;
             $retour['message']= "tansmission ok=>".$id;  
         }catch(\Transmission\TransmissionRPCException $exc){

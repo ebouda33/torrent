@@ -102,12 +102,16 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                     message = obj.message;
                     icon = 'x-fa fa-warning' ;
                 }
+                if(obj.duplicate !== undefined && obj.duplicate){
+                    message = 'Torrent existant';
+                }
                 Ext.Msg.show({
                     title : 'Envoi Transmission',
                     message : message,
                     buttons : Ext.MessageBox.OK,
                     iconCls :  icon ,
-                    closable : true
+                    closable : true,
+                    height : 200
                 });
 
 
