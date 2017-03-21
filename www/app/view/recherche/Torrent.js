@@ -60,9 +60,9 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     if (e.getKey() === e.ENTER && !Ext.isEmpty(value) && field.getPluginsUse() !== undefined && field.getPluginsUse().length > 0 ) {
                         var p = Ext.encode(field.getPluginsUse(field));
                         var url = Ext.String.format(field.searchUrl, value,p);
+                        field.setDisabled(true);
                         this.executeSearch(url,value,p);
 //                        location.href = Ext.String.format(field.searchUrl, value);
-                        field.setDisabled(true);
                     }
                 },
                 getPluginsUse : function(){
@@ -102,15 +102,25 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                                     
                                     ,reader : {
                                         type : 'json',
-                                        rootProperty : 'data'
+                                        rootProperty : 'data',
+                                        totalProperty : 'totalCount',
+                                        successProperty : 'success',
+                                        messageProperty: 'message'
                                     }
                                 }
                                 
                     });
                     var gridResultat = me.getBubbleParent().getBubbleParent().grid;
                     gridResultat.setStore(store);
-                    store.load();
-                    this.setDisabled(false);
+                    store.load({
+                        scope: this,
+                        callback: function(records, operation, success) {
+                            // the operation object
+                            // contains all of the details of the load operation
+                            me.setDisabled(false);
+                        }
+                    });
+                    
 
                 }
             }

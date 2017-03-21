@@ -26,7 +26,6 @@ class ConfigReader {
         
         
         $this->getConfig();
-        
     }
     
     public function read(){

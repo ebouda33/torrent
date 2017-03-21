@@ -10,23 +10,18 @@ Ext.define('MyTorrent.view.grid.GridResult',{
 //            fullscreen : true,
 //            columnLines: true,
     plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'}],
-
-    viewConfig: {
-        trackOver: false,
-        emptyText: '<h1 style="margin:20px">No matching results</h1>'
-    },
+    emptyText : '<h1 style="margin:20px">No matching results</h1>',
     listeners : {
       initialize : function(grid,eOpts){
           ancestor = grid.getBubbleParent().getItems().items;
           ancestor[0].setZoneResultat(grid);
       } ,
       itemsingletap : function (grid , row , target , record , e , eOpts ){
-          console.log('singletap ',row,target,record,eOpts);
-          r = row;
-          t = target;
-          re = record;
-          g = grid;
-          opts = eOpts;
+          //ask question
+          grid.gotoTransmission(record.data.url);
+          target.setStyle({
+             color : '#e1dede' 
+          });
       },
       itemmouseenter : function (grid , row , target , record , e , eOpts ){
            target.setStyle({
@@ -88,6 +83,38 @@ Ext.define('MyTorrent.view.grid.GridResult',{
         }
     ],
     gotoTransmission : function (torrent){
-        console.log('prise en compte de ...'+torrent);
+//        console.log('prise en compte de ...'+torrent);
+//        console.log('encode '+Ext.encode(torrent));
+        if(torrent.indexOf('&tr')>0){
+            torrent = torrent.replace(/&tr/g,'@');
+        }
+        Ext.Ajax.request({
+            url :  'torrentJson.php'
+            ,method : 'GET'
+            ,params : 'transmission='+torrent
+            ,success :function (response,opts){
+                var obj = Ext.decode(response.responseText);
+                var icon = 'x-fa fa-info' ;
+                var message = 'Lien envoyer au serveur Transmission, dans quelques temps le fichier sera dispo';
+                if(!obj.success){
+                    message = obj.message;
+                    icon = 'x-fa fa-warning' ;
+                }
+                Ext.Msg.show({
+                    title : 'Envoi Transmission',
+                    message : message,
+                    buttons : Ext.MessageBox.OK,
+                    iconCls :  icon ,
+                    closable : true
+                });
+
+
+            }
+            ,failure : function(response,opts){
+                console.log('failure plugins');
+                console.log(response,opts);
+            }
+        });
+
     }
 });
