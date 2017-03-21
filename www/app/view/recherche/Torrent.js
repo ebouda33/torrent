@@ -111,39 +111,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     gridResultat.setStore(store);
                     store.load();
                     this.setDisabled(false);
-//                    Ext.Ajax.request({
-//                        url :  urlFull[0]
-//                        ,method : 'GET'
-//                        ,params : urlFull[1]
-//                        ,success :function (response,opts){
-//                            var obj = Ext.decode(response.responseText);
-////                            console.log(response,opts);
-//                            var store = Ext.create('Ext.data.JsonStore', {
-//                                fields: [
-//                                   {name: 'titre'},
-//                                   {name: 'size'},
-//                                   {name: 'url'},
-//                                   {name: 'leecher'},
-//                                   {name: 'seeder'}
-//
-//                                ],
-//                                root : 'data',
-//                                
-//                                
-//                            });
-//                            eric = store;
-//                            var gridResultat = me.getBubbleParent().getBubbleParent().grid;
-//                            
-//                            gridResultat.setStore(store);
-//                            
-//
-//                        }
-//                        ,failure : function(response,opts){
-//                            console.log('failure plugins');
-//                            console.log(response,opts);
-//                        }
-//
-//                     });
+
                 }
             }
             ]
