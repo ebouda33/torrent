@@ -52,29 +52,29 @@ Ext.define('MyTorrent.view.grid.GridResult',{
             dataIndex: 'size',
 //                    hidden: true  // column is initially hidden
             resizable : true,
-            width : 100,
+            width : 70,
             align : 'left'
 
         },
         {
             text: 'Seeder',
             dataIndex: 'seeder',
-            width: 100,
-            resizable : false,
+            width: 70,
+            resizable : true,
             align : 'left'
         },
         {
             text: 'Leecher',
             dataIndex: 'leecher',
-            width: 100,
-            resizable : false,
+            width: 70,
+            resizable : true,
             align : 'left'
         },
         {
             text : 'Use Transmission',
             dataIndex: 'url',
-            width: 200,
-            resizable : true,
+            width: 150,
+            resizable : false,
             align : 'left',
             renderer : function (container,position){
 //                        console.log(container,position);
