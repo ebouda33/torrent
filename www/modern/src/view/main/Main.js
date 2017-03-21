@@ -42,7 +42,8 @@ Ext.define('MyTorrent.view.main.Main', {
         },{
             title: 'Recherche',
             iconCls: 'x-fa fa-search',
-            layout: 'fit',
+//            layout: 'fit',
+            height : 500,
             items: [{
                 xtype: 'panelRecherche'
             }]
@@ -50,9 +51,8 @@ Ext.define('MyTorrent.view.main.Main', {
             title: 'Groups',
             iconCls: 'x-fa fa-users',
             items: [{
-                xtype: 'panel',
-                collapsible : true,
-                title : 'TEST'
+                xtype: 'panel'
+                
             }]
 //            bind: {
 //                html: '{loremIpsum}'

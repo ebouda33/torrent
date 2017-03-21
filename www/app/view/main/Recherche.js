@@ -21,7 +21,8 @@ Ext.define('MyTorrent.view.main.Recherche',{
         
     }
     ,layout : 'hbox'
-    ,align : 'stretch'
+//    ,align : 'stretch'
+    ,height : '100%'
     ,items : [
         {
             xtype : 'rechercheTorrent',
@@ -31,9 +32,9 @@ Ext.define('MyTorrent.view.main.Recherche',{
             xtype : 'grid',
             title : 'Résultat',
             collapsible : true,
-            layout : 'fit',
-            minHeight : 100,
-            height : 400,
+//            layout : 'fit',
+            minHeight : 400,
+            height : '100%',
             width : '64%',
             scrollable : true,
             deferEmptyText : 'Aucune recherche exécutée.',
@@ -50,7 +51,28 @@ Ext.define('MyTorrent.view.main.Recherche',{
               initialize : function(grid,eOpts){
                   ancestor = grid.getBubbleParent().getItems().items;
                   ancestor[0].setZoneResultat(grid);
-              }  
+              } ,
+              itemsingletap : function (grid , row , target , record , e , eOpts ){
+                  console.log('singletap ',row,target,record,eOpts);
+                  r = row;
+                  t = target;
+                  re = record;
+                  g = grid;
+                  opts = eOpts;
+              },
+              itemmouseenter : function (grid , row , target , record , e , eOpts ){
+                   target.setStyle({
+                       cursor : 'pointer'
+                   });
+              },
+              itemmouseleave : function (grid , row , target , record , e , eOpts ){
+                  target.setStyle({
+                       cursor : 'default'
+                   });
+              }
+
+
+
             },
             style : {textAlign : 'left'},
             columns: [
@@ -84,7 +106,7 @@ Ext.define('MyTorrent.view.main.Recherche',{
                     dataIndex: 'leecher',
                     width: 100,
                     resizable : false,
-                    align : 'left',
+                    align : 'left'
                 },
                 {
                     text : 'Use Transmission',
@@ -94,10 +116,15 @@ Ext.define('MyTorrent.view.main.Recherche',{
                     align : 'left',
                     renderer : function (container,position){
 //                        console.log(container,position);
-                        return 'MAgnet';
+                        var message = 'Goto MyTransmision';
+                        return message;
                     }
+                    
                 }
-            ]
+            ],
+            gotoTransmission : function (torrent){
+                console.log('prise en compte de ...'+torrent);
+            }
         }
     ]
     
