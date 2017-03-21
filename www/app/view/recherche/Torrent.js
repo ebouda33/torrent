@@ -112,6 +112,8 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     });
                     var gridResultat = me.getBubbleParent().getBubbleParent().grid;
                     gridResultat.setStore(store);
+                    //rafraichir le grid
+                    gridResultat.refreshGrid();
                     store.load({
                         scope: this,
                         callback: function(records, operation, success) {
