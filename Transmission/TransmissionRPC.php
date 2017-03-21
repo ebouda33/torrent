@@ -570,7 +570,7 @@ class TransmissionRPC
                             PHP_EOL . print_r( $stream_meta, true );
     if( $stream_meta['timed_out'] ){
         
-//      throw new TransmissionRPCException( "Timed out connecting to {$this->url}", TransmissionRPCException::E_CONNECTION );
+      throw new TransmissionRPCException( "Timed out connecting to {$this->url}", TransmissionRPCException::E_CONNECTION );
     }if( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "401" )
       throw new TransmissionRPCException( "Invalid username/password.", TransmissionRPCException::E_AUTHENTICATION );
     elseif( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "409" )
@@ -618,7 +618,7 @@ class TransmissionRPC
                             PHP_EOL . print_r( $stream_meta, true );
     if( $stream_meta['timed_out'] ){
         
-//      throw new TransmissionRPCException( "Timed out connecting to {$this->url}", TransmissionRPCException::E_CONNECTION );
+      throw new TransmissionRPCException( "Timed out connecting to {$this->url}", TransmissionRPCException::E_CONNECTION );
     }if( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "401" )
       throw new TransmissionRPCException( "Invalid username/password.", TransmissionRPCException::E_AUTHENTICATION );
     elseif( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "409" )	// This is what we're hoping to find
