@@ -8,6 +8,7 @@
 
 namespace Parser\plugin\torrent\nextorrent;
 
+use config\ConfigReader;
 use DOMDocument;
 use DOMElement;
 use Parser\CurlUrl;
@@ -22,19 +23,25 @@ use Parser\plugin\torrent\PluginGenerique;
 class Nextorrent extends PluginGenerique{
     private $url = 'https://www.nextorrent.net';
     private $urlSearch;
-    private $proxy = true;
-    
+    private $proxy = false;
+    private $config = false;
     private $result=array();
     
     /**
      * 
      * @param type $search
      */
-    public function __construct() {
+    public function __construct(ConfigReader $config=null) {
         
         $this->name = 'NexTorrent';
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
+        if(!empty($config)){
+            $this->config = $config->getConfig();
+            if(!empty($this->config['proxy_url'])){
+                $this->proxy = true;
+            }
+        }
         
         
     }
@@ -43,7 +50,7 @@ class Nextorrent extends PluginGenerique{
     public function search($search, array $options = null) {
         $searchPageUrl = $this->urlSearch.$search;
 
-        $curl = new CurlUrl($searchPageUrl,$this->proxy);
+        $curl = new CurlUrl($searchPageUrl,$this->proxy,$this->config['proxy_url']);
         $page =$curl->read();
 
         //echo(htmlentities($page));
@@ -114,7 +121,7 @@ class Nextorrent extends PluginGenerique{
 
     private function getMagnet($url){
        $urlMagnet = array();
-        $curl = new CurlUrl($url,$this->proxy);
+        $curl = new CurlUrl($url,$this->proxy,$this->config['proxy_url']);
         $page =$curl->read();
         if($page !== false){
             $arbre = new DomDocument();

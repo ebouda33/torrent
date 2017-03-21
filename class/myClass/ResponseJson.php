@@ -19,7 +19,7 @@ class ResponseJson {
     private static $SEARCH = 'search';
     
     
-    public static function returnResponse($query){
+    public static function returnResponse($file,$query){
         
         $retour =array('success'=>false,'data'=>null);
         if(strripos($query,self::$SEARCH) !== false){
@@ -31,7 +31,7 @@ class ResponseJson {
                 foreach($plugins as $plugin){
                     $classname = \Parser\plugin\torrent\PluginGenerique::getPluginClassName($plugin->id);
                 }
-                $torrent = new $classname();
+                $torrent = new $classname(new \config\ConfigReader($file));
                 $torrent->search($search);
                 $retour['success'] =true ;
                 $retour['data']=$torrent->getResult();

@@ -16,14 +16,15 @@ class CurlUrl {
     
     public $handler ;
     private $close=true;
+    private $urlProxy = '';
     
     
-    public function __construct($url,$useProxy=false) {
+    public function __construct($url,$useProxy=false,$urlProxy = '127.0.0.1:3128') {
         $this->handler = curl_init();
         
         curl_setopt($this->handler, CURLOPT_URL, $url);
         if($useProxy){
-            $this->defineProxy();
+            $this->defineProxy($urlProxy);
         }
         curl_setopt($this->handler,CURLOPT_HEADER,false);
         curl_setopt($this->handler, CURLINFO_HEADER_OUT, true);
@@ -34,9 +35,9 @@ class CurlUrl {
     }
     
     
-    private function defineProxy(){
+    private function defineProxy($proxy){
         $ch = $this->handler;
-        $proxy = "127.0.0.1:3128";
+//        $proxy = "127.0.0.1:3128";
         curl_setopt($ch, CURLOPT_PROXY, $proxy);
         
     }

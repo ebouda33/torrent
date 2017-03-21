@@ -35,8 +35,11 @@ class T411 extends PluginGenerique{
         $this->name = 'T411';
         if(!empty($config)){
             $this->config = $config->getConfig();
+            if(!empty($this->config['proxy_url'])){
+                $this->proxy = true;
+            }
             $this->urlSearch = $this->urlApi . '/torrents/search/';
-            $this->curl = new CurlUrl($this->urlSearch,$this->proxy);
+            $this->curl = new CurlUrl($this->urlSearch,$this->proxy,$this->config['proxy_url']);
 
             $this->login();
         

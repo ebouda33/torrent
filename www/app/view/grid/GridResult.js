@@ -1,23 +1,45 @@
-
-
-Ext.define('MyTorrent.view.grid.GridResult', {
-    extend: 'Ext.grid.Panel',
-    xtype : 'erictest',
+Ext.define('MyTorrent.view.grid.GridResult',{
+    extend : 'Ext.grid.Grid',
+    xtype : 'torrentresult',
     title : 'Résultat',
     collapsible : true,
 //            layout : 'fit',
-    minHeight : 400,
-    height : '100%',
-    width : '64%',
-    scrollable : true,
+    
     deferEmptyText : 'Aucune recherche exécutée.',
     store : null ,
-    
+//            fullscreen : true,
+//            columnLines: true,
+    plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'}],
+
     viewConfig: {
-                trackOver: false,
-                emptyText: '<h1 style="margin:20px">No matching results</h1>'
-            },
-    style : {textAlign : 'left'},
+        trackOver: false,
+        emptyText: '<h1 style="margin:20px">No matching results</h1>'
+    },
+    listeners : {
+      initialize : function(grid,eOpts){
+          ancestor = grid.getBubbleParent().getItems().items;
+          ancestor[0].setZoneResultat(grid);
+      } ,
+      itemsingletap : function (grid , row , target , record , e , eOpts ){
+          console.log('singletap ',row,target,record,eOpts);
+          r = row;
+          t = target;
+          re = record;
+          g = grid;
+          opts = eOpts;
+      },
+      itemmouseenter : function (grid , row , target , record , e , eOpts ){
+           target.setStyle({
+               cursor : 'pointer'
+           });
+      },
+      itemmouseleave : function (grid , row , target , record , e , eOpts ){
+          target.setStyle({
+               cursor : 'default'
+           });
+      }
+    },
+    
     columns: [
         {
             text: 'Torrent',
@@ -64,5 +86,8 @@ Ext.define('MyTorrent.view.grid.GridResult', {
             }
 
         }
-    ]  
+    ],
+    gotoTransmission : function (torrent){
+        console.log('prise en compte de ...'+torrent);
+    }
 });
