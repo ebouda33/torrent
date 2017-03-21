@@ -86,7 +86,6 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     ],
     refreshGrid : function (){
       var me = this;
-      eric = me;
       var items = me.items.items[0].items.items;
       Ext.each(items,function(item,index){
          item.setStyle({
