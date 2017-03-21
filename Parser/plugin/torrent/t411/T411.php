@@ -33,6 +33,8 @@ class T411 extends PluginGenerique{
     function __construct(ConfigReader $config=null) {
         
         $this->name = 'T411';
+        $this->description = "http://api.t411.li -> Le célébre T411.Il faut un compte pour fonctionner.";
+        
         if(!empty($config)){
             $this->config = $config->getConfig();
             if(!empty($this->config['proxy_url'])){

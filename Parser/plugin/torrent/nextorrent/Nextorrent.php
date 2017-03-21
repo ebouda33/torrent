@@ -34,6 +34,7 @@ class Nextorrent extends PluginGenerique{
     public function __construct(ConfigReader $config=null) {
         
         $this->name = 'NexTorrent';
+        $this->description = "https://www.nextorrent.net -> torrent en Fr en général, rapide et fiable.";
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         if(!empty($config)){

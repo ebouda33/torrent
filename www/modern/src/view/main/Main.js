@@ -48,8 +48,8 @@ Ext.define('MyTorrent.view.main.Main', {
                 xtype: 'panelRecherche'
             }]
         },{
-            title: 'Groups',
-            iconCls: 'x-fa fa-users',
+            title: 'Torrents',
+            iconCls: 'x-fa fa-cloud',
             items: [{
                 xtype: 'panel'
                 
@@ -59,7 +59,7 @@ Ext.define('MyTorrent.view.main.Main', {
 //            }
         },{
             title: 'Settings',
-            iconCls: 'x-fa fa-cog',
+            iconCls: 'x-fa fa-wrench',
             items: [{
                 xtype: 'panelProfil'
             }]

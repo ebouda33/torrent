@@ -8,18 +8,22 @@
 Ext.define('MyTorrent.view.main.Accueil',{
     extend: 'Ext.panel.Panel'
     ,xtype: 'panelAccueil'
+    ,padding : 30
     
-    
-//    tpl:[
-//        'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
-//            \n\<br>Actuellement gestion de {name}'
-//    ]
     ,tpl : new Ext.XTemplate(
         'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.<br>',
         'Actuellement gestion de',
         '<tpl for=".">',
         '<div><img src="data:image/jpg;base64,{icone}" alt="{name}"/>{name}</div>',
-        '</tpl>'
+        '<div>{description}</div>',
+        '</tpl>',
+        '<p><br></p>',
+        '<p>L\'idée est de pouvoir téléchargé rapidement des torrents sur un serveur spécialisé</p>',
+        '<p>Dans la zone recherche vous chercher les torrents qui vous interresse, vous cliquez dessus et c\'est parti.</p>',
+        '<p>Torrents vous permets de voir les torrents en cours ou déjà DL</p>',
+        '<p>Settings pour gérer des paramétres ....',
+        '<pre><span style="height:100%;"><br><br><br> Il faut un compte pour l\'utiliser , les inscriptions sont fermées</span></pre>'
+        
         
     )
     ,data : [   ]

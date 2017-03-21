@@ -89,7 +89,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
       var items = me.items.items[0].items.items;
       Ext.each(items,function(item,index){
          item.setStyle({
-          color : 'grey' 
+          color : '#000' 
       }); 
       });
       
