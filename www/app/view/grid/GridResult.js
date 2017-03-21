@@ -1,3 +1,5 @@
+var Ext = Ext || {};
+
 Ext.define('MyTorrent.view.grid.GridResult',{
     extend : 'Ext.grid.Grid',
     xtype : 'torrentresult',
@@ -111,8 +113,14 @@ Ext.define('MyTorrent.view.grid.GridResult',{
 
             }
             ,failure : function(response,opts){
-                console.log('failure plugins');
-                console.log(response,opts);
+                icon = 'x-fa fa-error' ;
+                Ext.Msg.show({
+                    title : 'Envoi Transmission',
+                    message : response.statusText,
+                    buttons : Ext.MessageBox.OK,
+                    iconCls :  icon ,
+                    closable : true
+                });
             }
         });
 
