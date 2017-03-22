@@ -100,7 +100,9 @@ class T411 extends PluginGenerique{
     }
     
     public function search($search){
-        $answer = $this->curl->read($this->urlSearch.urlencode($search));
+        $motif = explode('&', $search)[0];
+        $searchEncode = str_replace($motif, \urlencode($motif), $search);
+        $answer = $this->curl->read($this->urlSearch.$searchEncode);
         
         $this->result = $this->genereResult($answer);
         
@@ -110,9 +112,9 @@ class T411 extends PluginGenerique{
         $flux = json_decode($answer,true);
         
         $this->success = true;
-        $this->totalCount = $flux->total;
+        $this->totalCount = $flux['total'];
         
-        return $flux->torrents;
+        return $flux['torrents'];
     }
     
     public function getResultSuccess() {
