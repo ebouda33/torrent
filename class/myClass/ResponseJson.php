@@ -98,6 +98,7 @@ class ResponseJson {
         $search = filter_input(INPUT_GET, self::$SEARCH);
         if(!is_null($jsonPlug) && $jsonPlug !== false && !is_null($search) && $search !== false){
             $plugins = json_decode($jsonPlug);
+            //a voir pour gerer multi plugin
             foreach($plugins as $plugin){
                 $classname = PluginGenerique::getPluginClassName($plugin->id);
             }
@@ -105,6 +106,7 @@ class ResponseJson {
             $torrent->search($search);
             $retour['success'] =true ;
             $retour['data']=$torrent->getResult();
+            var_dump($torrent->getResult());
             $retour['totalCount'] = count($torrent->getResult());
         }
 

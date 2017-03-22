@@ -97,7 +97,7 @@ class T411 extends PluginGenerique{
     }
     
     public function search($search,array $options=null){
-        $answer = $this->curl->read($this->urlSearch.$search);
+        $answer = $this->curl->read($this->urlSearch.urlencode($search));
         $this->result = json_decode($answer,true);
         
     }
