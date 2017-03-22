@@ -9,8 +9,10 @@
 namespace myClass;
 
 use config\ConfigReader;
+use Parser\plugin\torrent\PluginException;
 use Parser\plugin\torrent\PluginGenerique;
 use Transmission\TransmissionRPC;
+use Transmission\TransmissionRPCException;
 
 /**
  * Description of ResponseJson
@@ -25,14 +27,18 @@ class ResponseJson {
     
     
     public static function returnResponse($file,$query){
-        $configR = new ConfigReader($file);
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
-        if(strripos($query,self::$TRANSMISSION) !== false){
-            $retour = self::toTransmission($configR,$retour);
-        }else if(strripos($query,self::$SEARCH) !== false){
-            $retour = self::toSearch($configR,$retour);
-        }else if(strripos($query,self::$PLUGIN) !== false){
-            $retour = self::toPlugin($retour);
+        try{
+            $configR = new ConfigReader($file);
+            if(strripos($query,self::$TRANSMISSION) !== false){
+                $retour = self::toTransmission($configR,$retour);
+            }else if(strripos($query,self::$SEARCH) !== false){
+                $retour = self::toSearch($configR,$retour);
+            }else if(strripos($query,self::$PLUGIN) !== false){
+                $retour = self::toPlugin($retour);
+            }
+        }catch(PluginException $exc){
+            $retour['message'] = $exc->getMessage();
         }
         return json_encode($retour);
     }
@@ -77,7 +83,7 @@ class ResponseJson {
             }
             $retour['success'] =true ;
             $retour['message']= "tansmission ok=>".$id;  
-        }catch(\Transmission\TransmissionRPCException $exc){
+        }catch(TransmissionRPCException $exc){
             $retour['message']= "tansmission en erreur ".$exc->getMessage();  
         }
 //                   $id = 0;

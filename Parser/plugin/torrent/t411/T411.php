@@ -10,6 +10,7 @@ namespace Parser\plugin\torrent\t411;
 
 use config\ConfigReader;
 use Parser\CurlUrl;
+use Parser\plugin\torrent\PluginException;
 use Parser\plugin\torrent\PluginGenerique;
 
 /**
@@ -42,7 +43,7 @@ class T411 extends PluginGenerique{
             }
             $this->urlSearch = $this->urlApi . '/torrents/search/';
             $this->curl = new CurlUrl($this->urlSearch,$this->proxy,$this->config['proxy_url']);
-
+            
             $this->login();
         
         }
@@ -55,11 +56,15 @@ class T411 extends PluginGenerique{
     
     function login(){
         $answer = $this->auth();
+        if(!is_null($answer) && $answer !== false){
+            $this->uid   = $answer->uid;
+            $this->token = $answer->token;
+
+            $this->patchAuthorization();
+        }else{
+            throw  new PluginException('Failure Connection', PluginException::FLUX_ERROR);
+        }
         
-        $this->uid   = $answer->uid;
-        $this->token = $answer->token;
-        
-        $this->patchAuthorization();
         
     }
     
@@ -71,7 +76,6 @@ class T411 extends PluginGenerique{
                 'password' => $this->password,
             ]);
         $answer = $this->curl->read($this->urlApi.'/auth');
-        
         return json_decode($answer);
     }
     

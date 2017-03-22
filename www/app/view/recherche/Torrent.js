@@ -120,6 +120,17 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                             // the operation object
                             // contains all of the details of the load operation
                             me.setDisabled(false);
+                            if(!success){
+                                Ext.Msg.show({
+                                    title : 'Recherche Plugin',
+                                    message : operation.error,
+                                    buttons : Ext.MessageBox.OK,
+                                    iconCls :  'x-fa fa-error' ,
+                                    closable : true,
+                                    height : 200
+                                });
+                            }
+                            console.log(records,operation,success);
                         }
                     });
                     
