@@ -28,5 +28,5 @@ Ext.define('MyTorrent.view.main.MainView',{
         {
             xtype : 'app-main'
         }],
-    fullscreen: true
+//    fullscreen: true
 });

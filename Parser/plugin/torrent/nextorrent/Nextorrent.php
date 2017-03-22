@@ -93,7 +93,7 @@ class Nextorrent extends PluginGenerique{
                 $this->result[$index] = array();
             }
             $this->result[$index]['titre'] =  $urlTorrent['caption'];
-            $this->result[$index]['url'] =  $urlMagnet['url'];
+            $this->result[$index]['magnet'] =  $urlMagnet['url'];
             $this->result[$index]['size'] =  $urlTorrent['size'];
             $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
             $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
@@ -104,7 +104,18 @@ class Nextorrent extends PluginGenerique{
     }
     
     public function getResult(){
-        return $this->result;
+        $retour = new \Parser\plugin\torrent\PluginListeResults();
+        foreach($this->result as $resultat){
+            $results = new \Parser\plugin\torrent\PluginResults();
+            $results['title'] = $resultat['titre'];
+//            $results['category'] = $resultat['category'];
+            $results['leecher'] = $resultat['leecher'];
+            $results['seeder'] = $resultat['seeder'];
+            $results['size'] = $resultat['size'];
+            $results['magnet'] = $resultat['magnet'];
+            $retour->append($results);
+        }
+        return $retour;
     }
     
     public function getResultSuccess() {

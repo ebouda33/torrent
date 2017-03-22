@@ -17,6 +17,9 @@ Ext.define('MyTorrent.Application', {
         this.recherchePlugins();
         //defini plugin au composant qui ont en besoin
         
+//        eric = Ext.create('MyTorrent.store.Torrent',{url:'torrent.php',search:'eric'});
+        
+        
     },
 
     onAppUpdate: function () {

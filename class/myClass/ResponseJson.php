@@ -11,6 +11,7 @@ namespace myClass;
 use config\ConfigReader;
 use Parser\plugin\torrent\PluginException;
 use Parser\plugin\torrent\PluginGenerique;
+use Parser\plugin\torrent\PluginListeResults;
 use Transmission\TransmissionRPC;
 use Transmission\TransmissionRPCException;
 
@@ -105,8 +106,9 @@ class ResponseJson {
             $torrent = new $classname($config);
             $torrent->search($search);
             $retour['success'] =$torrent->getResultSuccess() ;
-            $retour['data']=$torrent->getResult();
+            $retour['data']= $torrent->getResult() instanceof PluginListeResults ?$torrent->getResult()->getArrayCopy():null;
             $retour['totalCount'] = $torrent->getResultTotalCount();
+            $retour['message'] = '';
         }
 
         return $retour;

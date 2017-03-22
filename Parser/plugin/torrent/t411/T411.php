@@ -110,11 +110,21 @@ class T411 extends PluginGenerique{
     
     private function genereResult($answer){
         $flux = json_decode($answer,true);
+        $retour = new \Parser\plugin\torrent\PluginListeResults();
+        foreach($flux['torrents'] as $resultat){
+            $results = new \Parser\plugin\torrent\PluginResults();
+            $results['id'] = $resultat['id'];
+            $results['title'] = $resultat['name'];
+            $results['category'] = $resultat['category'];
+            $results['leecher'] = $resultat['leechers'];
+            $results['seeder'] = $resultat['seeders'];
+            $results['size'] = $resultat['size'];
+        }
         
         $this->success = true;
         $this->totalCount = $flux['total'];
         
-        return $flux['torrents'];
+        return $retour;
     }
     
     public function getResultSuccess() {

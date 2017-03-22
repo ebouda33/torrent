@@ -40,7 +40,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     columns: [
         {
             text: 'Torrent',
-            dataIndex: 'titre',
+            dataIndex: 'title',
 //                    sortable: false,  // column cannot be sorted
             width: 250,
             flex : 1,
@@ -57,14 +57,14 @@ Ext.define('MyTorrent.view.grid.GridResult',{
 
         },
         {
-            text: 'Seeder',
+            text: 'Seeders',
             dataIndex: 'seeder',
             width: 70,
             resizable : true,
             align : 'left'
         },
         {
-            text: 'Leecher',
+            text: 'Leechers',
             dataIndex: 'leecher',
             width: 70,
             resizable : true,
@@ -72,7 +72,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
         },
         {
             text : 'Use Transmission',
-            dataIndex: 'url',
+            dataIndex: 'magnet',
             width: 150,
             resizable : false,
             align : 'left',

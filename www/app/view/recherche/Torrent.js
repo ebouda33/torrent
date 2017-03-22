@@ -85,31 +85,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     var me = this;
                     var urlFull = url.split("?");
                     
-                    var store = Ext.create('Ext.data.JsonStore', {
-                                fields: [
-                                   {name: 'titre'},
-                                   {name: 'size'},
-                                   {name: 'url'},
-                                   {name: 'leecher'},
-                                   {name: 'seeder'}
-
-                                ],
-                                proxy : {
-                                    type : 'ajax',
-                                    url :  urlFull[0]
-                                    ,method : 'GET'
-                                    ,extraParams : {'search':value,'plugins':p}
-                                    
-                                    ,reader : {
-                                        type : 'json',
-                                        rootProperty : 'data',
-                                        totalProperty : 'totalCount',
-                                        successProperty : 'success',
-                                        messageProperty: 'message'
-                                    }
-                                }
-                                
-                    });
+                    var store = Ext.create('MyTorrent.store.Torrent',{url:urlFull[0],search:value,plugins:p});
                     var gridResultat = me.getBubbleParent().getBubbleParent().grid;
                     gridResultat.setStore(store);
                     //rafraichir le grid
