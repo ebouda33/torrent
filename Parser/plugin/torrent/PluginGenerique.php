@@ -49,7 +49,14 @@ abstract class PluginGenerique implements PluginInterface{
         throw new \Exception('Not yet Implemented');
     }
     
-    
+    public function getResultSuccess() {
+        throw new \Exception('Not yet Implemented');
+    }
+
+    public function getResultTotalCount() {
+        throw new \Exception('Not yet Implemented');
+    }
+
     /**
      * permet de savoir si un torrent a des options comme les categories etc ...
      */

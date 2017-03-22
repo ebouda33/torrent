@@ -17,12 +17,15 @@ interface PluginInterface {
     
     public function getResult();
     
+    public function getResultTotalCount();
+    
+    public function getResultSuccess();
     /**
      * @static recupere les infos inherent au torrent
      */
     public function getInfo();
     
-    public function search($motif,array $options=null);
+    public function search($motif);
         
     
 }

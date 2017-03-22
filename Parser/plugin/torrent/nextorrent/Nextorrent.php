@@ -27,6 +27,9 @@ class Nextorrent extends PluginGenerique{
     private $config = false;
     private $result=array();
     
+    private $success = false;
+    private $totalCount = 0;
+    
     /**
      * 
      * @param type $search
@@ -48,7 +51,7 @@ class Nextorrent extends PluginGenerique{
     }
     
     
-    public function search($search, array $options = null) {
+    public function search($search) {
         $searchPageUrl = $this->urlSearch.$search;
 
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$this->config['proxy_url']);
@@ -71,6 +74,7 @@ class Nextorrent extends PluginGenerique{
                 }
 
             }
+            $this->success = true;
         }
     }
 
@@ -102,8 +106,17 @@ class Nextorrent extends PluginGenerique{
     public function getResult(){
         return $this->result;
     }
+    
+    public function getResultSuccess() {
+        return $this->success;
+    }
 
-    private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
+    public function getResultTotalCount() {
+        //mieux le caculer avec la pagination prob nextorrent
+        return count($this->result);
+    }
+
+        private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
        $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
        $url = $td[2]->getAttribute('href');
         $caption = $td[2]->textContent;

@@ -104,9 +104,9 @@ class ResponseJson {
             }
             $torrent = new $classname($config);
             $torrent->search($search);
-            $retour['success'] =true ;
+            $retour['success'] =$torrent->getResultSuccess() ;
             $retour['data']=$torrent->getResult();
-            $retour['totalCount'] = count($torrent->getResult());
+            $retour['totalCount'] = $torrent->getResultTotalCount();
         }
 
         return $retour;

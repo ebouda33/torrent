@@ -31,6 +31,9 @@ class T411 extends PluginGenerique{
     private $username;
     private $password;
     
+    private $success = false;
+    private $totalCount = 0;
+    
     function __construct(ConfigReader $config=null) {
         
         $this->name = 'T411';
@@ -96,12 +99,30 @@ class T411 extends PluginGenerique{
          
     }
     
-    public function search($search,array $options=null){
+    public function search($search){
         $answer = $this->curl->read($this->urlSearch.urlencode($search));
-        $this->result = json_decode($answer,true);
+        
+        $this->result = $this->genereResult($answer);
         
     }
     
+    private function genereResult($answer){
+        $flux = json_decode($answer,true);
+        
+        $this->success = true;
+        $this->totalCount = $flux->total;
+        
+        return $flux->torrents;
+    }
+    
+    public function getResultSuccess() {
+        return $this->success;
+    }
+
+    public function getResultTotalCount() {
+        return $this->totalCount;
+    }
+
     
     public function getToken(){
         return $this->token;
