@@ -106,7 +106,6 @@ class ResponseJson {
             $torrent->search($search);
             $retour['success'] =true ;
             $retour['data']=$torrent->getResult();
-            var_dump($torrent->getResult());
             $retour['totalCount'] = count($torrent->getResult());
         }
 
