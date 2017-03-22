@@ -21,7 +21,7 @@ Ext.define('MyTorrent.view.main.Main', {
 
     controller: 'main',
     viewModel: 'main',
-
+    activeItem : 1,
     defaults: {
         tab: {
             iconAlign: 'top'

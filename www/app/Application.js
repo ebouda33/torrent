@@ -14,11 +14,25 @@ Ext.define('MyTorrent.Application', {
     
     launch: function () {
         // TODO - Launch the application
-        this.recherchePlugins();
+        Ext.Msg.alert('Login please');
+        
         //defini plugin au composant qui ont en besoin
+        this.recherchePlugins();
+        
+        var node = Ext.getDom('loader_mask');
+        Ext.Anim.run(node,'fade',
+        {
+            out : true,
+            duration: 1000,
+            to : {
+                opacity : 0
+            }
+            ,after : function(){
+                Ext.removeNode(node);
+            }
+        });
         
 //        eric = Ext.create('MyTorrent.store.Torrent',{url:'torrent.php',search:'eric'});
-        
         
     },
 
