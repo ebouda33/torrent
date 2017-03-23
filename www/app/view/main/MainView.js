@@ -6,7 +6,7 @@
 
 Ext.define('MyTorrent.view.main.MainView',{
     extend: 'Ext.panel.Panel',
-    
+    xtype : 'mytorrent-main',
     requires: [
 //        'Ext.MessageBox',
 //        'Ext.layout.Fit',
@@ -27,6 +27,6 @@ Ext.define('MyTorrent.view.main.MainView',{
     items: [
         {
             xtype : 'app-main'
-        }],
+        }]
 //    fullscreen: true
 });

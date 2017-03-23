@@ -3,22 +3,23 @@
  * calls Ext.application(). This is the ideal place to handle application launch and
  * initialization details.
  */
+Ext = Ext ||{};
 Ext.define('MyTorrent.Application', {
     extend: 'Ext.app.Application',
-    
+    requires : [
+        'MyTorrent.view.login.Login',
+        'MyTorrent.view.main.Main'
+    ],
     name: 'MyTorrent',
-
+    views: [
+        'MyTorrent.view.login.Login',
+        'MyTorrent.view.main.Main'
+    ],
     stores: [
         // TODO: add global / shared stores here
     ],
     
     launch: function () {
-        // TODO - Launch the application
-        Ext.Msg.alert('Login please');
-        
-        //defini plugin au composant qui ont en besoin
-        this.recherchePlugins();
-        
         var node = Ext.getDom('loader_mask');
         Ext.Anim.run(node,'fade',
         {
@@ -31,6 +32,30 @@ Ext.define('MyTorrent.Application', {
                 Ext.removeNode(node);
             }
         });
+        // TODO - Launch the applicatio
+        var loggedIn;
+
+        // Check to see the current value of the localStorage key
+        loggedIn = localStorage.getItem("MyTorrentLoggedIn");
+
+        // This ternary operator determines the value of the TutorialLoggedIn key.
+        // If TutorialLoggedIn isn't true, we display the login window,
+        // otherwise, we display the main view
+        if(loggedIn === Ext.returnTrue().toString()){
+//            Ext.create({
+//                xtype: 'mytorrent-main'
+//            });  
+             //defini plugin au composant qui ont en besoin
+            this.recherchePlugins();
+        }else{
+            Ext.create({
+                xtype:'login'
+            }).show();
+        }
+        
+       
+        
+        
         
 //        eric = Ext.create('MyTorrent.store.Torrent',{url:'torrent.php',search:'eric'});
         
