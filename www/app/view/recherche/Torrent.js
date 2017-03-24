@@ -106,7 +106,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                                     height : 200
                                 });
                             }
-                            console.log(records,operation,success);
+//                            console.log(records,operation,success);
                         }
                     });
                     
@@ -126,19 +126,21 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
     }     
     ,setPlugins : function(data)  {
         var items = this.getItems().items;
-        var plugins = [];
-        Ext.each(data,function(plugin){
-            plugins.push({
-                label : '<div><img src="data:image/jpg;base64,'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
-                name : plugin.name,
-                inputValue : plugin.id,
-                id : plugin.name,
-                labelTextAlign : 'left',
-                labelWidth : '80%',
-                value : plugin.id
+        if(items !== null){
+            var plugins = [];
+            Ext.each(data,function(plugin){
+                plugins.push({
+                    label : '<div><img src="data:image/jpg;base64,'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
+                    name : plugin.name,
+                    inputValue : plugin.id,
+                    id : plugin.name,
+                    labelTextAlign : 'left',
+                    labelWidth : '80%',
+                    value : plugin.id
+                });
             });
-        });
-        items[0].setItems(plugins);
+            items[0].setItems(plugins);
+        }
         
     }
     ,setZoneResultat : function(grid){

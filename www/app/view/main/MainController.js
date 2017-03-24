@@ -17,5 +17,11 @@ Ext.define('MyTorrent.view.main.MainController', {
         if (choice === 'yes') {
             //
         }
+    },
+    
+    onLogoutButton : function(){
+        localStorage.removeItem('MyTorrentLoggedIn');
+        window.location.reload();
+        
     }
 });

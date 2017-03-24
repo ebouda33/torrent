@@ -10,8 +10,8 @@ Ext.define('MyTorrent.view.login.LoginController', {
         var config = form.getConfig();
         config.success = this.success;
         config.failure = this.failure;
+        eric = config;
 //        form.setController(this);
-        
         form.submit(config);
         
 
@@ -23,7 +23,6 @@ Ext.define('MyTorrent.view.login.LoginController', {
         this.getParent().getController().refreshApp();
     },
     failure: function() { 
-        eric = this;
         localStorage.setItem("MyTorrentLoggedIn", false);
         Ext.Msg.alert("error"); 
         this.getParent().getController().refreshApp();

@@ -11,7 +11,7 @@ Ext.define('MyTorrent.view.login.Login', {
 
     controller: 'login',
     bodyPadding: 10,
-    title: 'Login Window',
+    title: 'Identification System',
     closable: true,
     items: {
         xtype: 'formpanel',
@@ -19,8 +19,9 @@ Ext.define('MyTorrent.view.login.Login', {
 //        standardSubmit : true,
 //        submitOnAction : true,
         url : 'torrentJson.php',
-        
-        items: [{
+        method : 'get',
+        items: [
+            {
             xtype: 'emailfield',
             name: 'username',
             placeHolder : 'Email',
@@ -57,7 +58,13 @@ Ext.define('MyTorrent.view.login.Login', {
             disabled: true,
 
             handler : 'onLoginClick'
-        }
+        },
+         {
+              xtype : 'textfield' ,
+              name : 'login',
+              value : 'login',
+              hidden : true
+            }
         ]
 
     }

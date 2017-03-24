@@ -18,7 +18,7 @@ Ext.define('MyTorrent.view.main.Main', {
         'MyTorrent.view.main.Profil',
         'MyTorrent.view.main.Recherche'
     ],
-
+    plugins: 'responsive',
     controller: 'main',
     viewModel: 'main',
     activeItem : 1,
@@ -26,9 +26,41 @@ Ext.define('MyTorrent.view.main.Main', {
         tab: {
             iconAlign: 'top'
         },
-        styleHtmlContent: true
+        styleHtmlContent: true,
+        bodyPadding: 20,
+        tabConfig: {
+            plugins: 'responsive',
+            responsiveConfig: {
+                wide: {
+                    iconAlign: 'left',
+                    textAlign: 'left'
+                },
+                tall : {
+                    iconAlign: 'top',
+                    textAlign: 'center',
+                    width: 120
+                }
+            }
+        }
+    },
+     
+
+    
+    titleRotation: 0,
+    tabRotation: 0,
+
+    
+
+    responsiveConfig: {
+        tall: {
+            headerPosition: 'top'
+        },
+        wide: {
+            headerPosition: 'left'
+        }
     },
 
+    
     tabBarPosition: 'bottom',
     items: [
         {
@@ -63,6 +95,22 @@ Ext.define('MyTorrent.view.main.Main', {
             items: [{
                 xtype: 'panelProfil'
             }]
+        },
+        {
+//            xtype : 'button',
+            title: 'Logout',
+            handler: 'onLogoutButton',
+            iconCls: 'fa-th-list',
+            items: [{
+                xtype: 'panel',
+                html : 'GoodBye',
+                height: '100%',
+                bodyPadding: '60%'
+                
+            }],
+            listeners :{
+                activate : 'onLogoutButton'
+            }
         }
     ]
 });
