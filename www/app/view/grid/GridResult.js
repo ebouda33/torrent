@@ -20,7 +20,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
       } ,
       itemsingletap : function (grid , row , target , record , e , eOpts ){
           //ask question
-          grid.gotoTransmission(record.data.url);
+          grid.gotoTransmission(record.data.magnet);
           target.setStyle({
              color : '#e1dede' 
           });
