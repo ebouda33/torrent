@@ -25,13 +25,16 @@ class ResponseJson {
     private static $PLUGIN = 'plugin';
     private static $SEARCH = 'search';
     private static $TRANSMISSION = 'transmission';
+    private static $LOGIN = 'login';
     
     
     public static function returnResponse($file,$query){
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
         try{
             $configR = new ConfigReader($file);
-            if(strripos($query,self::$TRANSMISSION) !== false){
+            if(strripos($query,self::$LOGIN) !== false){
+                $retour = self::toLogin($configR,$retour);
+            }else if(strripos($query,self::$TRANSMISSION) !== false){
                 $retour = self::toTransmission($configR,$retour);
             }else if(strripos($query,self::$SEARCH) !== false){
                 $retour = self::toSearch($configR,$retour);
@@ -45,6 +48,20 @@ class ResponseJson {
     }
     
     
+    
+    private static function toLogin($config,$retour){
+        $url = filter_input(INPUT_GET, self::$LOGIN);
+        if(!is_null($url) && $url !== false){
+            //Authentification systeme
+            $mybdd = new MyBDD();
+            
+        }else{
+            $retour['message']= 'Erreur dans le lien '.$url;  
+        }
+
+        return$retour;
+
+    }
     
     private static function toTransmission($config,$retour){
         $url = filter_input(INPUT_GET, self::$TRANSMISSION);

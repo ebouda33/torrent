@@ -12,8 +12,8 @@ set_time_limit(180);
  */
 
 $file = new Fichier(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR,'config_appli.ini');
+$query = Request::getQueryString();
 
-
-echo ResponseJson::returnResponse($file,Request::getQueryString());
+echo ResponseJson::returnResponse($file,$query);
 
 

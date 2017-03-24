@@ -86,9 +86,7 @@ Ext.define('MyTorrent.view.main.Main', {
                 xtype: 'panel'
                 
             }]
-//            bind: {
-//                html: '{loremIpsum}'
-//            }
+
         },{
             title: 'Settings',
             iconCls: 'x-fa fa-wrench',
