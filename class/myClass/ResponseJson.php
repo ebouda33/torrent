@@ -56,10 +56,11 @@ class ResponseJson {
             //Authentification systeme
             $user = filter_input(INPUT_GET, 'username');
             $pwd = filter_input(INPUT_GET, 'password');
-            $token = Services::authentification($user, $pwd);
-            if(!empty($token)){
+            $res = Services::authentification($user, $pwd);
+            if(!empty($res) && count($res)=== 2){
                 $retour['success'] = true;
-                $retour['data'] = $token;
+                $retour['data'] = $res['token'];
+                $retour['name'] = $res['name'];
                 $retour['message'] = '';
                 
             }

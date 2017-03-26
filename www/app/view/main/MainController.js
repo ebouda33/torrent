@@ -21,6 +21,7 @@ Ext.define('MyTorrent.view.main.MainController', {
     
     onLogoutButton : function(){
         localStorage.removeItem('MyTorrentLoggedIn');
+        localStorage.removeItem('MyTorrentToken');
         window.location.reload();
         
     }
