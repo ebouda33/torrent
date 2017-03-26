@@ -66,8 +66,10 @@ class Nextorrent extends PluginGenerique{
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){
                     if("table table-hover" === strtolower($elem->getAttribute('class'))){
+                       
                         $domnodes = new DOMNodeRecursiveIterator($elem->childNodes);
-                        if($domnodes->getChildren()->count()>2){
+                        if($domnodes->getChildren()->count()>0){
+                            
                             $this->parcoursDomResult($domnodes->getChildren());
                         }
                     }
