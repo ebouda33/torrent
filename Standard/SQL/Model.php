@@ -32,17 +32,29 @@ class Model {
     
     function __construct(BDD $bdd) {
         $this->bdd = $bdd;
+       
     }
     
+    function getAdapter(){
+        return $this->bdd;
+    }
     
-    function execute($sql,$attr = BDD::FETCH_ASSOC){
+    function execute($sql,$params=null,$attr = BDD::FETCH_ASSOC){
         if(stripos(self::INSERT, $sql) === 0 || stripos(self::DELETE, $sql) === 0 || stripos(self::UPDATE, $sql) === 0 ){
             return $this->bdd->exec($sql);
         }
-        
-        return $this->bdd->fetchAll($sql,$attr);
-        
+        if(!empty($params)){
+            $statement = $this->bdd->prepare($sql);
+            $statement->execute($params);
+            $res = $statement->fetchAll($attr);
+            return $res;
+            
+        }else{
+            return $this->bdd->fetchAll($sql, $attr);
+        }
         
     }
+    
+    
 
 }

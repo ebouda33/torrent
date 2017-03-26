@@ -50,11 +50,19 @@ class ResponseJson {
     
     
     private static function toLogin($config,$retour){
+        
         $url = filter_input(INPUT_GET, self::$LOGIN);
         if(!is_null($url) && $url !== false){
             //Authentification systeme
-            $mybdd = new MyBDD();
-            
+            $user = filter_input(INPUT_GET, 'username');
+            $pwd = filter_input(INPUT_GET, 'password');
+            $token = Services::authentification($user, $pwd);
+            if(!empty($token)){
+                $retour['success'] = true;
+                $retour['data'] = $token;
+                $retour['message'] = '';
+                
+            }
         }else{
             $retour['message']= 'Erreur dans le lien '.$url;  
         }

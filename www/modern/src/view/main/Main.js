@@ -98,7 +98,7 @@ Ext.define('MyTorrent.view.main.Main', {
 //            xtype : 'button',
             title: 'Logout',
             handler: 'onLogoutButton',
-            iconCls: 'fa-th-list',
+            iconCls: 'x-fa fa-toggle-off ',
             items: [{
                 xtype: 'panel',
                 html : 'GoodBye',

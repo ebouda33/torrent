@@ -20,10 +20,11 @@ class MyBDD extends BDD{
     //put your code here
     const BDD = 'mytorrent';
     
-    public function __construct() {
+    public function __construct($env='prod') {
         //getconfig BDD
         $file = dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR. 'config'.DIRECTORY_SEPARATOR.'config_general.ini';
+        
         $ini = ReaderIni::read($file);
-        parent::__construct($ini, 'prod', self::BDD);
+        parent::__construct($ini, $env, self::BDD);
     }
 }

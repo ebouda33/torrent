@@ -16,8 +16,8 @@ Ext.define('MyTorrent.view.login.Login', {
     items: {
         xtype: 'formpanel',
 //        reference: 'formLogin',
-//        standardSubmit : true,
-//        submitOnAction : true,
+        standardSubmit : false,
+        submitOnAction : true,
         url : 'torrentJson.php',
         method : 'get',
         items: [

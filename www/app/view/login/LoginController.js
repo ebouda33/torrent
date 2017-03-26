@@ -4,28 +4,47 @@ Ext.define('MyTorrent.view.login.LoginController', {
     alias: 'controller.login',
 
     onLoginClick: function(button) {
-        
+        var me = this;
+        controller = me;
         var form = button.up('formpanel');
         button.setDisabled(true);
         var config = form.getConfig();
-        config.success = this.success;
-        config.failure = this.failure;
         eric = config;
 //        form.setController(this);
-        form.submit(config);
+//        form.submit(config);
+        var cmps = config.items.items; 
+        Ext.Ajax.request({
+            url :  'torrentJson.php'
+               ,method : 'GET'
+               ,params : {'login':'','user':'','password':''}
+//               ,extraParams : {'user':'','password':''}
+               ,success :function (response,opts){
+                   var obj = Ext.decode(response.responseText);
+                   if(obj.success){
+                       me.success(me);
+                   }else{
+                       me.failure(me);
+                   }
+                   
+               }
+               ,failure : function(response,opts){
+                   me.failure(me);
+               }
+               
+        });
         
 
     },
-    success: function() { 
+    success: function(controller) { 
         
         localStorage.setItem("MyTorrentLoggedIn", true);
         Ext.Msg.alert("success"); 
-        this.getParent().getController().refreshApp();
+        controller.getParent().getController().refreshApp();
     },
-    failure: function() { 
+    failure: function(controller) { 
         localStorage.setItem("MyTorrentLoggedIn", false);
         Ext.Msg.alert("error"); 
-        this.getParent().getController().refreshApp();
+        controller.getParent().getController().refreshApp();
     },
     
     refreshApp : function(){
