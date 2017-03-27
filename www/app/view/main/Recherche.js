@@ -11,17 +11,28 @@ Ext.define('MyTorrent.view.main.Recherche',{
     ,scrollable : true
     ,requires :[
         'MyTorrent.view.recherche.Torrent',
-        'MyTorrent.view.grid.GridResult',
+        'MyTorrent.view.grid.GridResult'
     ]
-    ,listeners :{
-        initialize : function (panel,eOpts){
-            
-            
-
+//    ,layout : 'hbox'
+    ,plugins: 'responsive',
+    responsiveConfig: {
+        'width >= height': {
+            layout: {
+                       type: 'box',
+                       vertical: false,
+                       align: 'stretch'
+                }
+        },
+        'width < height': {
+            layout: {
+                    type: 'box',
+                    align: 'stretch',
+                    vertical: true
+               }
         }
-        
     }
-    ,layout : 'hbox'
+    
+    
 //    ,align : 'stretch'
     ,height : '100%'
     ,items : [
@@ -32,16 +43,19 @@ Ext.define('MyTorrent.view.main.Recherche',{
         {
             xtype : 'torrentresult',
             minHeight : 400,
-            height : '100%',
-            width : '64%',
+//            height : '100%',
+            plugins: 'responsive',
+            responsiveConfig: {
+                wide: {
+                    width : '64%'
+                },
+                tall: {
+                    width : '100%'
+                }
+            },
             scrollable : true,
             style : {textAlign : 'left'}
         }
     ]
-    
-//    items:[{
-//        html : 'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
-//                <br>Actuellement gestion de Nextorrent et T411.'
-//    }]
     
 });

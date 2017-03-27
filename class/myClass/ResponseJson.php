@@ -26,10 +26,22 @@ class ResponseJson {
     private static $SEARCH = 'search';
     private static $TRANSMISSION = 'transmission';
     private static $LOGIN = 'login';
+    private static $TOKEN = 'token';
     
     
     public static function returnResponse($file,$query){
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
+        //controle TOKEn
+        $token = filter_input(INPUT_GET, self::$TOKEN);
+        if($token !== $_SESSION['token'] && strripos($query,self::$LOGIN) === false){
+             $retour['message']='Vous n\'êtes pas identifié correctement.';
+        }else{
+            $retour = self::traitementReponse($file,$query,$retour);
+        }
+        return json_encode($retour);
+    }
+    
+    private static function traitementReponse($file,$query,$retour){
         try{
             $configR = new ConfigReader($file);
             if(strripos($query,self::$LOGIN) !== false){
@@ -44,9 +56,9 @@ class ResponseJson {
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
         }
-        return json_encode($retour);
+        
+        return $retour;
     }
-    
     
     
     private static function toLogin($config,$retour){
@@ -62,6 +74,8 @@ class ResponseJson {
                 $retour['data'] = $res['token'];
                 $retour['name'] = $res['name'];
                 $retour['message'] = '';
+                
+                $_SESSION['token'] =  $res['token'];
                 
             }
         }else{
@@ -94,10 +108,7 @@ class ResponseJson {
     
     private static function toMagnet(ConfigReader $reader,$url,$retour){
         $config = $reader->getConfig();
-        $proxy = false;
-        if(!empty($config['proxy_url'])){
-            $proxy = true;
-        }
+        $proxy = self::getProxy($config);
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
             $result =  $transmission->add($url,'/mnt/data/videos/adulte');
@@ -113,8 +124,6 @@ class ResponseJson {
         }catch(TransmissionRPCException $exc){
             $retour['message']= "tansmission en erreur ".$exc->getMessage();  
         }
-//                   $id = 0;
-        
 
         return $retour;
     }
@@ -144,6 +153,19 @@ class ResponseJson {
         $plugins = PluginGenerique::getListe();
         $retour['success'] =true ;
         $retour['data']=$plugins;
+        $retour['message'] = '';
+        
         return $retour;
+    }
+    
+    
+    private static function getProxy($reader){
+        
+        $proxy = false;
+        if(!empty($config['proxy_url'])){
+            $proxy = true;
+        }
+        
+        return $proxy;
     }
 }

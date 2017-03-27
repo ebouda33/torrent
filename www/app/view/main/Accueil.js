@@ -20,7 +20,8 @@ Ext.define('MyTorrent.view.main.Accueil',{
         '<p><br></p>',
         '<p>L\'idée est de pouvoir téléchargé rapidement des torrents sur un serveur spécialisé</p>',
         '<p>Dans la zone recherche vous chercher les torrents qui vous interresse, vous cliquez dessus et c\'est parti.</p>',
-        '<p>Torrents vous permets de voir les torrents en cours ou déjà DL</p>',
+        '<br><br>',
+        '<p>SeedBox vous permets de voir les torrents en cours ou déjà DL sur votre SeedBox</p>',
         '<p>Settings pour gérer des paramétres ....',
         '<pre><span style="height:100%;"><br><br><br> Il faut un compte pour l\'utiliser , les inscriptions sont fermées</span></pre>'
         

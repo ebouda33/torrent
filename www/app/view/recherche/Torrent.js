@@ -14,10 +14,12 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
          'Ext.form.FieldSet'
     ]
     ,style : {
-                border: 'none'
-    }
-    ,bodyPadding : 10
-    ,items :[
+        border: 'none'
+    },
+    
+    bodyPadding: 20,
+//    region : 'center',
+    items :[
        {
             xtype: 'fieldset',
             title: 'Plugins',
@@ -29,7 +31,8 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
         },
         {
             xtype : 'panel',
-            layout : 'hbox',
+            
+//            layout : 'hbox',
             items : [
                 {
                 xtype : 'textfield',
