@@ -22,46 +22,20 @@ Ext.define('MyTorrent.view.main.Main', {
     controller: 'main',
     viewModel: 'main',
     activeItem : 1,
-    defaults: {
-        tab: {
-            iconAlign: 'top'
-        },
-        styleHtmlContent: true,
-        bodyPadding: 20,
-        tabConfig: {
-            plugins: 'responsive',
-            responsiveConfig: {
-                wide: {
-                    iconAlign: 'left',
-                    textAlign: 'left'
-                },
-                tall : {
-                    iconAlign: 'top',
-                    textAlign: 'center',
-                    width: 120
-                }
-            }
-        }
-    },
-     
-
-    
-    titleRotation: 0,
-    tabRotation: 0,
-
-    
-
-    responsiveConfig: {
-        tall: {
-            headerPosition: 'top'
-        },
-        wide: {
-            headerPosition: 'left'
-        }
-    },
 
     
     tabBarPosition: 'bottom',
+
+//    responsiveConfig: {
+//        'width < 500': {
+//            tabBarPosition: 'bottom'
+//        },
+//        'width >= 500': {
+//            tabBarPosition: 'left'
+//        }
+//    },
+
+//    tabBarPosition: 'bottom',
     items: [
         {
             title: 'Accueil',
@@ -77,10 +51,29 @@ Ext.define('MyTorrent.view.main.Main', {
 //            layout: 'fit',
             height : 500,
             items: [{
-                xtype: 'panelRecherche'
+                xtype: 'panelRecherche',
+                plugins: 'responsive',
+                responsiveConfig: {
+                    'width >= height': {
+//                        layout : 'hbox'
+                        layout: {
+                            type: 'box',
+                            vertical: false,
+                            align: 'stretch'
+                        }
+                    },
+                    'width < height': {
+//                        layout : 'vbox'
+                        layout: {
+                            type: 'box',
+                            align: 'stretch',
+                            vertical: true
+                       }
+                    }
+                }
             }]
         },{
-            title: 'Torrents',
+            title: 'SeedBox',
             iconCls: 'x-fa fa-cloud',
             items: [{
                 xtype: 'panel'

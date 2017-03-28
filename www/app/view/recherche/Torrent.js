@@ -8,16 +8,26 @@ if(Ext === undefined){
 }
 
 Ext.define('MyTorrent.view.recherche.Torrent',{
-    extend : 'Ext.form.Panel' 
+    extend : 'Ext.panel.Panel' 
     ,xtype : 'rechercheTorrent'
     ,requires : [
          'Ext.form.FieldSet'
     ]
     ,style : {
-                border: 'none'
-    }
-    ,bodyPadding : 10
-    ,items :[
+        border: 'none'
+    },
+//    plugins: 'responsive',
+//    responsiveConfig: {
+//        wide: {
+//            width : '35%'
+//        },
+//        tall: {
+//            width : '100%'
+//        }
+//    },
+    bodyPadding: 20,
+//    region : 'center',
+    items :[
        {
             xtype: 'fieldset',
             title: 'Plugins',
@@ -29,7 +39,8 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
         },
         {
             xtype : 'panel',
-            layout : 'hbox',
+            
+//            layout : 'hbox',
             items : [
                 {
                 xtype : 'textfield',
@@ -37,7 +48,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                 allowBlank: false,  // requires a non-empty value,
                 
                 placeHolder : 'Entrez vos mots clés',
-                width : '50%',
+//                width : '50%',
                 inputType: 'search',
 
                 // Config defining the search URL

@@ -89,16 +89,18 @@ class Nextorrent extends PluginGenerique{
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
         foreach ($nodes as $node){
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
-            $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
-            $index = count($this->result);
-            if(!isset($this->result[$index])){
-                $this->result[$index] = array();
+            if(!is_null($urlTorrent)){
+                $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
+                $index = count($this->result);
+                if(!isset($this->result[$index])){
+                    $this->result[$index] = array();
+                }
+                $this->result[$index]['titre'] =  $urlTorrent['caption'];
+                $this->result[$index]['magnet'] =  $urlMagnet['url'];
+                $this->result[$index]['size'] =  $urlTorrent['size'];
+                $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
+                $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
             }
-            $this->result[$index]['titre'] =  $urlTorrent['caption'];
-            $this->result[$index]['magnet'] =  $urlMagnet['url'];
-            $this->result[$index]['size'] =  $urlTorrent['size'];
-            $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
-            $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
 
         }
 
@@ -129,21 +131,28 @@ class Nextorrent extends PluginGenerique{
         return count($this->result);
     }
 
-        private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
+    private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
        $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
-       $url = $td[2]->getAttribute('href');
-        $caption = $td[2]->textContent;
+       $url = "";
+       $caption="Pas de résultat";
+       $size = 0;
+       $leecher = 0;
+       $seeder = 0;
+       if(count($td)>1){
+        $url = $td[2]->getAttribute('href');
+         $caption = $td[2]->textContent;
 
-       $td = new DOMNodeRecursiveIterator($tr[2]->childNodes);
-       $size = $td[0]->textContent;
-       
-        $td = new DOMNodeRecursiveIterator($tr[4]->childNodes);
-        $seeder=$td[1]->textContent;
-                
-        $td = new DOMNodeRecursiveIterator($tr[6]->childNodes);
-        $leecher=$td[1]->textContent;
-        
-        return array("url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
+        $td = new DOMNodeRecursiveIterator($tr[2]->childNodes);
+        $size = $td[0]->textContent;
+
+         $td = new DOMNodeRecursiveIterator($tr[4]->childNodes);
+         $seeder=$td[1]->textContent;
+
+         $td = new DOMNodeRecursiveIterator($tr[6]->childNodes);
+         $leecher=$td[1]->textContent;
+            return array("url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
+       }
+       return null;
 
 
     }
@@ -172,9 +181,12 @@ class Nextorrent extends PluginGenerique{
     private function getUrlMagnet(DOMElement $div){
 
         $a = new DOMNodeRecursiveIterator($div->childNodes);
-        $url = $a[2]->getAttribute('href');
-        $caption = $a[2]->textContent;
-
+        $url = "";
+        $caption="";
+        if(count($a)>1){
+            $url = $a[2]->getAttribute('href');
+            $caption = $a[2]->textContent;
+        }
 
         return array("url"=>$url,"caption"=>$caption);
     }

@@ -18,7 +18,6 @@ Ext.define('MyTorrent.Application', {
     stores: [
         // TODO: add global / shared stores here
     ],
-    
     launch: function () {
         var node = Ext.getDom('loader_mask');
         Ext.Anim.run(node,'fade',
@@ -79,14 +78,20 @@ Ext.define('MyTorrent.Application', {
     },
     recherchePlugins : function (){
         var me = this;
+        var token = localStorage.getItem("MyTorrentToken");
         Ext.Ajax.request({
                url :  'torrentJson.php'
                ,method : 'GET'
-               ,params : 'plugin'
+               ,params : {'plugin':'','token':token}
                ,success :function (response,opts){
                    var obj = Ext.decode(response.responseText);
-                   me.setPlugins(obj.data);
-                   me.pushListenersPlugins();
+                   if(obj.success){
+                        me.setPlugins(obj.data);
+                        me.pushListenersPlugins();
+                   }else{
+                       localStorage.removeItem("MyTorrentLoggedIn");
+                       me.launch();
+                   }
                    
                    
                }
