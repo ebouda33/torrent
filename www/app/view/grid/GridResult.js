@@ -7,11 +7,6 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     collapsible : true,
 //            layout : 'fit',
     
-    deferEmptyText : 'Aucune recherche exécutée.',
-    store : null ,
-//            fullscreen : true,
-//            columnLines: true,
-    plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'}],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
     listeners : {
       initialize : function(grid,eOpts){
@@ -20,7 +15,24 @@ Ext.define('MyTorrent.view.grid.GridResult',{
       } ,
       itemsingletap : function (grid , row , target , record , e , eOpts ){
           //ask question
-          grid.gotoTransmission(record.data.magnet);
+          Ext.Msg.show({
+                    title : 'DL?',
+                    message : 'Vous voulez vous dl le torrent ou seedbox?',
+                    buttons : [{
+                            text : 'DL',
+                            itemId : 'torrentDL'
+                    },{
+                        text : 'seedbox',
+                        itemId : 'torrentSeedbox'
+                    },{
+                        text : 'annuler',
+                        itemId : 'cancel'
+                    }
+                    ],
+                    iconCls :  'x-fa fa-question' ,
+                    closable : false
+                });
+//          grid.gotoTransmission(record.data.magnet);
           target.setStyle({
              color : '#e1dede' 
           });

@@ -22,16 +22,19 @@ Ext.define('MyTorrent.view.main.Recherche',{
     ,items : [
         {
             xtype : 'rechercheTorrent',
+            width : '30%'
             
         },
         {
             xtype : 'torrentresult',
-            minHeight : 400,
-//            height : '100%',
-            plugins: 'responsive',
+            minHeight : 200,
+//            height : 400,
+            store : null ,
+            plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'},{type:'responsive'}],
+            
             responsiveConfig: {
                 wide: {
-                    width : '64%'
+                    width : '70%'
                 },
                 tall: {
                     width : '100%'
