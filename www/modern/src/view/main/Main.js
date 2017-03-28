@@ -51,7 +51,26 @@ Ext.define('MyTorrent.view.main.Main', {
 //            layout: 'fit',
             height : 500,
             items: [{
-                xtype: 'panelRecherche'
+                xtype: 'panelRecherche',
+                plugins: 'responsive',
+                responsiveConfig: {
+                    'width >= height': {
+//                        layout : 'hbox'
+                        layout: {
+                            type: 'box',
+                            vertical: false,
+                            align: 'stretch'
+                        }
+                    },
+                    'width < height': {
+//                        layout : 'vbox'
+                        layout: {
+                            type: 'box',
+                            align: 'stretch',
+                            vertical: true
+                       }
+                    }
+                }
             }]
         },{
             title: 'SeedBox',

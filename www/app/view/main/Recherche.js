@@ -14,23 +14,7 @@ Ext.define('MyTorrent.view.main.Recherche',{
         'MyTorrent.view.grid.GridResult'
     ]
 //    ,layout : 'hbox'
-    ,plugins: 'responsive',
-    responsiveConfig: {
-        'width >= height': {
-            layout: {
-                       type: 'box',
-                       vertical: false,
-                       align: 'stretch'
-                }
-        },
-        'width < height': {
-            layout: {
-                    type: 'box',
-                    align: 'stretch',
-                    vertical: true
-               }
-        }
-    }
+    
     
     
 //    ,align : 'stretch'
@@ -38,7 +22,7 @@ Ext.define('MyTorrent.view.main.Recherche',{
     ,items : [
         {
             xtype : 'rechercheTorrent',
-            width : '35%'
+            
         },
         {
             xtype : 'torrentresult',

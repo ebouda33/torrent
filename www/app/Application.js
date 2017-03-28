@@ -85,8 +85,13 @@ Ext.define('MyTorrent.Application', {
                ,params : {'plugin':'','token':token}
                ,success :function (response,opts){
                    var obj = Ext.decode(response.responseText);
-                   me.setPlugins(obj.data);
-                   me.pushListenersPlugins();
+                   if(obj.success){
+                        me.setPlugins(obj.data);
+                        me.pushListenersPlugins();
+                   }else{
+                       localStorage.removeItem("MyTorrentLoggedIn");
+                       me.launch();
+                   }
                    
                    
                }
