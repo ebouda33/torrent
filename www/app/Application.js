@@ -18,6 +18,7 @@ Ext.define('MyTorrent.Application', {
     stores: [
         // TODO: add global / shared stores here
     ],
+    quickTips : true,
     launch: function () {
         var node = Ext.getDom('loader_mask');
         Ext.Anim.run(node,'fade',

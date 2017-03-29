@@ -25,20 +25,28 @@ Ext.define('MyTorrent.view.main.Main', {
 
     
     tabBarPosition: 'bottom',
-
-//    responsiveConfig: {
-//        'width < 500': {
-//            tabBarPosition: 'bottom'
-//        },
-//        'width >= 500': {
-//            tabBarPosition: 'left'
-//        }
-//    },
-
+    defaults:{
+        plugins: 'responsive',
+        responsiveConfig: {
+            'width < 500': {
+                title: ''
+            }
+            
+        },
+        scrollable : true
+    },
 //    tabBarPosition: 'bottom',
     items: [
         {
-            title: 'Accueil',
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'Accueil'
+                },
+                'width >= 500': {
+                    title: 'Accueil'
+                }    
+            },
             iconCls: 'x-fa fa-home',
             layout: 'fit',
             // The following grid shares a store with the classic version's grid as well!
@@ -46,7 +54,15 @@ Ext.define('MyTorrent.view.main.Main', {
                 xtype: 'panelAccueil'
             }]
         },{
-            title: 'Recherche',
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'Recherche'
+                },
+                'width >= 500': {
+                    title: 'Recherche'
+                }    
+            },
             iconCls: 'x-fa fa-search',
 //            layout: 'fit',
             height : 500,
@@ -73,7 +89,15 @@ Ext.define('MyTorrent.view.main.Main', {
                 }
             }]
         },{
-            title: 'SeedBox',
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'SeedBox'
+                },
+                'width >= 500': {
+                    title: 'SeedBox'
+                }    
+            },
             iconCls: 'x-fa fa-cloud',
             items: [{
                 xtype: 'panel'
@@ -81,7 +105,15 @@ Ext.define('MyTorrent.view.main.Main', {
             }]
 
         },{
-            title: 'Settings',
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'Settings'
+                },
+                'width >= 500': {
+                    title: 'Settings'
+                }    
+            },
             iconCls: 'x-fa fa-wrench',
             items: [{
                 xtype: 'panelProfil'
@@ -89,7 +121,15 @@ Ext.define('MyTorrent.view.main.Main', {
         },
         {
 //            xtype : 'button',
-            title: 'Logout',
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'Logout'
+                },
+                'width >= 500': {
+                    title: 'Logout'
+                }    
+            },
             handler: 'onLogoutButton',
             iconCls: 'x-fa fa-toggle-off ',
             items: [{
