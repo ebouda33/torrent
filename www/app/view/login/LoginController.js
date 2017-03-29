@@ -26,12 +26,12 @@ Ext.define('MyTorrent.view.login.LoginController', {
                    if(obj.success){
                        me.success(me,obj.name,obj.data);
                    }else{
-                       me.failure(me);
+                       me.failure(me,button);
                    }
                    
                }
                ,failure : function(response,opts){
-                   me.failure(me);
+                   me.failure(me,button);
                }
                
         });
@@ -45,9 +45,12 @@ Ext.define('MyTorrent.view.login.LoginController', {
         Ext.Msg.alert("Bienvenue "+name); 
         controller.refreshApp();
     },
-    failure: function(controller) { 
+    failure: function(controller,button) { 
         localStorage.removeItem("MyTorrentLoggedIn");
         localStorage.removeItem("MyTorrentToken");
+        button.setDisabled(false);
+        button.setText('Incorrect identification');
+        button.setStyle({color:'red'});
         
     },
     
