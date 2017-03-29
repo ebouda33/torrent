@@ -12,7 +12,7 @@ Ext.define('MyTorrent.view.login.Login', {
     controller: 'login',
     bodyPadding: 10,
     title: 'Identification System',
-    closable: true,
+//    closable: true,
     items: {
         xtype: 'formpanel',
 //        reference: 'formLogin',
@@ -54,7 +54,7 @@ Ext.define('MyTorrent.view.login.Login', {
         },{
             xtype : 'button',
             text : 'login',
-            formBind: true,
+//            formBind: true,
             disabled: true,
 
             handler : 'onLoginClick'
