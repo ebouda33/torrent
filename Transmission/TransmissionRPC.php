@@ -606,7 +606,7 @@ class TransmissionRPC
     $context  = stream_context_create( $contextopts );
     
 // Create the context for this request
-    if ( ! $fp = fopen( $this->url, 'r', false, $context ) )	// Open a filepointer to the data, and use fgets to get the result
+    if ( ! $fp = @fopen( $this->url, 'r', false, $context ) )	// Open a filepointer to the data, and use fgets to get the result
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
     
     // Check the response (headers etc)

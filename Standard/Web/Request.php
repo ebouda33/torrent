@@ -19,4 +19,8 @@ class Request {
     public static function getQueryString(){
         return $_SERVER['QUERY_STRING'];
     }
+    
+    public static function getURI(){
+        return  $_SERVER['SERVER_NAME'];
+    }
 }

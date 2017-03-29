@@ -20,5 +20,5 @@ CREATE TABLE `mytorrent`.`log` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `users_id` INT UNSIGNED NOT NULL,
   `action` TEXT NOT NULL,
-  `datetime` DATETIME NOT NULL DEFAULT now(),
+  `datetime` DATETIME NOT NULL,
   PRIMARY KEY (`id`));

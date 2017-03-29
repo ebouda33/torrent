@@ -15,15 +15,29 @@ Ext.define('MyTorrent.view.grid.GridResult',{
       } ,
       itemsingletap : function (grid , row , target , record , e , eOpts ){
           //ask question
+          var magnet = record.data.magnet;
+          var txt = '';
+          if(magnet.indexOf('magnet')>=0){
+              txt = magnet;
+          }
           Ext.Msg.show({
                     title : 'DL?',
-                    message : 'Vous voulez vous dl le torrent ou seedbox?',
+                    message : (txt === '')? 'Vous voulez vous dl le torrent ou envoyer à la seedbox?':'Copiez le Magnet ou envoyer à la seedbox?<br><textarea  rows="4" cols"50">'+txt+'</textarea>',
+                    width : '80%',
                     buttons : [{
-                            text : 'DL',
-                            itemId : 'torrentDL'
+                            text : (txt === '')?'DL':'Magnet',
+                            itemId : 'torrentDL',
+//                            hidden : (txt !== ''),
+                            handler : function(){
+                                window.open(txt);
+                            }
+                            
                     },{
                         text : 'seedbox',
-                        itemId : 'torrentSeedbox'
+                        itemId : 'torrentSeedbox',
+                        handler : function(){
+                            grid.gotoTransmission(record.data.magnet);
+                        }
                     },{
                         text : 'annuler',
                         itemId : 'cancel'
@@ -32,7 +46,6 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                     iconCls :  'x-fa fa-question' ,
                     closable : false
                 });
-//          grid.gotoTransmission(record.data.magnet);
           target.setStyle({
              color : '#e1dede' 
           });
