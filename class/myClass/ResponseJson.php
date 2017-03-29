@@ -33,7 +33,7 @@ class ResponseJson {
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
         //controle TOKEn
         $token = filter_input(INPUT_GET, self::$TOKEN);
-        if((!isset($_SESSION['token']) && \strripos($query,self::$LOGIN) !== false) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
+        if((!isset($_SESSION['token']) && \strripos($query,self::$LOGIN) === false) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
              $retour['message']='Vous n\'êtes pas identifié correctement.';
         }else{
             $retour = self::traitementReponse($file,$query,$retour);

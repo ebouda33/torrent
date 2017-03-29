@@ -22,7 +22,7 @@ class MyBDD extends BDD{
     
     public function __construct($env='prod') {
         //getconfig BDD
-        $env = (stripos(\Standard\Web\Request::getURI(),'nabous.fr') !== false)?'mytorrent':$env;
+        $env = (stripos(\Standard\Web\Request::getURI(),'mytorrent.nabous.fr') !== false)?'mytorrent':$env;
             
         $file = dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR. 'config'.DIRECTORY_SEPARATOR.'config_general.ini';
         
