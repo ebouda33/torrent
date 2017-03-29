@@ -6,7 +6,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     title : 'Résultat',
     collapsible : true,
 //            layout : 'fit',
-    
+    requires : ['MyTorrent.store.Torrent'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
     listeners : {
       initialize : function(grid,eOpts){
