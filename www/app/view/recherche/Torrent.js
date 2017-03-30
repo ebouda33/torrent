@@ -141,7 +141,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
             var plugins = [];
             Ext.each(data,function(plugin){
                 plugins.push({
-                    label : '<div><img src="data:image/jpg;base64,'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
+                    label : '<div><img src="'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
                     name : plugin.name,
                     inputValue : plugin.id,
                     id : plugin.name,

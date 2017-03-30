@@ -30,6 +30,7 @@ class Nextorrent extends PluginGenerique{
     private $success = false;
     private $totalCount = 0;
     
+    private $ini;
     /**
      * 
      * @param type $search
@@ -46,6 +47,7 @@ class Nextorrent extends PluginGenerique{
                 $this->proxy = true;
             }
         }
+        $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
         
         
     }
@@ -76,14 +78,40 @@ class Nextorrent extends PluginGenerique{
                 }
 
             }
+            $this->totalCount = $this->parcoursDomPagination($arbre);
             $this->success = true;
         }
     }
 
     
     
-    function parcoursDomPagination(){
+    function parcoursDomPagination($arbre){
+        $elements = $arbre->getElementsByTagName('ul');
+        $limite = 0;
+        foreach ($elements as $elem) {
+            if($elem->hasAttribute('class')){
+                    if("pagination" === strtolower($elem->getAttribute('class')) && $elem->tagName === 'ul'){
+                        $domnodes = new DOMNodeRecursiveIterator($elem->childNodes);
+                        foreach ($domnodes as $node){
+                            if($node instanceof DOMElement && $node->hasChildNodes() ) {
+                                $as = new DOMNodeRecursiveIterator($node->childNodes);
+                                foreach ($as as $a){
+//                                    echo $a->nodeName . ' '.$a->textContent;
+                                    $matches = null;
+                                    preg_match('#-(.+)]#isU',$a->textContent,$matches);
+//                                    var_dump($matches);
+                                    if(count($matches)>1){
+                                        $index = $matches[1];
+                                        $limite = (intval($index)>$limite)?intval($index):$limite;
+                                    }
+                                }
+                            }
+                        }
+                    }
+            }
 
+        }
+        return $limite;
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
@@ -100,6 +128,8 @@ class Nextorrent extends PluginGenerique{
                 $this->result[$index]['size'] =  $urlTorrent['size'];
                 $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
                 $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
+                $this->result[$index]['category'] =  $urlTorrent['category'];
+                
             }
 
         }
@@ -117,6 +147,7 @@ class Nextorrent extends PluginGenerique{
             $results['seeder'] = $resultat['seeder'];
             $results['size'] = $resultat['size'];
             $results['magnet'] = $resultat['magnet'];
+            $results['category'] = $resultat['category'];
             $retour->append($results);
         }
         return $retour;
@@ -128,33 +159,48 @@ class Nextorrent extends PluginGenerique{
 
     public function getResultTotalCount() {
         //mieux le caculer avec la pagination prob nextorrent
-        return count($this->result);
+        return $this->totalCount;
     }
 
     private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
        $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
+       $category = '';
        $url = "";
        $caption="Pas de résultat";
        $size = 0;
        $leecher = 0;
        $seeder = 0;
        if(count($td)>1){
+        $category = $this->transformeCategory($td[0]->getAttribute('href'));
         $url = $td[2]->getAttribute('href');
-         $caption = $td[2]->textContent;
+        $caption = $td[2]->textContent;
 
-        $td = new DOMNodeRecursiveIterator($tr[2]->childNodes);
-        $size = $td[0]->textContent;
+        $size = $this->getTextContent($tr[2],0);
 
-         $td = new DOMNodeRecursiveIterator($tr[4]->childNodes);
-         $seeder=$td[1]->textContent;
+        $seeder=$this->getTextContent($tr[4]);
 
-         $td = new DOMNodeRecursiveIterator($tr[6]->childNodes);
-         $leecher=$td[1]->textContent;
-            return array("url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
+        $leecher=$this->getTextContent($tr[6]);
+            return array('category'=>$category,"url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
        }
        return null;
 
 
+    }
+    
+    private function transformeCategory($value){
+        $cat = str_replace('/torrents/cat/', '', $value);
+        foreach ($this->ini as $section){
+            if(isset($section[$cat])){
+                $cat = $section['icone'];
+            }
+        }
+        return $cat;
+    }
+    
+    private function getTextContent($tr,$index=1){
+        $td = new DOMNodeRecursiveIterator($tr->childNodes);
+        return $td[$index]->textContent;
+        
     }
 
     private function getMagnet($url){

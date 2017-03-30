@@ -139,6 +139,10 @@ class ResponseJson {
                 $classname = PluginGenerique::getPluginClassName($plugin->id);
             }
             $torrent = new $classname($config);
+            
+            $start = filter_input(INPUT_GET, 'start')!== false?filter_input(INPUT_GET, 'start'):0;
+            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
+            $search .= '/'.(intval($start)+1);
             $torrent->search($search);
             $retour['success'] =$torrent->getResultSuccess() ;
             $retour['data']= $torrent->getResult() instanceof PluginListeResults ?$torrent->getResult()->getArrayCopy():null;

@@ -22,12 +22,14 @@ Ext.define('MyTorrent.view.grid.GridResult',{
           }
           Ext.Msg.show({
                     title : 'DL?',
+                    itemId : 'msgDL',
                     message : (txt === '')? 'Vous voulez vous dl le torrent ou envoyer à la seedbox?':'Copiez le Magnet ou envoyer à la seedbox?<br><textarea  rows="4" cols"50">'+txt+'</textarea>',
                     width : '80%',
+                    height : 200,
                     buttons : [{
                             text : (txt === '')?'DL':'Magnet',
                             itemId : 'torrentDL',
-//                            hidden : (txt !== ''),
+                            hidden : (txt === ''),
                             handler : function(){
                                 window.open(txt);
                             }
@@ -63,6 +65,13 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     },
     
     columns: [
+        {
+          text : '',
+          dataIndex: 'category',
+          width: 50,
+          resizable : true,
+          align : 'left'
+        },
         {
             text: 'Torrent',
             dataIndex: 'title',
@@ -142,6 +151,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                 }
                 Ext.Msg.show({
                     title : 'Envoi Transmission',
+                    itemId : 'msgTransmission',
                     message : message,
                     buttons : Ext.MessageBox.OK,
                     iconCls :  icon ,

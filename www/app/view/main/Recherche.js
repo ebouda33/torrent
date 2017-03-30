@@ -34,7 +34,8 @@ Ext.define('MyTorrent.view.main.Recherche',{
             
             responsiveConfig: {
                 wide: {
-                    width : '70%'
+                    width : '70%',
+                    height : 400
                 },
                 tall: {
                     width : '100%'

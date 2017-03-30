@@ -18,7 +18,8 @@ Ext.define('MyTorrent.store.Torrent',{
             {name: 'size'},
             {name: 'magnet'},
             {name: 'leecher'},
-            {name: 'seeder'}
+            {name: 'seeder'},
+            {name: 'category'}
 
          ];
         config = Ext.apply({
