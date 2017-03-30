@@ -70,7 +70,11 @@ Ext.define('MyTorrent.view.grid.GridResult',{
           dataIndex: 'category',
           width: 50,
           resizable : true,
-          align : 'left'
+          align : 'left',
+           renderer : function (container,position){
+               console.log(container,position);
+                return '<img src=""/>';
+            }
         },
         {
             text: 'Torrent',
