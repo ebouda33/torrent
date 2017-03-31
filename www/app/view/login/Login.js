@@ -8,7 +8,7 @@ Ext.define('MyTorrent.view.login.Login', {
         'MyTorrent.view.login.LoginController',
         'Ext.form.Panel'
     ],
-
+    modal : true,
     controller: 'login',
     bodyPadding: 10,
     title: 'Identification System',
@@ -26,7 +26,7 @@ Ext.define('MyTorrent.view.login.Login', {
             name: 'username',
             placeHolder : 'Email',
             fieldLabel: 'Username',
-            msgTarget: 'under',
+            msgTarget: 'top',
             required: true,
 //            formBind: true,
             listeners : {
@@ -34,6 +34,11 @@ Ext.define('MyTorrent.view.login.Login', {
                     if(newValue !== oldValue){
                         field.getParent().getItems().items[2].setDisabled(false);
                     }
+                },
+                action : function(field,evt,eOpts){
+                    var parent  = field.getParent();
+                    var items = parent.getItems().items;
+                    items[1].focus();
                 }
             }
         }, {
@@ -49,7 +54,8 @@ Ext.define('MyTorrent.view.login.Login', {
                     if(newValue !== oldValue){
                         field.getParent().getItems().items[2].setDisabled(false);
                     }
-                }
+                },
+                action : 'onLoginClick'
             }
         },{
             xtype : 'button',
@@ -65,7 +71,15 @@ Ext.define('MyTorrent.view.login.Login', {
               value : 'login',
               hidden : true
             }
-        ]
+        ],
+        listeners : {
+             initialize : function( form, eOpts ){
+                 var elements = form.getItems().items;
+                 elements[0].focus();
+                 
+             }
+
+        }
 
     }
 });

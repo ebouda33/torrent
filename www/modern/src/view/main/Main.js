@@ -21,7 +21,7 @@ Ext.define('MyTorrent.view.main.Main', {
     plugins: 'responsive',
     controller: 'main',
     viewModel: 'main',
-    activeItem : 1,
+    activeItem : 3,
 
     
     tabBarPosition: 'bottom',
@@ -103,6 +103,7 @@ Ext.define('MyTorrent.view.main.Main', {
                 xtype: 'panel'
                 
             }]
+        
 
         },{
             responsiveConfig: {

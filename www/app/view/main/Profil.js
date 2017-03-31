@@ -6,9 +6,11 @@
 
 
 Ext.define('MyTorrent.view.main.Profil',{
-    extend: 'Ext.panel.Panel'
-    ,xtype: 'panelProfil'
-    
+    extend: 'Ext.panel.Panel',
+    xtype: 'panelProfil',
+    requires :[
+        'MyTorrent.view.settings.Settings'
+    ]
     
 //    tpl:[
 //        'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
@@ -24,7 +26,9 @@ Ext.define('MyTorrent.view.main.Profil',{
         
     }
     
-    ,items : []
+    ,items : [{
+            xtype : 'settingpanel'
+    }]
     
 //    items:[{
 //        html : 'Ce site n\'est qu\'un moteur de recherche sur certains tracker bien connu.\n\
