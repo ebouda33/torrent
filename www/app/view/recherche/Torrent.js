@@ -31,7 +31,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
        {
             xtype: 'fieldset',
             title: 'Plugins',
-            defaultType : 'checkboxfield',
+            defaultType : 'radiofield',
             width : 150,
             items : [
                 
@@ -142,7 +142,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
             Ext.each(data,function(plugin){
                 plugins.push({
                     label : '<div><img src="'+plugin.icone+'" alt="'+plugin.name+'" />'+plugin.name+'</div>',
-                    name : plugin.name,
+                    name : 'plugin',
                     inputValue : plugin.id,
                     id : plugin.name,
                     labelTextAlign : 'left',

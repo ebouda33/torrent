@@ -21,7 +21,7 @@ abstract class PluginGenerique implements PluginInterface{
     protected $icone;
     protected $description;
     protected $name;
-    protected $options=array();
+    protected $options=null;
     
     public static function getListe(){
         $explorer = new Explorer(dirname(__FILE__));
@@ -34,16 +34,16 @@ abstract class PluginGenerique implements PluginInterface{
                 $fichier = new \Standard\Fichier\Fichier($explore['path'].DIRECTORY_SEPARATOR,'iconeBase64.php');
                 $torrent->id = $fichier->getDatecreation().$explore['name'];
                 $torrent->icone =  $fichier->lireFichierEntier();
-                array_push($result, $torrent->getInfo());
+                array_push($result, $torrent->getInfo($explore['name'] ));
                 
                 $torrent->__destruct();
             }
         }
         return $result;
     }
-    public function getInfo() {
+    public function getInfo($name) {
         
-        return array('name'=> $this->name,'id'=>$this->id,'icone'=>$this->icone,'description'=>$this->description);     
+        return array('name'=> $this->name,'id'=>$this->id,'icone'=>$this->icone,'description'=>$this->description,'options'=>$this->getOptions($name));     
     }
     public function getResult() {
         throw new \Exception('Not yet Implemented');
@@ -60,7 +60,12 @@ abstract class PluginGenerique implements PluginInterface{
     /**
      * permet de savoir si un torrent a des options comme les categories etc ...
      */
-    public function getOptions(){
+    public function getOptions($name){
+        $file = __DIR__.DIRECTORY_SEPARATOR.strtolower($name).DIRECTORY_SEPARATOR.'plugin.ini';
+        $config = \Standard\Fichier\ReaderIni::read($file);
+        if(isset($config['settings'])){
+            return $config['settings'];
+        }
         return $this->options;
     }
     
@@ -89,4 +94,5 @@ abstract class PluginGenerique implements PluginInterface{
         throw new Exception('Not Yet Implemented');
     }
 
+    
 }

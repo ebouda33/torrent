@@ -9,19 +9,10 @@ Ext.define('MyTorrent.view.main.Main', {
     extend: 'Ext.tab.Panel',
     xtype: 'app-main',
 
-    requires: [
-        'Ext.MessageBox',
-        'MyTorrent.view.main.MainController',
-        'MyTorrent.view.main.MainModel',
-        'MyTorrent.view.liste.ListeResultat',
-        'MyTorrent.view.main.Accueil',
-        'MyTorrent.view.main.Profil',
-        'MyTorrent.view.main.Recherche'
-    ],
     plugins: 'responsive',
     controller: 'main',
     viewModel: 'main',
-    activeItem : 3,
+    activeItem : 2,
 
     
     tabBarPosition: 'bottom',
@@ -100,7 +91,7 @@ Ext.define('MyTorrent.view.main.Main', {
             },
             iconCls: 'x-fa fa-cloud',
             items: [{
-                xtype: 'panel'
+                xtype: 'seedbox'
                 
             }]
         
@@ -144,5 +135,9 @@ Ext.define('MyTorrent.view.main.Main', {
                 activate : 'onLogoutButton'
             }
         }
-    ]
+    ],
+    
+    setMenu : function(index,visible){
+        
+    }
 });

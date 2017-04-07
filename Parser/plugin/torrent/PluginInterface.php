@@ -23,7 +23,7 @@ interface PluginInterface {
     /**
      * @static recupere les infos inherent au torrent
      */
-    public function getInfo();
+    public function getInfo($namePlugin);
     
     public function search($motif);
         

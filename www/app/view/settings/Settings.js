@@ -8,7 +8,7 @@
 Ext = Ext || {};
 
 Ext.define('MyTorrent.view.settings.Settings',{
-    extend : 'Ext.panel.Panel',
+    extend : 'Ext.form.Panel',
     xtype : 'settingpanel',
     requires: [
         'MyTorrent.view.settings.SettingsController'
@@ -22,14 +22,21 @@ Ext.define('MyTorrent.view.settings.Settings',{
                 {
                     xtype : 'textfield',
                     label : 'Serveur Transmission',
+                    name : 'transmission_url',
+                    id : 'transmission_url',
+                    
                     placeHolder : 'http://maseedbox:9091/rpc/'
                 },{
                     label : 'username',
                     xtype : 'textfield',
+                    name : 'transmission_user',
+                    id : 'transmission_user',
                     placeHolder : 'Username'
                 },{
                     label : 'password',
                     xtype : 'passwordfield',
+                    name : 'transmission_password',
+                    id : 'transmission_password',
                     placeHolder : 'Password'
                 }
             ]
@@ -41,6 +48,8 @@ Ext.define('MyTorrent.view.settings.Settings',{
                 {
                     xtype : 'textfield',
                     label : 'Serveur Proxy http',
+                    name : 'proxy_url',
+                    id : 'proxy_url',
                     placeHolder : 'monproxy:port'
                 }
             ]
@@ -57,5 +66,46 @@ Ext.define('MyTorrent.view.settings.Settings',{
             handler : 'onSettingsClick'
         }
         
-    ]
+    ],
+    listeners : {
+        initialize : function(cmp,eOpts){
+            MyTorrent.getApplication().setListenersPlugins(cmp);
+            MyTorrent.getApplication().setConfigPanel(cmp);
+        }
+    },
+    setPlugins : function(plugins){
+        var me = this;
+        var fieldsetPlugin = me.getItems().items[2];
+        var items = [];
+        Ext.each(plugins,function(plugin,index){
+            if(plugin.options !== null){
+                var sitems = [];
+                Ext.each(plugin.options,function(opt,index){
+                    for(var option in opt){
+                        sitems.push({
+                        xtype : 'passwordfield',
+                        label : option,
+                        name : option,
+                        id : option,
+                        placeHolder : option
+
+                    });
+                    }
+                    
+                });
+                
+                items.push({
+                    xtype : 'fieldset',
+                    title : plugin.name,
+                    items : sitems
+                    });
+            }
+        });
+        fieldsetPlugin.setItems(items);
+    },
+    setSettings : function(data){
+        for(var opt in data){
+            Ext.getCmp(opt).setValue(data[opt]);
+        }
+    }
 });

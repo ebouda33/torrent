@@ -117,6 +117,7 @@ class Nextorrent extends PluginGenerique{
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
         foreach ($nodes as $node){
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
+            
             if(!is_null($urlTorrent)){
                 $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
                 $index = count($this->result);
@@ -163,24 +164,30 @@ class Nextorrent extends PluginGenerique{
     }
 
     private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
-       $td = new DOMNodeRecursiveIterator($tr[0]->childNodes);
+       
        $category = '';
        $url = "";
        $caption="Pas de résultat";
        $size = 0;
        $leecher = 0;
        $seeder = 0;
-       if(count($td)>1){
-        $category = $this->transformeCategory($td[0]->getAttribute('href'));
-        $url = $td[2]->getAttribute('href');
-        $caption = $td[2]->textContent;
+       
+       if(count($tr)>6){
+           $temp = new DOMNodeRecursiveIterator($tr[0]->childNodes);
+           $td = new DOMNodeRecursiveIterator($temp[0]->childNodes);
+           
+            $category = $this->transformeCategory($td[0]->getAttribute('title'));
+            $url = $td[1]->getAttribute('href');
+            $caption = $td[1]->textContent;
 
-        $size = $this->getTextContent($tr[2],0);
+            $size = $this->getTextContent($tr[2],0);
 
-        $seeder=$this->getTextContent($tr[4]);
+            $seeder=$this->getTextContent($tr[4]);
 
-        $leecher=$this->getTextContent($tr[6]);
+            $leecher=$this->getTextContent($tr[6]);
+            
             return array('category'=>$category,"url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
+            
        }
        return null;
 
@@ -188,10 +195,11 @@ class Nextorrent extends PluginGenerique{
     }
     
     private function transformeCategory($value){
-        $cat = str_replace('/torrents/cat/', '', $value);
+//        var_dump($value);
+        $cat = strtolower(str_replace(array(' ','/'), '-', $value));
         foreach ($this->ini as $section){
-            if(isset($section[$cat])){
-                $cat = $section['icone'];
+            if(isset($section[$cat]) && isset($section['icone'])){
+                $cat = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.$section['icone']);
             }
         }
         return $cat;

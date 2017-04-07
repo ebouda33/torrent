@@ -8,13 +8,32 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
         var form = button.up('formpanel');
         button.setDisabled(true);
         var config = form.getConfig();
-        
+//        eric = form;
         var cmps = config.items.items;
+        eric = form;
+        form.setMasked(true);
         var params = {
-            login : ''
+            action : 'settings',
+            token : localStorage.getItem("MyTorrentToken")
         };
-        params[cmps[0].getName()] = cmps[0].getValue();
-        params[cmps[1].getName()] = cmps[1].getValue();
+        Ext.each(cmps,function(fieldset,index){
+            if(fieldset.xtype === 'fieldset'){
+                var cmp = fieldset.getItems().items;
+                Ext.each(cmp,function(c,index){
+                    if(c.xtype === 'fieldset'){
+                        var cmp = c.getItems().items;
+                        Ext.each(cmp,function(c1,index){
+                            if(c1.xtype !== 'title'){
+                                params[c1.getName()] = c1.getValue();
+                            }
+                        });
+                    }else if(c.xtype !== 'title'){
+                        params[c.getName()] = c.getValue();
+                    }
+                });
+
+            }
+        });
         
         Ext.Ajax.request({
             url :  'torrentJson.php'
@@ -28,10 +47,13 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
                    }else{
                        me.failure(me,button);
                    }
-                   
+                   button.setDisabled(false);
+                   form.setMasked(false);
                }
                ,failure : function(response,opts){
                    me.failure(me,button);
+                   button.setDisabled(false);
+                   form.setMasked(false);
                }
                
         });
@@ -40,30 +62,11 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
     },
     success: function(controller,name,token) { 
         
-        localStorage.setItem("MyTorrentLoggedIn", true);
-        localStorage.setItem("MyTorrentToken", token);
-        Ext.Msg.alert("Bienvenue "+name); 
-        controller.refreshApp();
     },
     failure: function(controller,button) { 
-        localStorage.removeItem("MyTorrentLoggedIn");
-        localStorage.removeItem("MyTorrentToken");
-        button.setDisabled(false);
-        button.setText('Incorrect identification');
-        button.setStyle({color:'red'});
         
-    },
-    
-    refreshApp : function(){
-//        //fonctionne pas probleme pour charger la Vue principale
-//        // Remove Login Window
-        loggedIn = localStorage.getItem("MyTorrentLoggedIn");
-        token = localStorage.getItem("MyTorrentToken");
         
-        if(loggedIn === Ext.returnTrue().toString() && token !== undefined){
-            MyTorrent.getApplication().recherchePlugins();
-            this.getView().destroy();
-        }
-
     }
+    
+    
 });

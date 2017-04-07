@@ -31,4 +31,15 @@ class UsersTable extends \Standard\SQL\Model{
         }
         return null;
     }
+    
+    public function getEmail($token){
+        $select = "select email from users where token=:token";
+        
+        $res = $this->execute($select, array(':token'=>$token));
+        
+        if(count($res)>0){
+            return $res[0]['email'];
+        }
+        return null;
+    }
 }

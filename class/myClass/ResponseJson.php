@@ -22,36 +22,48 @@ use Transmission\TransmissionRPCException;
  */
 class ResponseJson {
     //put your code here
+    private static $ACTION = 'action';
     private static $PLUGIN = 'plugin';
     private static $SEARCH = 'search';
     private static $TRANSMISSION = 'transmission';
     private static $LOGIN = 'login';
     private static $TOKEN = 'token';
+    private static $SETTINGS = 'settings';
+    private static $SEEDBOX = 'seedbox';
+    
+    
     
     
     public static function returnResponse($file,$query){
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
         //controle TOKEn
         $token = filter_input(INPUT_GET, self::$TOKEN);
-        if((!isset($_SESSION['token']) && \strripos($query,self::$LOGIN) === false) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
+        $action = filter_input(INPUT_GET, self::$ACTION);
+        if((!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
              $retour['message']='Vous n\'êtes pas identifié correctement.';
         }else{
-            $retour = self::traitementReponse($file,$query,$retour);
+            $retour = self::traitementReponse($action,$token,$file,$query,$retour);
         }
         return json_encode($retour);
     }
     
-    private static function traitementReponse($file,$query,$retour){
+    private static function traitementReponse($action,$token,$file,$query,$retour){
         try{
             $configR = new ConfigReader($file);
-            if(strripos($query,self::$LOGIN) !== false){
-                $retour = self::toLogin($configR,$retour);
-            }else if(strripos($query,self::$TRANSMISSION) !== false){
-                $retour = self::toTransmission($configR,$retour);
-            }else if(strripos($query,self::$SEARCH) !== false){
+            if($action === strtolower(self::$LOGIN)){
+                $retour = self::toLogin($retour);
+            }else if($action === strtolower(self::$TRANSMISSION)){
+                $retour = self::toTransmission($token,$retour);
+            }else if($action === strtolower(self::$SEARCH)){
                 $retour = self::toSearch($configR,$retour);
-            }else if(strripos($query,self::$PLUGIN) !== false){
+            }else if($action === strtolower(self::$PLUGIN)){
                 $retour = self::toPlugin($retour);
+            }else if($action === strtolower(self::$SETTINGS)){
+                $retour = self::toSettings($token,$retour);
+                
+            }else if($action === strtolower(self::$SEEDBOX)){
+                $retour = self::getSeedbox($token,$retour);
+                
             }
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
@@ -61,7 +73,7 @@ class ResponseJson {
     }
     
     
-    private static function toLogin($config,$retour){
+    private static function toLogin($retour){
         
         $url = filter_input(INPUT_GET, self::$LOGIN);
         if(!is_null($url) && $url !== false){
@@ -86,13 +98,13 @@ class ResponseJson {
 
     }
     
-    private static function toTransmission($config,$retour){
+    private static function toTransmission($token,$retour){
         $url = filter_input(INPUT_GET, self::$TRANSMISSION);
         if(!is_null($url) && $url !== false){
 //                $url = json_decode($url);
             if(stripos('magnet',$url)>= 0){
                 $urlM = str_replace('@', '&tr', $url) ;
-                $retour = self::toMagnet($config, $urlM, $retour);
+                $retour = self::toMagnet($token, $urlM, $retour);
             }else{
                 $retour['message']= 'Erreur Ce n\'est pas un magnet.'; 
             }
@@ -106,9 +118,10 @@ class ResponseJson {
 
     }
     
-    private static function toMagnet(ConfigReader $reader,$url,$retour){
-        $config = $reader->getConfig();
+    private static function toMagnet($token,$url,$retour){
+        $config = Services::loadSettings($token);
         $proxy = self::getProxy($config);
+        
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
             $result =  $transmission->add($url,'/mnt/data/videos/adulte');
@@ -141,7 +154,7 @@ class ResponseJson {
             $torrent = new $classname($config);
             
             $start = filter_input(INPUT_GET, 'start')!== false?filter_input(INPUT_GET, 'start'):0;
-            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
+//            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
             $search .= '/'.(intval($start)+1);
             $torrent->search($search);
             $retour['success'] =$torrent->getResultSuccess() ;
@@ -166,10 +179,42 @@ class ResponseJson {
     private static function getProxy($reader){
         
         $proxy = false;
-        if(!empty($config['proxy_url'])){
+        if(!empty($reader['proxy_url'])){
             $proxy = true;
         }
         
         return $proxy;
     }
+    
+    private static function toSettings($token,$retour){
+        $retour['message'] = '';
+        $load = filter_input(INPUT_GET, 'config') === 'load' ? true:false;
+        if($load){
+            $retour['success'] = true;
+            $retour['data'] = Services::loadSettings($token);
+        }else{
+            $retour['success'] = Services::saveSetings(Services::getEmail($token), filter_input_array(INPUT_GET));
+            $retour['message'] = $retour['success']?'Settings save':'Settings not save retry';
+        }
+        return $retour;
+    }
+    
+    private static function getSeedbox($token,$retour){
+        $retour['message'] = '';
+        $proxy = false;
+        $settings = Services::loadSettings($token);
+        if(!empty($settings['proxy_url'] )){
+            $proxy = true;
+        }
+        $transmission = new \Transmission\TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy);
+        
+        $elements = $transmission->get();
+        $stats = $transmission->sstats();
+        $retour['success'] = $elements->result === 'success'?true:false;
+        $retour['data'] = $elements->arguments->torrents;
+        $retour['stats'] = $stats;
+        $retour['totalCount'] = count($retour['data']);
+        return $retour;
+    }
+           
 }

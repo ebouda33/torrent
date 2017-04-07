@@ -7,6 +7,16 @@ Ext = Ext ||{};
 Ext.define('MyTorrent.Application', {
     extend: 'Ext.app.Application',
     requires : [
+        'Ext.MessageBox',
+        'MyTorrent.util.Util',
+        'MyTorrent.view.main.MainController',
+        'MyTorrent.view.main.MainModel',
+        'MyTorrent.view.liste.ListeResultat',
+        'MyTorrent.view.main.Accueil',
+        'MyTorrent.view.main.Profil',
+        'MyTorrent.view.main.Recherche',
+        'MyTorrent.view.main.SeedBox',
+        
         'MyTorrent.view.login.Login',
         'MyTorrent.view.main.Main'
     ],
@@ -19,8 +29,34 @@ Ext.define('MyTorrent.Application', {
         // TODO: add global / shared stores here
     ],
     quickTips : true,
+    listenersPlugins : [],
+    storeSeedBox : null,
+    plugin : null,
+    configPanel : null,
     launch: function () {
         var node = Ext.getDom('loader_mask');
+        
+        // TODO - Launch the applicatio
+        var loggedIn;
+
+        // Check to see the current value of the localStorage key
+        loggedIn = localStorage.getItem("MyTorrentLoggedIn");
+
+        // This ternary operator determines the value of the TutorialLoggedIn key.
+        // If TutorialLoggedIn isn't true, we display the login window,
+        // otherwise, we display the main view
+        if(loggedIn === Ext.returnTrue().toString()){
+
+            this.recherchePlugins();
+            //determine si seedbox autorise ou non
+            localStorage.setItem("MyTorrentSeebBox",false);
+            
+        }else{
+            Ext.create({
+                xtype:'login'
+            }).show();
+        }
+        
         Ext.Anim.run(node,'fade',
         {
             out : true,
@@ -32,32 +68,6 @@ Ext.define('MyTorrent.Application', {
                 Ext.removeNode(node);
             }
         });
-        // TODO - Launch the applicatio
-        var loggedIn;
-
-        // Check to see the current value of the localStorage key
-        loggedIn = localStorage.getItem("MyTorrentLoggedIn");
-
-        // This ternary operator determines the value of the TutorialLoggedIn key.
-        // If TutorialLoggedIn isn't true, we display the login window,
-        // otherwise, we display the main view
-        if(loggedIn === Ext.returnTrue().toString()){
-//            Ext.create({
-//                xtype: 'mytorrent-main'
-//            });  
-             //defini plugin au composant qui ont en besoin
-            this.recherchePlugins();
-        }else{
-            Ext.create({
-                xtype:'login'
-            }).show();
-        }
-        
-       
-        
-        
-        
-//        eric = Ext.create('MyTorrent.store.Torrent',{url:'torrent.php',search:'eric'});
         
     },
 
@@ -70,12 +80,15 @@ Ext.define('MyTorrent.Application', {
             }
         );
     },
-    listenersPlugins : []
-    ,setPlugins : function (data){
+    
+    setPlugins : function (data){
         this.plugin = data;
     }
     ,getPlugins : function(){
         return this.plugin;
+    }
+    ,setConfigPanel : function(panel){
+        this.configPanel = panel;
     },
     recherchePlugins : function (){
         var me = this;
@@ -83,12 +96,13 @@ Ext.define('MyTorrent.Application', {
         Ext.Ajax.request({
                url :  'torrentJson.php'
                ,method : 'GET'
-               ,params : {'plugin':'','token':token}
+               ,params : {'action':'plugin','token':token}
                ,success :function (response,opts){
                    var obj = Ext.decode(response.responseText);
                    if(obj.success){
                         me.setPlugins(obj.data);
                         me.pushListenersPlugins();
+                        me.loadSettings();
                    }else{
                        localStorage.removeItem("MyTorrentLoggedIn");
                        me.launch();
@@ -98,7 +112,7 @@ Ext.define('MyTorrent.Application', {
                }
                ,failure : function(response,opts){
                    console.log('failure plugins');
-                   console.log(response,opts);
+//                   console.log(response,opts);
                }
                    
             });
@@ -111,6 +125,62 @@ Ext.define('MyTorrent.Application', {
         Ext.each(this.listenersPlugins,function(elem){
             elem.setPlugins(me.getPlugins());
         }
-                );
+        );
+    },
+    loadSettings : function(){
+        var me = this;
+        var token = localStorage.getItem("MyTorrentToken");
+        Ext.Ajax.request({
+               url :  'torrentJson.php'
+               ,method : 'GET'
+               ,params : {action:'settings',config:'load', token:token}
+               ,success :function (response,opts){
+                   var obj = Ext.decode(response.responseText);
+                   if(obj.success){
+                       me.configPanel.setSettings(obj.data);
+                       //doit determiner affichage ou non de la seedbox; 
+                        var main = MyTorrent.app.viewport.getItems().items[0];
+                        var appmain = main.getItems().items[1];
+                        var bar = appmain.getTabBar();
+                        var seed = bar.getItems().items[2];
+                        if(obj.data['transmission_url'] !== undefined){
+                            seed.setHidden(false);
+                            MyTorrent.getApplication().storeSeedBox.load({
+                                        scope: this,
+                                        callback: function(records, operation, success) {
+                                            // the operation object
+                                            // contains all of the details of the load operation
+                                            if(!success){
+                                                Ext.Msg.show({
+                                                    title : 'Recherche Seedbox',
+                                                    message : operation.error,
+                                                    buttons : Ext.MessageBox.OK,
+                                                    iconCls :  'x-fa fa-error' ,
+                                                    closable : true,
+                                                    height : 200
+                                                });
+                                            }
+
+                                        }
+                                    });
+                        }else{
+                            seed.setHidden(true);
+                            bar.setActiveTab(0);
+                            
+                        }
+                       localStorage.setItem("MyTorrentSeebBox",!seed.isHidden());
+                   }
+                   
+                   
+               }
+               ,failure : function(response,opts){
+                   console.log('failure load settings');
+//                   console.log(response,opts);
+               }
+                   
+            });
+    },
+    setStoreSeedBox : function (store){
+        this.storeSeedBox = store;
     }
 });

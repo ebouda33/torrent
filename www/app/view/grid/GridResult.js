@@ -71,9 +71,15 @@ Ext.define('MyTorrent.view.grid.GridResult',{
           width: 50,
           resizable : true,
           align : 'left',
-           renderer : function (container,position){
-               console.log(container,position);
-                return '<img src=""/>';
+          
+           renderer : function (value,record,index,cell){
+               //console.log(container,position);
+               if(value.indexOf('data:image')>-1){
+                    cell.setEncodeHtml (false);
+                    return '<img src="'+value+'" alt=\'categories\'/>';
+                }
+                return value;
+                
             }
         },
         {
@@ -114,7 +120,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
             width: 150,
             resizable : false,
             align : 'left',
-            renderer : function (container,position){
+            renderer : function (value,record){
 //                        console.log(container,position);
                 var message = 'Goto MyTransmision';
                 return message;
@@ -141,7 +147,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
         Ext.Ajax.request({
             url :  'torrentJson.php'
             ,method : 'GET'
-            ,params : 'transmission='+torrent
+            ,params : 'action=transmission&token='+localStorage.getItem("MyTorrentToken")+'&transmission='+torrent
             ,success :function (response,opts){
                 var obj = Ext.decode(response.responseText);
                 var icon = 'x-fa fa-info' ;

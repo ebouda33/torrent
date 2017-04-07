@@ -11,7 +11,7 @@ Ext.define('MyTorrent.view.login.LoginController', {
         
         var cmps = config.items.items;
         var params = {
-            login : ''
+            action : 'login'
         };
         params[cmps[0].getName()] = cmps[0].getValue();
         params[cmps[1].getName()] = cmps[1].getValue();
@@ -42,6 +42,7 @@ Ext.define('MyTorrent.view.login.LoginController', {
         
         localStorage.setItem("MyTorrentLoggedIn", true);
         localStorage.setItem("MyTorrentToken", token);
+        //TODO charger fichier config
         Ext.Msg.alert("Bienvenue "+name); 
         controller.refreshApp();
     },

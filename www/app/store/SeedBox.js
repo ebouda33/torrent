@@ -1,7 +1,7 @@
 Ext = Ext || {};
-Ext.define('MyTorrent.store.Torrent',{
+Ext.define('MyTorrent.store.SeedBox',{
     extend :'Ext.data.JsonStore',
-    alias : 'store.torrent',
+    alias : 'store.seedbox',
     autoLoad: false,
     requires: [
         'Ext.data.proxy.Ajax',
@@ -10,27 +10,24 @@ Ext.define('MyTorrent.store.Torrent',{
     ],
     constructor : function(config){
         var me = this;
-        config.url = config.url || '';
-        config.search = config.search || '';
-        config.plugins = config.plugins ||[];
+        config.url = config.url || 'torrentJson.php';
         config.fields = config.fields || [
-            {name: 'title'},
-            {name: 'size'},
-            {name: 'magnet'},
-            {name: 'leecher'},
-            {name: 'seeder'},
-            {name: 'category'}
+            {name: 'doneDate'},
+            {name: 'name'},
+            {name: 'totalSize'},
+            {name: 'haveValid'},
+            {name: 'status'},
+            {name: 'id'},
+            {name: 'uploadRatio'}
 
          ];
         config = Ext.apply({
             url : config.url,
-            search : config.search,
-            plugins : config.plugins,
             proxy : {
                 type : 'ajax',
                 url :  config.url
                 ,method : 'GET'
-                ,extraParams : {action:'search','search':config.search,'plugins':config.plugins,token:localStorage.getItem("MyTorrentToken")}
+                ,extraParams : {action:'seedbox',token:localStorage.getItem("MyTorrentToken")}
                 ,reader : {
                     type : 'json',
                     rootProperty : 'data',

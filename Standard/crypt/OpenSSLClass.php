@@ -17,7 +17,7 @@ class OpenSSLClass {
     //put your code here
     const FILE_ENCRYPTION_BLOCKS = 10000;
     
-    public static function generateKeyPubFile($filename){
+    public static function generateKeyPrivateFile($filename){
         $encryption_key = base64_encode(bin2hex(openssl_random_pseudo_bytes(128)));
         if(file_exists($filename)){
             unlink($filename);
