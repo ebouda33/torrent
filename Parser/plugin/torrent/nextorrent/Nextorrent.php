@@ -59,8 +59,6 @@ class Nextorrent extends PluginGenerique{
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
         $page =$curl->read();
 
-        //echo(htmlentities($page));
-
         if($page !== false){
             $arbre = new DOMDocument();
             @$arbre->loadHTML($page);
@@ -119,17 +117,7 @@ class Nextorrent extends PluginGenerique{
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
             
             if(!is_null($urlTorrent)){
-                $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
-                $index = count($this->result);
-                if(!isset($this->result[$index])){
-                    $this->result[$index] = array();
-                }
-                $this->result[$index]['titre'] =  $urlTorrent['caption'];
-                $this->result[$index]['magnet'] =  $urlMagnet['url'];
-                $this->result[$index]['size'] =  $urlTorrent['size'];
-                $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
-                $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
-                $this->result[$index]['category'] =  $urlTorrent['category'];
+                $this->generateResult($urlTorrent);
                 
             }
 
@@ -138,6 +126,21 @@ class Nextorrent extends PluginGenerique{
         
     }
     
+    private function generateResult(array $urlTorrent){
+        $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
+        $index = count($this->result);
+        if(!isset($this->result[$index])){
+            $this->result[$index] = array();
+        }
+        $this->result[$index]['titre'] =  $urlTorrent['caption'];
+        $this->result[$index]['magnet'] =  $urlMagnet['url'];
+        $this->result[$index]['size'] =  $urlTorrent['size'];
+        $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
+        $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
+        $this->result[$index]['category'] =  $urlTorrent['category'];
+    }
+
+
     public function getResult(){
         $retour = new \Parser\plugin\torrent\PluginListeResults();
         foreach($this->result as $resultat){
