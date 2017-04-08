@@ -7,11 +7,8 @@ Ext = Ext ||{};
 Ext.define('MyTorrent.Application', {
     extend: 'Ext.app.Application',
     requires : [
-        'Ext.MessageBox',
         'MyTorrent.util.Util',
         'MyTorrent.view.main.MainController',
-        'MyTorrent.view.main.MainModel',
-        'MyTorrent.view.liste.ListeResultat',
         'MyTorrent.view.main.Accueil',
         'MyTorrent.view.main.Profil',
         'MyTorrent.view.main.Recherche',
@@ -46,10 +43,7 @@ Ext.define('MyTorrent.Application', {
         // If TutorialLoggedIn isn't true, we display the login window,
         // otherwise, we display the main view
         if(loggedIn === Ext.returnTrue().toString()){
-
-            this.recherchePlugins();
-            //determine si seedbox autorise ou non
-            localStorage.setItem("MyTorrentSeebBox",false);
+            this.logged();
             
         }else{
             Ext.create({
@@ -89,6 +83,15 @@ Ext.define('MyTorrent.Application', {
     }
     ,setConfigPanel : function(panel){
         this.configPanel = panel;
+    },
+    logged : function(){
+        //construction de la seedbox affecter le store au grid
+            MyTorrent.getApplication().gridSeedBox.setStore(Ext.create('MyTorrent.store.SeedBox',{}));
+            MyTorrent.getApplication().setStoreSeedBox(MyTorrent.getApplication().gridSeedBox.getStore());    
+            //determine si seedbox autorise ou non
+            localStorage.setItem("MyTorrentSeebBox",false);
+            
+            this.recherchePlugins();
     },
     recherchePlugins : function (){
         var me = this;
@@ -145,24 +148,7 @@ Ext.define('MyTorrent.Application', {
                         var seed = bar.getItems().items[2];
                         if(obj.data['transmission_url'] !== undefined){
                             seed.setHidden(false);
-                            MyTorrent.getApplication().storeSeedBox.load({
-                                        scope: this,
-                                        callback: function(records, operation, success) {
-                                            // the operation object
-                                            // contains all of the details of the load operation
-                                            if(!success){
-                                                Ext.Msg.show({
-                                                    title : 'Recherche Seedbox',
-                                                    message : operation.error,
-                                                    buttons : Ext.MessageBox.OK,
-                                                    iconCls :  'x-fa fa-error' ,
-                                                    closable : true,
-                                                    height : 200
-                                                });
-                                            }
-
-                                        }
-                                    });
+                            MyTorrent.getApplication().loadStoreSeedBox();
                         }else{
                             seed.setHidden(true);
                             bar.setActiveTab(0);
@@ -182,5 +168,26 @@ Ext.define('MyTorrent.Application', {
     },
     setStoreSeedBox : function (store){
         this.storeSeedBox = store;
+    },
+    loadStoreSeedBox :function(){
+        
+        MyTorrent.getApplication().storeSeedBox.load({
+            scope: this,
+            callback: function(records, operation, success) {
+                // the operation object
+                // contains all of the details of the load operation
+                if(!success){
+                    Ext.Msg.show({
+                        title : 'Recherche Seedbox',
+                        message : operation.error,
+                        buttons : Ext.MessageBox.OK,
+                        iconCls :  'x-fa fa-error' ,
+                        closable : true,
+                        height : 200
+                    });
+                }
+
+            }
+        });
     }
 });

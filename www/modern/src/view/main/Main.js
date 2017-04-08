@@ -12,9 +12,11 @@ Ext.define('MyTorrent.view.main.Main', {
     plugins: 'responsive',
     controller: 'main',
     viewModel: 'main',
-    activeItem : 2,
+    activeItem : 0,
 
-    
+    requires : [
+        'Ext.MessageBox'
+    ],
     tabBarPosition: 'bottom',
     defaults:{
         plugins: 'responsive',
@@ -56,7 +58,7 @@ Ext.define('MyTorrent.view.main.Main', {
             },
             iconCls: 'x-fa fa-search',
 //            layout: 'fit',
-            height : 500,
+//            height : 500,
             items: [{
                 xtype: 'panelRecherche',
                 plugins: 'responsive',

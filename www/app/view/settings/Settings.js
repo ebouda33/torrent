@@ -35,6 +35,7 @@ Ext.define('MyTorrent.view.settings.Settings',{
                 },{
                     label : 'password',
                     xtype : 'passwordfield',
+//                    xtype : 'textfield',
                     name : 'transmission_password',
                     id : 'transmission_password',
                     placeHolder : 'Password'
@@ -84,6 +85,7 @@ Ext.define('MyTorrent.view.settings.Settings',{
                     for(var option in opt){
                         sitems.push({
                         xtype : 'passwordfield',
+//                        xtype : 'textfield',
                         label : option,
                         name : option,
                         id : option,

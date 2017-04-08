@@ -9,7 +9,8 @@ Ext.application({
     extend: 'MyTorrent.Application',
 
     requires: [
-        'MyTorrent.view.main.MainView'
+        'MyTorrent.view.main.MainView',
+        'MyTorrent.view.main.MainModel'
     ],
 
     // The name of the initial view to create. With the classic toolkit this class

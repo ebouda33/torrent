@@ -62,7 +62,7 @@ Ext.define('MyTorrent.view.login.LoginController', {
         token = localStorage.getItem("MyTorrentToken");
         
         if(loggedIn === Ext.returnTrue().toString() && token !== undefined){
-            MyTorrent.getApplication().recherchePlugins();
+            MyTorrent.getApplication().logged();
             this.getView().destroy();
         }
 

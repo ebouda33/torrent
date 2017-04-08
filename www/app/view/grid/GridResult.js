@@ -2,6 +2,7 @@ var Ext = Ext || {};
 
 Ext.define('MyTorrent.view.grid.GridResult',{
     extend : 'Ext.grid.Grid',
+//    extend : 'Ext.grid.Panel',
     xtype : 'torrentresult',
     title : 'Résultat',
     collapsible : true,

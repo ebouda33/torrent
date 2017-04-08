@@ -35,15 +35,15 @@ class Nextorrent extends PluginGenerique{
      * 
      * @param type $search
      */
-    public function __construct(ConfigReader $config=null) {
+    public function __construct(array $config=null) {
         
         $this->name = 'NexTorrent';
         $this->description = "https://www.nextorrent.net -> torrent en Fr en général, rapide et fiable.";
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         if(!empty($config)){
-            $this->config = $config->getConfig();
-            if(!empty($this->config['proxy_url'])){
+            $this->config = $config;
+            if(isset($this->config['proxy_url']) && !empty($this->config['proxy_url'])){
                 $this->proxy = true;
             }
         }
@@ -55,8 +55,8 @@ class Nextorrent extends PluginGenerique{
     
     public function search($search) {
         $searchPageUrl = $this->urlSearch.$search;
-
-        $curl = new CurlUrl($searchPageUrl,$this->proxy,$this->config['proxy_url']);
+        $urlProxy = $this->proxy?$this->config['proxy_url']:null;
+        $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
         $page =$curl->read();
 
         //echo(htmlentities($page));

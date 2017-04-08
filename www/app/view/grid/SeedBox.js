@@ -2,15 +2,16 @@ var Ext = Ext || {};
 
 Ext.define('MyTorrent.view.grid.SeedBox',{
     extend : 'Ext.grid.Grid',
+//    extend : 'Ext.grid.Panel',
     xtype : 'seedboxresult',
-//    title : '',
+    title : '',
     requires : ['MyTorrent.store.SeedBox'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
+    layout: 'fit',
     listeners : {
       initialize : function(grid,eOpts){
-//          ancestor = grid.getBubbleParent().getItems().items;
-//          ancestor[0].setZoneResultat(grid);
-            grid.setStore(Ext.create('MyTorrent.store.SeedBox',{}));
+          MyTorrent.getApplication().gridSeedBox = grid;
+//            grid.setStore(Ext.create('MyTorrent.store.SeedBox',{}));
       } ,
       itemsingletap : function (grid , row , target , record , e , eOpts ){
          
@@ -22,10 +23,27 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
           
       }
     },
-    
+    scrollable : true,
+    items :[{
+            xtype : 'toolbar',
+            docked: 'top',
+            items:[{
+              text : 'SeedBox perso'      
+            },
+              '->'      
+            ,{
+                    
+                    text:'Refresh',
+                    textAlign : 'bottom',
+                    iconCls : 'x-fa fa-refresh',
+                    handler : function(){
+                        MyTorrent.getApplication().loadStoreSeedBox();
+                    }
+            }]
+        }],
     columns: [
         {
-          text : 'Save',
+          text : 'Date',
           dataIndex: 'doneDate',
           width: 100,
           resizable : true,
@@ -41,7 +59,7 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
             dataIndex: 'name',
 //                    sortable: false,  // column cannot be sorted
             width: 250,
-            flex : 1,
+            flex : 1.5,
             resizable : true,
             align : 'left'
         },
@@ -72,7 +90,11 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
             dataIndex: 'status',
             width: 70,
             resizable : true,
-            align : 'left'
+            align : 'left',
+            flex:1,
+            renderer : function(value,record){
+                return MyTorrent.util.Util.statusSeedBox(value);
+            }
         },
         {
             text : '',

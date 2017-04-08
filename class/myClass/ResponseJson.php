@@ -34,7 +34,7 @@ class ResponseJson {
     
     
     
-    public static function returnResponse($file,$query){
+    public static function returnResponse(){
         $retour =array('success'=>false,'data'=>null,'message'=>'Erreur de traitement');
         //controle TOKEn
         $token = filter_input(INPUT_GET, self::$TOKEN);
@@ -42,20 +42,20 @@ class ResponseJson {
         if((!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
              $retour['message']='Vous n\'êtes pas identifié correctement.';
         }else{
-            $retour = self::traitementReponse($action,$token,$file,$query,$retour);
+            $retour = self::traitementReponse($action,$token,$retour);
         }
         return json_encode($retour);
     }
     
-    private static function traitementReponse($action,$token,$file,$query,$retour){
+    private static function traitementReponse($action,$token,$retour){
         try{
-            $configR = new ConfigReader($file);
+//            $configR = new ConfigReader($file);
             if($action === strtolower(self::$LOGIN)){
                 $retour = self::toLogin($retour);
             }else if($action === strtolower(self::$TRANSMISSION)){
                 $retour = self::toTransmission($token,$retour);
             }else if($action === strtolower(self::$SEARCH)){
-                $retour = self::toSearch($configR,$retour);
+                $retour = self::toSearch($token,$retour);
             }else if($action === strtolower(self::$PLUGIN)){
                 $retour = self::toPlugin($retour);
             }else if($action === strtolower(self::$SETTINGS)){
@@ -67,6 +67,8 @@ class ResponseJson {
             }
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
+        }catch(TransmissionRPCException $exc){
+            $retour['message'] = "Probleme de connexion à la SeedBox <br>".$exc->getMessage();
         }
         
         return $retour;
@@ -75,23 +77,18 @@ class ResponseJson {
     
     private static function toLogin($retour){
         
-        $url = filter_input(INPUT_GET, self::$LOGIN);
-        if(!is_null($url) && $url !== false){
-            //Authentification systeme
-            $user = filter_input(INPUT_GET, 'username');
-            $pwd = filter_input(INPUT_GET, 'password');
-            $res = Services::authentification($user, $pwd);
-            if(!empty($res) && count($res)=== 2){
-                $retour['success'] = true;
-                $retour['data'] = $res['token'];
-                $retour['name'] = $res['name'];
-                $retour['message'] = '';
-                
-                $_SESSION['token'] =  $res['token'];
-                
-            }
-        }else{
-            $retour['message']= 'Erreur dans le lien '.$url;  
+        //Authentification systeme
+        $user = filter_input(INPUT_GET, 'username');
+        $pwd = filter_input(INPUT_GET, 'password');
+        $res = Services::authentification($user, $pwd);
+        if(!empty($res) && count($res)=== 2){
+            $retour['success'] = true;
+            $retour['data'] = $res['token'];
+            $retour['name'] = $res['name'];
+            $retour['message'] = '';
+
+            $_SESSION['token'] =  $res['token'];
+
         }
 
         return$retour;
@@ -141,7 +138,7 @@ class ResponseJson {
         return $retour;
     }
     
-    private static function toSearch(ConfigReader $config,$retour){
+    private static function toSearch($token,$retour){
         //on execute la recherche sur tout les plugin demandé
         $jsonPlug = filter_input(INPUT_GET, 'plugins');
         $search = filter_input(INPUT_GET, self::$SEARCH);
@@ -151,6 +148,7 @@ class ResponseJson {
             foreach($plugins as $plugin){
                 $classname = PluginGenerique::getPluginClassName($plugin->id);
             }
+            $config = Services::loadSettings($token);
             $torrent = new $classname($config);
             
             $start = filter_input(INPUT_GET, 'start')!== false?filter_input(INPUT_GET, 'start'):0;
@@ -200,20 +198,24 @@ class ResponseJson {
     }
     
     private static function getSeedbox($token,$retour){
-        $retour['message'] = '';
+        $retour['message'] = 'Problème sur les settings';
         $proxy = false;
         $settings = Services::loadSettings($token);
         if(!empty($settings['proxy_url'] )){
             $proxy = true;
         }
-        $transmission = new \Transmission\TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy);
-        
-        $elements = $transmission->get();
-        $stats = $transmission->sstats();
-        $retour['success'] = $elements->result === 'success'?true:false;
-        $retour['data'] = $elements->arguments->torrents;
-        $retour['stats'] = $stats;
-        $retour['totalCount'] = count($retour['data']);
+//        var_dump($settings);
+        if(isset($settings['transmission_url']) && isset($settings['transmission_user']) && isset($settings['transmission_password']) ){
+            $transmission = new TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy);
+
+            $elements = $transmission->get();
+            $stats = $transmission->sstats();
+            $retour['success'] = $elements->result === 'success'?true:false;
+            $retour['data'] = $elements->arguments->torrents;
+            $retour['stats'] = $stats;
+            $retour['message'] = '';
+            $retour['totalCount'] = count($retour['data']);
+        }
         return $retour;
     }
            

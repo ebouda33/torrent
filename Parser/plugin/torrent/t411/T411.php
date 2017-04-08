@@ -34,18 +34,21 @@ class T411 extends PluginGenerique{
     private $success = false;
     private $totalCount = 0;
     
-    function __construct(ConfigReader $config=null) {
+    function __construct(Array $config=null) {
         
         $this->name = 'T411';
-        $this->description = "http://api.t411.li -> Le célébre T411.Il faut un compte pour fonctionner.";
+        $this->description = "https://api.t411.ai -> Le célébre T411.Il faut un compte pour fonctionner.";
         
         if(!empty($config)){
-            $this->config = $config->getConfig();
-            if(!empty($this->config['proxy_url'])){
+//            $this->config = $config->getConfig();
+            $this->config = $config;
+            $urlProxy = '';
+            if(isset($this->config['proxy_url']) && !empty($this->config['proxy_url'])){
                 $this->proxy = true;
+                $urlProxy = $this->config['proxy_url'];
             }
             $this->urlSearch = $this->urlApi . '/torrents/search/';
-            $this->curl = new CurlUrl($this->urlSearch,$this->proxy,$this->config['proxy_url']);
+            $this->curl = new CurlUrl($this->urlSearch,$this->proxy,$urlProxy);
             
             $this->login();
         
@@ -72,7 +75,7 @@ class T411 extends PluginGenerique{
     }
     
     private function auth(){
-        $this->username = $this->config['t411_user'];
+        $this->username = $this->config['t411_username'];
         $this->password = $this->config['t411_password'];
         $this->curl->definePost([
                 'username' => $this->username,

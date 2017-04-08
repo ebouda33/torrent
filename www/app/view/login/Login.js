@@ -2,12 +2,14 @@
 Ext = Ext ||'';
 Ext.define('MyTorrent.view.login.Login', {
     extend: 'Ext.MessageBox',
+//    extend: 'Ext.window.MessageBox',
     xtype: 'login',
     
     requires: [
         'MyTorrent.view.login.LoginController',
         'Ext.form.Panel'
     ],
+    closable :true,
     modal : true,
     controller: 'login',
     bodyPadding: 10,
@@ -43,6 +45,7 @@ Ext.define('MyTorrent.view.login.Login', {
             }
         }, {
             xtype: 'passwordfield',
+//            xtype : 'textfield',
             name: 'password',
             placeHolder : 'Password',
             inputType: 'password',

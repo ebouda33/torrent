@@ -11,10 +11,10 @@ set_time_limit(180);
  * page permettant de traiter les demandes du front
  */
 
-$file = new Fichier(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR,'config_appli.ini');
-$query = Request::getQueryString();
+//$file = new Fichier(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR,'config_appli.ini');
+//$query = Request::getQueryString();
 
 
-echo ResponseJson::returnResponse($file,$query);
+echo ResponseJson::returnResponse();
 
 

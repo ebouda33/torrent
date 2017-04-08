@@ -12,8 +12,6 @@ Ext.define('MyTorrent.view.main.MainView',{
 //        'Ext.layout.Fit',
         'MyTorrent.view.main.Main',
         'MyTorrent.view.main.MainController',
-        'MyTorrent.view.main.MainModel',
-        'MyTorrent.view.liste.ListeResultat',
         'MyTorrent.view.main.Accueil'
     ],
     
