@@ -216,7 +216,8 @@ class Nextorrent extends PluginGenerique{
 
     private function getMagnet($url){
        $urlMagnet = array();
-        $curl = new CurlUrl($url,$this->proxy,$this->config['proxy_url']);
+       $urlProxy = $this->proxy?$this->config['proxy_url']:null;
+        $curl = new CurlUrl($url,$this->proxy,$urlProxy);
         $page =$curl->read();
         if($page !== false){
             $arbre = new DomDocument();

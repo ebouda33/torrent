@@ -63,8 +63,10 @@ Ext.define('MyTorrent.view.settings.Settings',{
             ]
         },{
             xtype : 'button',
+            id : 'btSettingsSave',
             text : 'Enregistrer',
-            handler : 'onSettingsClick'
+            handler : 'onSettingsClick',
+            hidden : true
         }
         
     ],
@@ -104,6 +106,7 @@ Ext.define('MyTorrent.view.settings.Settings',{
             }
         });
         fieldsetPlugin.setItems(items);
+        Ext.getCmp('btSettingsSave').setHidden(false);
     },
     setSettings : function(data){
         for(var opt in data){
