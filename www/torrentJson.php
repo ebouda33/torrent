@@ -6,7 +6,7 @@ use myClass\ResponseJson;
 use Standard\Fichier\Fichier;
 use Standard\Web\Request;
 
-set_time_limit(180);
+set_time_limit(120);
 /* 
  * page permettant de traiter les demandes du front
  */

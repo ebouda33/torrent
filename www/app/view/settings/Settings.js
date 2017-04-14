@@ -11,7 +11,8 @@ Ext.define('MyTorrent.view.settings.Settings',{
     extend : 'Ext.form.Panel',
     xtype : 'settingpanel',
     requires: [
-        'MyTorrent.view.settings.SettingsController'
+        'MyTorrent.view.settings.SettingsController',
+        'MyTorrent.view.settings.LocationFiles'
     ],
     controller :'settings',
     items : [
@@ -20,7 +21,7 @@ Ext.define('MyTorrent.view.settings.Settings',{
             title : 'Seedbox Transmission',
             items : [
                 {
-                    xtype : 'textfield',
+                    xtype : 'urlfield',
                     label : 'Serveur Transmission',
                     name : 'transmission_url',
                     id : 'transmission_url',
@@ -39,6 +40,12 @@ Ext.define('MyTorrent.view.settings.Settings',{
                     name : 'transmission_password',
                     id : 'transmission_password',
                     placeHolder : 'Password'
+                },
+                {
+                    xtype : 'libraries',
+                    name : 'bibliotheque',
+                    id : 'bibliotheque',
+                    placeHolder : 'Chemin DL pour la seedBox, return pour ajouter'
                 }
             ]
         },

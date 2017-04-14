@@ -8,7 +8,6 @@
 
 namespace myClass;
 
-use config\ConfigReader;
 use Parser\plugin\torrent\PluginException;
 use Parser\plugin\torrent\PluginGenerique;
 use Parser\plugin\torrent\PluginListeResults;
@@ -192,6 +191,8 @@ class ResponseJson {
             $retour['data'] = Services::loadSettings($token);
         }else{
             $retour['success'] = Services::saveSetings(Services::getEmail($token), filter_input_array(INPUT_GET));
+//            var_dump(filter_input_array(INPUT_GET));
+//            $retour['success'] = true;
             $retour['message'] = $retour['success']?'Settings save':'Settings not save retry';
         }
         return $retour;

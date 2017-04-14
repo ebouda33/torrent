@@ -43,7 +43,7 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
                ,success :function (response,opts){
                    var obj = Ext.decode(response.responseText);
                    if(obj.success){
-                       me.success(me,obj.name,obj.data);
+                       me.success(me,button,obj.name,obj.data);
                    }else{
                        me.failure(me,button);
                    }
@@ -60,12 +60,13 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
         
 
     },
-    success: function(controller,name,token) { 
-        
+    success: function(controller,button,name,token) { 
+        button.setText(button.getInitialConfig('text'));
+        button.setStyle({color:'green'});
     },
     failure: function(controller,button) { 
-        
-        
+        button.setText('Erreur lors de l\'enregistrement, Enregistrer');
+        button.setStyle({color:'red'});
     }
     
     
