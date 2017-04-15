@@ -8,9 +8,7 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
         var form = button.up('formpanel');
         button.setDisabled(true);
         var config = form.getConfig();
-//        eric = form;
         var cmps = config.items.items;
-        eric = form;
         form.setMasked(true);
         var params = {
             action : 'settings',

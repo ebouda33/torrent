@@ -10,6 +10,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
     id : 'library',
 //    requires : ['Ext.ux.form.MultiSelect'],
     libraries : [],
+    readOnly : false,
     initialize: function() {
         var me = this;
  
@@ -18,7 +19,15 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
         
         var items = me.getComponent().getItems().items ;
         items[0].setPlaceHolder( me.placeHolder || 'Chemin vers une zone de DL, return pour ajouter');
+        if(me.readOnly){
+            me.setLabel('');
+        }
+        items[0].setHidden(me.readOnly);
+        
+        items[1].setHideHeaders(me.readOnly);
+        
     },
+    
     addLibrary : function(value){
         var me = this;
         if(value !== null){
@@ -59,6 +68,15 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
         items[1].setStore(store);
         
     },
+    getSelectedValue : function(){
+        var me = this;
+        var items = me.getComponent().getItems().items ;
+        var grid = items[1];
+        if(grid.getSelection() !== null){
+            return grid.getSelection().data.location;
+        }
+        return null;
+    },
     component :
         
         {
@@ -95,38 +113,36 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
                     height : 200,
                     tbar : 'bottom',
                     listeners :{
+                        
                       itemtap : function(grid , index , target , record , e , eOpts){
                           var store = grid.getStore();
-                          eric =grid;
                           grid.deleteLocation(store,index);
-                      }  
+                      } 
                     },
-                    plugins: {
-                        type: 'multiselection',
-                        triggerText: 'My Select Button',
-                        cancelText: 'Forget about it',
-                        deleteText: 'Get outta here'
-                    },
+                    
                     layout : 'fit',
                     
                     columns: [
-                            {
-                         text : 'Destination',
-                         dataIndex: 'location',
-                         flex : 1,   
-                       align : 'left'
+                           {
+                        text : 'Destination',
+                        dataIndex: 'location',
+                        flex : 1,
+                        align : 'left'
                     
                        },
                        {
                            width:30,
                            renderer : function(value,record,index,cell){
-//                               e = this;
-//                               var grid = this.getParent().getParent();
-//                               console.log(this);
-                               cell.setEncodeHtml (false);
-                                return "<div class='x-fa fa-trash' style='cursor:pointer;'></div>";
+                                var me = this;
+                                var parent  = me.getParent().getParent().getParent();
+                                var component = parent.getParent();
+                                if(!component.readOnly){
+                                    cell.setEncodeHtml (false);
+                                    return "<div class='x-fa fa-trash' style='cursor:pointer;'></div>";
+
+                                }
+                                return '';
                             }
-                            
           
                        }
                     ],
@@ -134,12 +150,14 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
                         var me = this;
                         var parent  = me.getParent();
                         component = parent.getParent();
-                        store.removeAt(ligne);
-                        var elements = [];
-                        Array.forEach(store.data.items,function(row){
-                            elements.push(row.data.location);
-                        });
-                        component.setValue(elements);
+                        if(!component.readOnly){
+                            store.removeAt(ligne);
+                            var elements = [];
+                            Array.forEach(store.data.items,function(row){
+                                elements.push(row.data.location);
+                            });
+                            component.setValue(elements);
+                        }
                     }
                 }
             ]

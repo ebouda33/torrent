@@ -117,10 +117,10 @@ class ResponseJson {
     private static function toMagnet($token,$url,$retour){
         $config = Services::loadSettings($token);
         $proxy = self::getProxy($config);
-        
+        $location = filter_input(INPUT_GET, "location");
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
-            $result =  $transmission->add($url,'/mnt/data/videos/adulte');
+            $result =  $transmission->add($url,$location);
             $id = 0;
             if(isset($result->arguments->torrent_duplicate)){
                 $id = $result->arguments->torrent_duplicate->id;

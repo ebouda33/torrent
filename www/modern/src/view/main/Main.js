@@ -12,7 +12,7 @@ Ext.define('MyTorrent.view.main.Main', {
     plugins: 'responsive',
     controller: 'main',
     viewModel: 'main',
-    activeItem : 3,
+    activeItem : 1,
 
     requires : [
         'Ext.MessageBox'

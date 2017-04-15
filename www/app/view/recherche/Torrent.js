@@ -67,13 +67,17 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                 
                 // Handle enter key presses, execute the search if the field has a value
                 checkEnterKey: function(field, e) {
+                    //recuperer la location avant
                     var value = field.getValue();
                     if (e.getKey() === e.ENTER && !Ext.isEmpty(value) && field.getPluginsUse() !== undefined && field.getPluginsUse().length > 0 ) {
-                        var p = Ext.encode(field.getPluginsUse(field));
-                        var url = Ext.String.format(field.searchUrl, value,p);
-                        field.setDisabled(true);
-                        this.executeSearch(url,value,p);
+                            var p = Ext.encode(field.getPluginsUse(field));
+                            var url = Ext.String.format(field.searchUrl, value,p);
+                            field.setDisabled(true);
+                            this.executeSearch(url,value,p);
+                        
 //                        location.href = Ext.String.format(field.searchUrl, value);
+                    }else if(e.getKey() === e.ENTER){
+                        Ext.Msg.alert('Choose Plugin');
                     }
                 },
                 getPluginsUse : function(){
@@ -91,6 +95,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     }
                     return plugins;
                 },
+               
                 executeSearch : function(url,value,p){
 //                    console.log(url);
                     var me = this;
@@ -125,6 +130,38 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                 }
             }
             ]
+        },
+        {
+            xtype:'fieldset',
+            title : 'Location for Download',
+            height:200,
+            items:[
+                {
+                    xtype:'panel',
+                    html : 'Aucune seedBox Configurer voir les settings'
+                    
+                },{
+                    xtype : 'libraries',
+                    layout : 'fit',
+                    name : 'bibliothequeSearch',
+                    id : 'bibliothequeSearch',
+                    readOnly : true
+                }
+            ],
+            listeners : {
+                    initialize : function(panel,eopts){
+                    MyTorrent.getApplication().setListenersSettings(panel);
+
+                }
+            },
+            setSettings : function(data){
+                var me = this;
+                var items = me.getItems().items;
+                items[1].setValue(data.bibliotheque);
+                if(data.bibliotheque.trim().length > 1){
+                    items[0].setHidden(true);
+                }
+            }
         }
         
     ]
@@ -156,6 +193,12 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
     }
     ,setZoneResultat : function(grid){
         this.grid = grid;
+        grid.setSearchZone(this);
     }
-   
+   , getSelectedLocation : function(){
+        var enfants = this.getItems().items;
+        //prise en compte que des checkbox
+        var component = enfants[2].getItems().items[1];
+        return component.getSelectedValue();
+    }
 });

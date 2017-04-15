@@ -9,6 +9,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
 //            layout : 'fit',
     requires : ['MyTorrent.store.Torrent'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
+    zoneSearch : null,
     listeners : {
       initialize : function(grid,eOpts){
           ancestor = grid.getBubbleParent().getItems().items;
@@ -122,8 +123,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
             resizable : false,
             align : 'left',
             renderer : function (value,record){
-//                        console.log(container,position);
-                var message = 'Goto MyTransmision';
+                var message = 'Goto MySeedBox';
                 return message;
             }
 
@@ -140,49 +140,60 @@ Ext.define('MyTorrent.view.grid.GridResult',{
       
     },
     gotoTransmission : function (torrent){
+        var me  =this;
 //        console.log('prise en compte de ...'+torrent);
 //        console.log('encode '+Ext.encode(torrent));
         if(torrent.indexOf('&tr')>0){
             torrent = torrent.replace(/&tr/g,'@');
         }
-        Ext.Ajax.request({
-            url :  'torrentJson.php'
-            ,method : 'GET'
-            ,params : 'action=transmission&token='+localStorage.getItem("MyTorrentToken")+'&transmission='+torrent
-            ,success :function (response,opts){
-                var obj = Ext.decode(response.responseText);
-                var icon = 'x-fa fa-info' ;
-                var message = 'Lien envoyer au serveur Transmission, dans quelques temps le fichier sera dispo';
-                if(!obj.success){
-                    message = obj.message;
-                    icon = 'x-fa fa-warning' ;
+        //recuperer la location avant
+        var location = me.zoneSearch.getSelectedLocation();
+        if(location !== null){
+            Ext.Ajax.request({
+                url :  'torrentJson.php'
+                ,method : 'GET'
+                ,params : 'action=transmission&token='+localStorage.getItem("MyTorrentToken")+'&transmission='+torrent+'&location='+location
+                ,success :function (response,opts){
+                    var obj = Ext.decode(response.responseText);
+                    var icon = 'x-fa fa-info' ;
+                    var message = 'Lien envoyer au serveur Transmission, dans quelques temps le fichier sera dispo';
+                    if(!obj.success){
+                        message = obj.message;
+                        icon = 'x-fa fa-warning' ;
+                    }
+                    if(obj.duplicate !== undefined && obj.duplicate){
+                        message = 'Torrent existant';
+                    }
+                    Ext.Msg.show({
+                        title : 'Envoi Transmission',
+                        itemId : 'msgTransmission',
+                        message : message,
+                        buttons : Ext.MessageBox.OK,
+                        iconCls :  icon ,
+                        closable : true,
+                        height : 200
+                    });
+
+
                 }
-                if(obj.duplicate !== undefined && obj.duplicate){
-                    message = 'Torrent existant';
+                ,failure : function(response,opts){
+                    icon = 'x-fa fa-error' ;
+                    Ext.Msg.show({
+                        title : 'Envoi Transmission',
+                        message : response.statusText,
+                        buttons : Ext.MessageBox.OK,
+                        iconCls :  icon ,
+                        closable : true
+                    });
                 }
-                Ext.Msg.show({
-                    title : 'Envoi Transmission',
-                    itemId : 'msgTransmission',
-                    message : message,
-                    buttons : Ext.MessageBox.OK,
-                    iconCls :  icon ,
-                    closable : true,
-                    height : 200
-                });
+            });
+        }else{
+            Ext.Msg.alert('Vous avez oublie','Selectionnez la location pour envoyer vers la SeedBox.');
+        }
 
-
-            }
-            ,failure : function(response,opts){
-                icon = 'x-fa fa-error' ;
-                Ext.Msg.show({
-                    title : 'Envoi Transmission',
-                    message : response.statusText,
-                    buttons : Ext.MessageBox.OK,
-                    iconCls :  icon ,
-                    closable : true
-                });
-            }
-        });
-
+    },
+    setSearchZone : function (zone){
+        var me = this;
+        me.zoneSearch = zone;
     }
 });

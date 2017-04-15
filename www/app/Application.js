@@ -27,6 +27,7 @@ Ext.define('MyTorrent.Application', {
     ],
     quickTips : true,
     listenersPlugins : [],
+    listenersSettings : [],
     storeSeedBox : null,
     plugin : null,
     configPanel : null,
@@ -130,6 +131,15 @@ Ext.define('MyTorrent.Application', {
         }
         );
     },
+    setListenersSettings : function(elem){
+      this.listenersSettings.push(elem);  
+    },
+    pushListenersSettings : function(data){
+        Ext.each(this.listenersSettings,function(elem){
+            elem.setSettings(data);
+        }
+        );
+    },
     loadSettings : function(){
         var me = this;
         var token = localStorage.getItem("MyTorrentToken");
@@ -154,6 +164,7 @@ Ext.define('MyTorrent.Application', {
                             bar.setActiveTab(0);
                             
                         }
+                        me.pushListenersSettings(obj.data);
                        localStorage.setItem("MyTorrentSeebBox",!seed.isHidden());
                    }
                    
