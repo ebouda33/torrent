@@ -101,7 +101,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
                             var component = parent.getParent();
                             var value = field.getValue() !== null?field.getValue().trim():null;
                             component.addLibrary(value);
-                            component.setValue(component.librairies);
+                            component.setValue(component.libraries);
                             field.setValue('');
                             field.focus();
                             
