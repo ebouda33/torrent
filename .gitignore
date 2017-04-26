@@ -3,6 +3,7 @@
 test*
 config_appli.ini*
 /config/config_appli.ini
+/config/config_general.ini
 /config/config_appli.crypt
 /config/eric@aboudaram.net.ini
 /config/eric@aboudaram.net.key
