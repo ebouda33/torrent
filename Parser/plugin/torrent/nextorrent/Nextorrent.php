@@ -8,7 +8,6 @@
 
 namespace Parser\plugin\torrent\nextorrent;
 
-use config\ConfigReader;
 use DOMDocument;
 use DOMElement;
 use Parser\CurlUrl;
@@ -56,7 +55,9 @@ class Nextorrent extends PluginGenerique{
     public function search($search) {
         $searchPageUrl = $this->urlSearch.$search;
         $urlProxy = $this->proxy?$this->config['proxy_url']:null;
+        $searchPageUrl .= ($this->getStart() > 0)?'/'.intval($this->getStart())+1:'';
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
+        
         $page =$curl->read();
 
         if($page !== false){
@@ -138,6 +139,8 @@ class Nextorrent extends PluginGenerique{
         $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
         $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
         $this->result[$index]['category'] =  $urlTorrent['category'];
+        $this->result[$index]['categoryLabel'] =  $urlTorrent['categoryLabel'];
+        
     }
 
 
@@ -152,6 +155,8 @@ class Nextorrent extends PluginGenerique{
             $results['size'] = $resultat['size'];
             $results['magnet'] = $resultat['magnet'];
             $results['category'] = $resultat['category'];
+            $results['categoryLabel'] = $resultat['categoryLabel'];
+            
             $retour->append($results);
         }
         return $retour;
@@ -189,7 +194,7 @@ class Nextorrent extends PluginGenerique{
 
             $leecher=$this->getTextContent($tr[6]);
             
-            return array('category'=>$category,"url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
+            return array('category'=>$category['image'],'categoryLabel'=>$category['label'],"url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
             
        }
        return null;
@@ -200,12 +205,13 @@ class Nextorrent extends PluginGenerique{
     private function transformeCategory($value){
 //        var_dump($value);
         $cat = strtolower(str_replace(array(' ','/'), '-', $value));
+        $image = null;
         foreach ($this->ini as $section){
             if(isset($section[$cat]) && isset($section['icone'])){
-                $cat = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.$section['icone']);
+                $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.$section['icone']);
             }
         }
-        return $cat;
+        return array('image'=>$image,'label'=>$cat);
     }
     
     private function getTextContent($tr,$index=1){

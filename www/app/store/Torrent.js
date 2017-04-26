@@ -13,13 +13,16 @@ Ext.define('MyTorrent.store.Torrent',{
         config.url = config.url || '';
         config.search = config.search || '';
         config.plugins = config.plugins ||[];
+        config.categorie = config.categorie || 'films';
         config.fields = config.fields || [
             {name: 'title'},
             {name: 'size'},
             {name: 'magnet'},
             {name: 'leecher'},
             {name: 'seeder'},
-            {name: 'category'}
+            {name: 'category'},
+            {name: 'categoryLabel'},
+            
 
          ];
         config = Ext.apply({
@@ -30,7 +33,7 @@ Ext.define('MyTorrent.store.Torrent',{
                 type : 'ajax',
                 url :  config.url
                 ,method : 'GET'
-                ,extraParams : {action:'search','search':config.search,'plugins':config.plugins,token:localStorage.getItem("MyTorrentToken")}
+                ,extraParams : {action:'search','categorie':config.categorie,'search':config.search,'plugins':config.plugins,token:localStorage.getItem("MyTorrentToken")}
                 ,reader : {
                     type : 'json',
                     rootProperty : 'data',

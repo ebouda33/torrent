@@ -15,6 +15,8 @@ class PluginResults extends \ArrayObject{
     //put your code here
     private $id;
     
+    private $name;
+    
     private $title;
     
     private $size;
@@ -27,14 +29,26 @@ class PluginResults extends \ArrayObject{
     
     private $category;
     
+    private $categoryLabel;
     
     
 //    private $index = ['id','title','size','url','leecher','seeder','category'];
-    
-    public function offsetSet($name, $value) {
+    public function __construct($input = []) {
+        parent::__construct($input,0,"ArrayIterator");
+//        var_dump($input);
+//        foreach ($input as $name => $value) {
+//            parent::offsetSet($name, $value);
+//            $this->offsetSet($name, $value,true);
+//        }
+    }
+
+
+    public function offsetSet($name, $value,$force = false) {
+        
         if($this->offsetExists($name)){
             parent::offsetSet($name, $value);
         }else{
+            exit(0);
             throw new PluginException('Parametre inconnu ['.$name.'] dans '.__CLASS__);
         }
         

@@ -22,7 +22,12 @@ abstract class PluginGenerique implements PluginInterface{
     protected $description;
     protected $name;
     protected $options=null;
+    protected $start = 0;
+    protected $limit = 25;
+    protected $categorie = null;
     
+
+
     public static function getListe(){
         $explorer = new Explorer(dirname(__FILE__));
         $result = array();
@@ -93,6 +98,48 @@ abstract class PluginGenerique implements PluginInterface{
     public function search($motif,array $options=null){
         throw new Exception('Not Yet Implemented');
     }
+    
+    public function getConfigGeneral(){
+        $file = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config_general.ini';
+        $config = \Standard\Fichier\ReaderIni::read($file);
+        
+        return $config;
+    }
+    
+    public function setStart($value){
+        $this->start = $value;
+    }
+    function getStart() {
+        return $this->start;
+    }
+
+        function getLimit() {
+        return $this->limit;
+    }
+
+    function setLimit($limit) {
+        $this->limit = $limit;
+    }
+    
+    function getCategorie() {
+        return $this->categorie;
+    }
+
+    function setCategorie($categorie) {
+        $this->categorie = $categorie;
+    }
+
+
+    function toString(){
+        
+        return get_called_class();
+    }
+    
+    public function getNameOfClass()
+   {
+      return static::class;
+   }
+
 
     
 }

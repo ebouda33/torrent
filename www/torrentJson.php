@@ -14,7 +14,19 @@ set_time_limit(120);
 //$file = new Fichier(dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR,'config_appli.ini');
 //$query = Request::getQueryString();
 
-
-echo ResponseJson::returnResponse();
-
+//connaitre si l on veut un json ou header dl
+$action = filter_input(INPUT_GET, ResponseJson::$ACTION);
+if($action === ResponseJson::$DOWNLOAD){
+    $filename = ResponseJson::getDetails()->name;
+    
+    header('Content-Type: application/force-download');
+    // Il sera nommé downloaded.pdf
+    header('Content-Disposition: attachment; filename="'.$filename.'.torrent"');
+    header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date dans le passé
+    
+    echo ResponseJson::returnTorrent();
+}else{
+    echo ResponseJson::returnResponse();
+}
 
