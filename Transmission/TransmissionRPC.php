@@ -262,9 +262,10 @@ class TransmissionRPC
    */
   public function add_file ( $torrent_location, $save_path = '', $extra_options = array() )
   {
-    if(!empty($save_path)) $extra_options['download-dir'] = $save_path;
+    if(!empty($save_path)){
+        $extra_options['download-dir'] = $save_path;
+    }
     $extra_options['filename'] = $torrent_location;
-    
     return $this->request( "torrent-add", $extra_options );
   }
 
@@ -549,24 +550,30 @@ class TransmissionRPC
     if ( $this->username && $this->password )
       $contextopts['http']['header'] .= sprintf( "Authorization: Basic %s\r\n", base64_encode( $this->username.':'.$this->password ) );
     
-    if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: Stream context created with options:" .
+    if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: Stream context created with options:" .
                             PHP_EOL . print_r( $contextopts, true );
     
     $context  = stream_context_create( $contextopts );	// Create the context for this request
+    if( $this->debug ){
+        echo "<br>URL:".$this->url;
+    }
     if ( $fp = fopen( $this->url, 'r', false, $context ) ) {	// Open a filepointer to the data, and use fgets to get the result
       $response = '';
       while( $row = fgets( $fp ) ) {
         $response.= trim( $row )."\n";
       }
-      if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: POST Result: ".
+      if( $this->debug ){
+          var_dump($response);
+          echo "<br>TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: POST Result: ".
                               PHP_EOL . print_r( $response, true );
+      }
     } else
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
     
     // Check the response (headers etc)
     $stream_meta = stream_get_meta_data( $fp );
     fclose( $fp );
-    if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: request( method={$method}, ...):: Stream meta info: ".
+    if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: request( method={$method}, ...):: Stream meta info: ".
                             PHP_EOL . print_r( $stream_meta, true );
     if( $stream_meta['timed_out'] ){
         
@@ -600,7 +607,7 @@ class TransmissionRPC
     if ( $this->username && $this->password )
       $contextopts['http']['header'] = sprintf( "Authorization: Basic %s\r\n", base64_encode( $this->username.':'.$this->password ) );
     
-    if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream context created with options:".
+    if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream context created with options:".
                             PHP_EOL . print_r( $contextopts, true );
     
     $context  = stream_context_create( $contextopts );
@@ -614,7 +621,7 @@ class TransmissionRPC
 //    fclose( $fp );
 //    var_dump($stream_meta['wrapper_data']);
 //    exit(0);
-    if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream meta info: ".
+    if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream meta info: ".
                             PHP_EOL . print_r( $stream_meta, true );
     if( $stream_meta['timed_out'] ){
         
@@ -628,7 +635,7 @@ class TransmissionRPC
       {
         if( strpos( $header, 'X-Transmission-Session-Id: ' ) === 0 )
         {
-          if( $this->debug ) echo "TRANSMISSIONRPC_DEBUG:: GetSessionID():: Session-Id header: ".
+          if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: GetSessionID():: Session-Id header: ".
                                   PHP_EOL . print_r( $header, true );
           $this->session_id = trim( substr( $header, 27 ) );
           break;
@@ -682,5 +689,9 @@ class TransmissionRPC
     $this->session_id = null;
     
     
+  }
+  
+  public function setDebug($value){
+      $this->debug = $value;
   }
 }

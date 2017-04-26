@@ -19,7 +19,8 @@ Ext.define('MyTorrent.view.grid.GridResult',{
           //ask question
           var magnet = record.data.magnet;
           var txt = '';
-          if(magnet.indexOf('magnet')>=0){
+          
+          if(magnet !== undefined && magnet.indexOf('magnet')>=0){
               txt = magnet;
           }
           Ext.Msg.show({
@@ -29,8 +30,8 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                     width : '80%',
                     height : 200,
                     buttons : [{
-                            text : (txt === '')?'DL':'Magnet',
-                            itemId : 'torrentDL',
+                            text : 'Magnet',
+                            itemId : 'torrentMagnet',
                             hidden : (txt === ''),
                             handler : function(){
                                 window.open(txt);
@@ -40,9 +41,18 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                         text : 'seedbox',
                         itemId : 'torrentSeedbox',
                         handler : function(){
-                            grid.gotoTransmission(record.data.magnet);
+                            var torrent = (record.data.magnet === undefined)?record.data.id:record.data.magnet;
+                            grid.gotoTransmission(torrent);
                         }
                     },{
+                      text : 'DL',
+                      itemId : 'torrentDL',
+                      hidden : (txt === '')?false:true,
+                      handler : function(){
+                          grid.downloadTorrent(record.data.id);
+                      }
+                    },
+                    {
                         text : 'annuler',
                         itemId : 'cancel'
                     }
@@ -78,9 +88,9 @@ Ext.define('MyTorrent.view.grid.GridResult',{
                //console.log(container,position);
                if(value.indexOf('data:image')>-1){
                     cell.setEncodeHtml (false);
-                    return '<img src="'+value+'" alt=\'categories\'/>';
+                    return '<img src="'+value+'" alt=\''+record.data.categoryLabel+'\' title=\''+record.data.categoryLabel+'\' />';
                 }
-                return value;
+                return record.data.categoryLabel;
                 
             }
         },
@@ -99,7 +109,10 @@ Ext.define('MyTorrent.view.grid.GridResult',{
 //                    hidden: true  // column is initially hidden
             resizable : true,
             width : 70,
-            align : 'left'
+            align : 'left',
+            renderer : function(value,record){
+                return MyTorrent.util.Util.getSizeLitteral(value);
+            }
 
         },
         {
@@ -149,10 +162,11 @@ Ext.define('MyTorrent.view.grid.GridResult',{
         //recuperer la location avant
         var location = me.zoneSearch.getSelectedLocation();
         if(location !== null){
+            var plugin = me.zoneSearch.getPluginUse();
             Ext.Ajax.request({
                 url :  'torrentJson.php'
                 ,method : 'GET'
-                ,params : 'action=transmission&token='+localStorage.getItem("MyTorrentToken")+'&transmission='+torrent+'&location='+location
+                ,params : 'action=transmission&token='+localStorage.getItem("MyTorrentToken")+'&transmission='+torrent+'&location='+location+'&plugin='+Ext.JSON.encode(plugin)
                 ,success :function (response,opts){
                     var obj = Ext.decode(response.responseText);
                     var icon = 'x-fa fa-info' ;
@@ -191,6 +205,16 @@ Ext.define('MyTorrent.view.grid.GridResult',{
             Ext.Msg.alert('Vous avez oublie','Selectionnez la location pour envoyer vers la SeedBox.');
         }
 
+    },
+    downloadTorrent : function(id){
+        var me = this;
+        //recuperer la location avant
+        var plugin = me.zoneSearch.getPluginUse();
+        plugin = Ext.JSON.encode(plugin);
+//        console.log('torrentJson.php?action=download&id='+id+'&plugin='+plugin+'&token='+localStorage.getItem("MyTorrentToken"));
+        window.location = 'torrentJson.php?action=download&id='+id+'&plugin='+plugin+'&token='+localStorage.getItem("MyTorrentToken");
+        
+        
     },
     setSearchZone : function (zone){
         var me = this;

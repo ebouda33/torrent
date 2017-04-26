@@ -11,6 +11,7 @@ namespace myClass;
 use Parser\plugin\torrent\PluginException;
 use Parser\plugin\torrent\PluginGenerique;
 use Parser\plugin\torrent\PluginListeResults;
+use Standard\Fichier\ReaderIni;
 use Transmission\TransmissionRPC;
 use Transmission\TransmissionRPCException;
 
@@ -21,7 +22,7 @@ use Transmission\TransmissionRPCException;
  */
 class ResponseJson {
     //put your code here
-    private static $ACTION = 'action';
+    public static $ACTION = 'action';
     private static $PLUGIN = 'plugin';
     private static $SEARCH = 'search';
     private static $TRANSMISSION = 'transmission';
@@ -29,8 +30,50 @@ class ResponseJson {
     private static $TOKEN = 'token';
     private static $SETTINGS = 'settings';
     private static $SEEDBOX = 'seedbox';
+    private static $CATEGORIES = 'categories';
+    public static $DOWNLOAD = 'download';
     
+    private static function loginValide($action,$token){
+        return !(!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token']);
+    }
     
+    public static function getDetails(){
+        $token = filter_input(INPUT_GET, self::$TOKEN);
+        $action = filter_input(INPUT_GET, self::$ACTION);
+        $retour = 'Torrent incohérent / Incorrect Torrent';
+        if(self::loginValide($action,$token)){
+            $torrent = self::getPlugin($token);
+            $id = filter_input(INPUT_GET, 'id');
+            if(method_exists($torrent, 'details')){
+                $retour = $torrent->details($id);
+            }
+        }
+        return $retour;
+    }
+    
+    private static function getPlugin($token){
+        $plugin = filter_input(INPUT_GET, self::$PLUGIN);
+        if($plugin !== false){
+            $plugins = json_decode($plugin);
+            $pluginClassName = PluginGenerique::getPluginClassName($plugins[0]->id);
+            $torrent = self::getClassPlugin($pluginClassName,$token);
+        } 
+        return $torrent;
+    }
+    
+    public static function returnTorrent(){
+        $token = filter_input(INPUT_GET, self::$TOKEN);
+        $action = filter_input(INPUT_GET, self::$ACTION);
+        $retour = 'Torrent incohérent / Incorrect Torrent';
+        if(self::loginValide($action,$token)){
+//             $retour = self::traitementReponse($action,$token,$retour);
+            $torrent = self::getPlugin($token);
+            $retour = self::getTorrentForPlugin($torrent,$token);
+             
+        }
+        
+        return $retour;
+    }
     
     
     public static function returnResponse(){
@@ -38,7 +81,7 @@ class ResponseJson {
         //controle TOKEn
         $token = filter_input(INPUT_GET, self::$TOKEN);
         $action = filter_input(INPUT_GET, self::$ACTION);
-        if((!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'])){
+        if(!self::loginValide($action, $token)){
              $retour['message']='Vous n\'êtes pas identifié correctement.';
         }else{
             $retour = self::traitementReponse($action,$token,$retour);
@@ -46,7 +89,13 @@ class ResponseJson {
         return json_encode($retour);
     }
     
-    private static function traitementReponse($action,$token,$retour){
+    private static function getClassPlugin($className,$token){
+        $config = Services::loadSettings($token);
+        $torrent = new $className($config);
+        return $torrent;
+    }
+
+        private static function traitementReponse($action,$token,$retour){
         try{
 //            $configR = new ConfigReader($file);
             if($action === strtolower(self::$LOGIN)){
@@ -59,10 +108,10 @@ class ResponseJson {
                 $retour = self::toPlugin($retour);
             }else if($action === strtolower(self::$SETTINGS)){
                 $retour = self::toSettings($token,$retour);
-                
             }else if($action === strtolower(self::$SEEDBOX)){
                 $retour = self::getSeedbox($token,$retour);
-                
+            }else if($action === strtolower(self::$CATEGORIES)){
+                $retour = self::getCategories($token,$retour);
             }
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
@@ -96,40 +145,56 @@ class ResponseJson {
     
     private static function toTransmission($token,$retour){
         $url = filter_input(INPUT_GET, self::$TRANSMISSION);
+        $plugin = filter_input(INPUT_GET, self::$PLUGIN);
         if(!is_null($url) && $url !== false){
 //                $url = json_decode($url);
-            if(stripos('magnet',$url)>= 0){
+            if(stripos('magnet',$url) !== false){
                 $urlM = str_replace('@', '&tr', $url) ;
                 $retour = self::toMagnet($token, $urlM, $retour);
+            }elseif($plugin !== false){
+                $retour = self::toTorrent($token,$url, $retour);
             }else{
-                $retour['message']= 'Erreur Ce n\'est pas un magnet.'; 
+                $retour['message']= 'Erreur Ce n\'est pas un magnet/torrent.'; 
             }
             
 
         }else{
-            $retour['message']= 'Erreur dans le lien '.$url;  
+            $retour['message']= 'Erreur dans le torrent '.$url;  
         }
 
-        return$retour;
+        return $retour;
 
     }
     
-    private static function toMagnet($token,$url,$retour){
+    private static function toTorrent($token,$url,$retour){
+        $plugTorrent = self::getPlugin($token);
+        $torrentLines = self::getTorrentContent($url,$plugTorrent);
+        return self::toMagnet($token, $torrentLines, $retour,true);
+    }
+    
+    private static function toMagnet($token,$url,$retour,$meta_info = false){
         $config = Services::loadSettings($token);
         $proxy = self::getProxy($config);
         $location = filter_input(INPUT_GET, "location");
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
-            $result =  $transmission->add($url,$location);
+//            var_dump($url);
+//            $transmission->setDebug(true);
+            if($meta_info){
+                $result =  $transmission->add_metainfo($url,$location);
+            }else{
+                $result =  $transmission->add($url,$location);
+            }
+//            var_dump($result);
             $id = 0;
             if(isset($result->arguments->torrent_duplicate)){
                 $id = $result->arguments->torrent_duplicate->id;
                 $retour['duplicate'] = true;
             }else{
-                $id = $result->arguments->torrent_added->id;
+                $id = (isset($result->arguments->torrent_added))?$result->arguments->torrent_added->id:-1;
             }
-            $retour['success'] =true ;
-            $retour['message']= "tansmission ok=>".$id;  
+            $retour['success'] =$result->result === 'success'?true:false ;
+            $retour['message']= $result->result === 'success'?"tansmission =>".$id:$result->result;  
         }catch(TransmissionRPCException $exc){
             $retour['message']= "tansmission en erreur ".$exc->getMessage();  
         }
@@ -151,8 +216,11 @@ class ResponseJson {
             $torrent = new $classname($config);
             
             $start = filter_input(INPUT_GET, 'start')!== false?filter_input(INPUT_GET, 'start'):0;
-//            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
-            $search .= '/'.(intval($start)+1);
+            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
+//            $search .= '/'.(intval($start)+1);
+            $torrent->setStart($start);
+            $torrent->setLimit($limit);
+            $torrent->setCategorie(filter_input(INPUT_GET, 'categorie')!== false?filter_input(INPUT_GET, 'categorie'):null);
             $torrent->search($search);
             $retour['success'] =$torrent->getResultSuccess() ;
             $retour['data']= $torrent->getResult() instanceof PluginListeResults ?$torrent->getResult()->getArrayCopy():null;
@@ -200,11 +268,8 @@ class ResponseJson {
     
     private static function getSeedbox($token,$retour){
         $retour['message'] = 'Problème sur les settings';
-        $proxy = false;
         $settings = Services::loadSettings($token);
-        if(!empty($settings['proxy_url'] )){
-            $proxy = true;
-        }
+        $proxy = self::getProxy($settings);
 //        var_dump($settings);
         if(isset($settings['transmission_url']) && isset($settings['transmission_user']) && isset($settings['transmission_password']) ){
             $transmission = new TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy);
@@ -219,5 +284,40 @@ class ResponseJson {
         }
         return $retour;
     }
+    
+    private static function getCategories($token,$retour){
+//        $config = Services::loadSettings($token);
+//        $proxy = self::getProxy($config);
+        //recup la config_generale
+        $ini = self::getIniGeneral();
+        $categories = array();
+        foreach ($ini['categories'] as $cat){
+            array_push($categories,array('value'=>$cat,'text'=>$ini[$cat]['label']));
+        }
+        $retour['data'] = $categories;
+        $retour['success'] = true;
+        $retour['message']='Categories generales';
+        return  $retour;
+    }
            
+    
+    private static function getIniGeneral(){
+        $file = dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR. 'config'.DIRECTORY_SEPARATOR.'config_general.ini';
+        
+        $ini = ReaderIni::read($file);
+        
+        return $ini;
+    }
+    
+    private static function getTorrentForPlugin(PluginGenerique $plugin){
+        $id = filter_input(INPUT_GET, 'id');
+        return self::getTorrentContent($id,$plugin);
+    }
+    
+    private static function getTorrentContent($id,$plugin){
+        if(method_exists($plugin, 'download')){
+            return $plugin->download($id);
+        }
+        return '';
+    }
 }

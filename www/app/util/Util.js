@@ -29,7 +29,15 @@ Ext.define('MyTorrent.util.Util',{
         },
         statusSeedBox : function(status){
             var libelle = ['STOPPED','CHECK_WAIT','CHECK','DOWNLOAD_WAIT','DOWNLOAD','SEED_WAIT','SEED'];
-            return libelle[status];    
+            if(status !== undefined){
+                if(status >0 && status <= libelle.length){
+                    return libelle[status];  
+                }else{
+                    return 'UNKWOWN';
+                }
+            }else{
+                return 'PAUSE';
+            }
         }
     }
 });

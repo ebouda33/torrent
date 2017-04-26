@@ -8,6 +8,9 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
     requires : ['MyTorrent.store.SeedBox'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
     layout: 'fit',
+    height : '100%',
+    minHeight : 800,
+    
     listeners : {
       initialize : function(grid,eOpts){
           MyTorrent.getApplication().gridSeedBox = grid;

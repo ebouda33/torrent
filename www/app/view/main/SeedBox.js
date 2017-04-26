@@ -25,7 +25,8 @@ Ext.define('MyTorrent.view.main.SeedBox',{
    items:[
        {
            xtype : 'seedboxresult',
-           minHeight : 400,
+           minHeight : 800,
+           height : '100%',
            responsiveConfig: {
                 wide: {
                     width : '100%',

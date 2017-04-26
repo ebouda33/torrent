@@ -27,16 +27,28 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
 //    },
     bodyPadding: 20,
 //    region : 'center',
-    items :[
-       {
-            xtype: 'fieldset',
-            title: 'Plugins',
-            defaultType : 'radiofield',
-            width : 150,
-            items : [
+    
+    cmpPlugins : null,
+    items :[{
+            xtype : 'panel',
+            layout : 'hbox',
+            items:[
+                {
+                     xtype: 'fieldset',
+                     title: 'Plugins',
+                     defaultType : 'radiofield',
+                     width : 150,
+                     items : [
+
+                     ]
+                 },{
+                     xtype : 'selectfield',
+                     showAnimation : 'fadeIn'
+//                     label:'Catégories'
+                 }
                 
             ]
-        },
+    },
         {
             xtype : 'panel',
             
@@ -70,7 +82,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     //recuperer la location avant
                     var value = field.getValue();
                     if (e.getKey() === e.ENTER && !Ext.isEmpty(value) && field.getPluginsUse() !== undefined && field.getPluginsUse().length > 0 ) {
-                            var p = Ext.encode(field.getPluginsUse(field));
+                            var p = Ext.encode(field.getPluginsUse());
                             var url = Ext.String.format(field.searchUrl, value,p);
                             field.setDisabled(true);
                             this.executeSearch(url,value,p);
@@ -81,12 +93,14 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     }
                 },
                 getPluginsUse : function(){
+                    var me = this;
 //                    var plugins = MyTorrent.getApplication().getPlugins();
                     var plugins = [];
                     var ancestor = this.getBubbleParent().getBubbleParent();
-                    var enfants = ancestor.getItems().items;
+//                    var enfants = ancestor.getItems().items;
+                    var cmp = ancestor.cmpPlugins;
                     //prise en compte que des checkbox
-                    var plugSelect = enfants[0].getItems().items;
+                    var plugSelect = cmp.getItems().items;
                     //demarre a 1 a cause du titre
                     for(var i =1;i < plugSelect.length;i++){
                         if(plugSelect[i].isChecked()){
@@ -100,8 +114,9 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
 //                    console.log(url);
                     var me = this;
                     var urlFull = url.split("?");
-                    
-                    var store = Ext.create('MyTorrent.store.Torrent',{url:urlFull[0],search:value,plugins:p});
+                    var ancestor = me.getBubbleParent().getBubbleParent();
+                    var categorie = ancestor.getCategorie();
+                    var store = Ext.create('MyTorrent.store.Torrent',{url:urlFull[0],search:value,plugins:p,categorie:categorie});
                     var gridResultat = me.getBubbleParent().getBubbleParent().grid;
                     gridResultat.setStore(store);
                     //rafraichir le grid
@@ -167,14 +182,18 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
     ]
   ,listeners :{
         initialize : function (panel,eOpts){
+            var me = this;
+            var plugins = panel.getItems().items[0];
+            me.cmpPlugins = plugins.getItems().items[0];
             MyTorrent.getApplication().setListenersPlugins(panel);
 
         }
         
-    }     
+        
+    }   
     ,setPlugins : function(data)  {
-        var items = this.getItems().items;
-        if(items !== null){
+        var cmp = this.cmpPlugins;
+        if(cmp !== null){
             var plugins = [];
             Ext.each(data,function(plugin){
                 plugins.push({
@@ -187,7 +206,31 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     value : plugin.id
                 });
             });
-            items[0].setItems(plugins);
+            cmp.setItems(plugins);
+            //remplir les categories;
+            var cat = cmp.getParent().getItems().items[1];
+            Ext.Ajax.request({
+                url: 'torrentJson.php',
+                method : 'GET',
+                params : {action:'categories',token:localStorage.getItem("MyTorrentToken")},
+                async : false,
+                success: function(response, opts) {
+                    var obj = Ext.decode(response.responseText);
+//                    console.dir(obj);
+                    if(obj.success){
+                        var options = [];
+                        Array.forEach(obj.data,function(cat){
+                            options.push({text:cat.text,value:cat.value});
+                        });
+                        cat.setOptions(options);
+                    }
+                },
+
+                failure: function(response, opts) {
+                    console.log('server-side failure with status code ' + response.status);
+                }
+            });
+           
         }
         
     }
@@ -200,5 +243,15 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
         //prise en compte que des checkbox
         var component = enfants[2].getItems().items[1];
         return component.getSelectedValue();
+    }
+    ,getCategorie : function(){
+        var enfants = this.getItems().items;
+        var component = enfants[0].getItems().items[1];
+        return component.getSelection().data.value;
+    },
+    getPluginUse : function(){
+        var enfants = this.getItems().items;
+        var component = enfants[1].getItems().items[0];
+        return component.getPluginsUse();
     }
 });
