@@ -5,10 +5,10 @@ USE project https://github.com/brycied00d/PHP-Transmission-Class for transmissio
 
 TODO-LIST
 
-Ending T411 when api restart.
+Ending T411 when api restart.OK
 
-Finished category gestion.
+Finished category gestion.OK
 
-Managed your transmission seedbox
+Managed your transmission seedbox need to pause - start ...
 
 Propose Tracker ...
