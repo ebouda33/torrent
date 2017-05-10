@@ -32,7 +32,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
         var me = this;
         if(value !== null){
             if(Array.isArray(value)){
-                Array.forEach(value,function(lib,index){
+                Ext.Array.each(value,function(lib,index){
                     me.libraries.push(lib);  
 
                 });
@@ -55,7 +55,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
         me.addLibrary(value);
         var items = me.getComponent().getItems().items ;
         var data = [];
-        Array.forEach(me.libraries,function(location){
+        Ext.Array.each(me.libraries,function(location){
             data.push({'location':location});
         });
         var store = Ext.create('Ext.data.Store', {
@@ -153,7 +153,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
                         if(!component.readOnly){
                             store.removeAt(ligne);
                             var elements = [];
-                            Array.forEach(store.data.items,function(row){
+                            Ext.Array.each(store.data.items,function(row){
                                 elements.push(row.data.location);
                             });
                             component.setValue(elements);
