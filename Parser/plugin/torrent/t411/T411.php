@@ -19,7 +19,7 @@ use Parser\plugin\torrent\PluginGenerique;
  */
 class T411 extends PluginGenerique{
     //put your code here
-    private $urlApi = "https://api.t411.ai";
+    private $urlApi = "https://api.t411.al";
     private $urlSearch;
     private $proxy = false;
     public $curl ;
