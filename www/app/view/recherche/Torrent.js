@@ -219,7 +219,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
 //                    console.dir(obj);
                     if(obj.success){
                         var options = [];
-                        Array.forEach(obj.data,function(cat){
+                        Ext.Array.each(obj.data,function(cat){
                             options.push({text:cat.text,value:cat.value});
                         });
                         cat.setOptions(options);
