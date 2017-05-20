@@ -179,24 +179,21 @@ class Nextorrent extends PluginGenerique{
        $size = 0;
        $leecher = 0;
        $seeder = 0;
-       
        if(count($tr)>6){
-           $temp = new DOMNodeRecursiveIterator($tr[0]->childNodes);
-           $td = new DOMNodeRecursiveIterator($temp[0]->childNodes);
-           
-            $category = $this->transformeCategory($td[0]->getAttribute('title'));
-            $url = $td[1]->getAttribute('href');
-            $caption = $td[1]->textContent;
+           $tdName = new DOMNodeRecursiveIterator($tr[0]->childNodes);
+//la categorie et le nom du torrent sont contenu dans le meme td
+            $category = $this->transformeCategory($tdName[0]->getAttribute('class'));
+            $url = $tdName[2]->getAttribute('href');
+            $caption = $tdName[2]->textContent;
 
             $size = $this->getTextContent($tr[2],0);
 
             $seeder=$this->getTextContent($tr[4]);
 
             $leecher=$this->getTextContent($tr[6]);
-            
+
             return array('category'=>$category['image'],'categoryLabel'=>$category['label'],"url"=>$url,"caption"=>$caption,"size"=>$size,"seeder"=>$seeder,"leecher"=>$leecher);
-            
-       }
+        }
        return null;
 
 
