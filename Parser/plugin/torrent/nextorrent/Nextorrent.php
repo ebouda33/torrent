@@ -186,7 +186,7 @@ class Nextorrent extends PluginGenerique{
             $url = $tdName[2]->getAttribute('href');
             $caption = $tdName[2]->textContent;
 
-            $size = $this->getTextContent($tr[2],0);
+            $size =  $this->getTextContent($tr[2],0);
 
             $seeder=$this->getTextContent($tr[4]);
 
@@ -196,7 +196,7 @@ class Nextorrent extends PluginGenerique{
         }
        return null;
 
-
+       
     }
     
     private function transformeCategory($value){

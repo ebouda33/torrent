@@ -13,7 +13,7 @@ Ext.define('MyTorrent.util.Util',{
         tabSize : ['octets','Ko','Mo','Go','To'],
         getSizeLitteral : function (size){
             if(isNaN(size)){
-                return 0;
+                return size;
             }
             var i = 0;
             while((size >= 1024) && i < this.tabSize.length){
