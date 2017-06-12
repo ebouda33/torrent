@@ -17,8 +17,8 @@ Ext.define('MyTorrent.view.main.Recherche',{
     
     
     
-//    ,align : 'stretch'
-    //,height : '100%'
+    ,align : 'stretch'
+    ,height : '100%'
 
     ,items : [
         {
@@ -29,7 +29,7 @@ Ext.define('MyTorrent.view.main.Recherche',{
         },
         {
             xtype : 'torrentresult',
-            minHeight : 400,
+            minHeight : 500,
 //            height : 400,
             height : '100%',
             store : null ,
@@ -38,10 +38,11 @@ Ext.define('MyTorrent.view.main.Recherche',{
             responsiveConfig: {
                 wide: {
                     width : '70%',
-                  //  height : '100%'
+                    height : '100%'
                 },
                 tall: {
-                    width : '100%'
+                    width : '100%',
+                    height : 400
                 }
             },
             scrollable : true,

@@ -61,7 +61,7 @@ Ext.define('MyTorrent.view.main.Main', {
             
             items: [{
                 xtype: 'panelRecherche',
-                height : '100%',
+                //height : '100%',
                 plugins: 'responsive',
                 responsiveConfig: {
                     'width >= height': {
