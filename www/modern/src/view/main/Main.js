@@ -58,9 +58,10 @@ Ext.define('MyTorrent.view.main.Main', {
             },
             iconCls: 'x-fa fa-search',
 //            layout: 'fit',
-//            height : 500,
+            
             items: [{
                 xtype: 'panelRecherche',
+                height : '100%',
                 plugins: 'responsive',
                 responsiveConfig: {
                     'width >= height': {
@@ -82,6 +83,7 @@ Ext.define('MyTorrent.view.main.Main', {
                 }
             }]
         },{
+
             responsiveConfig: {
                 'width < 500': {
                     title: '',

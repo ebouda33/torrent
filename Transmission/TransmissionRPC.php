@@ -108,8 +108,8 @@ class TransmissionRPC
    */
   private $default_context_opts = array( 'http' => array(
                                            'user_agent'  => self::HTTP_UA,
-                                           //  'timeout' => '5',	// Don't want to be too slow
-                                           'ignore_errors' => true,	// Leave the error parsing/handling to the code
+                                           //  'timeout' => '5',  // Don't want to be too slow
+                                           'ignore_errors' => true,  // Leave the error parsing/handling to the code
                                          )
                                        );
 
@@ -143,7 +143,7 @@ class TransmissionRPC
    */
   public function start ( $ids )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array( "ids" => $ids );
     return $this->request( "torrent-start", $request );
   }
@@ -155,7 +155,7 @@ class TransmissionRPC
    */
   public function stop ( $ids )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array( "ids" => $ids );
     return $this->request( "torrent-stop", $request );
   }
@@ -167,7 +167,7 @@ class TransmissionRPC
    */
   public function reannounce ( $ids )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array( "ids" => $ids );
     return $this->request( "torrent-reannounce", $request );
   }
@@ -179,7 +179,7 @@ class TransmissionRPC
    */
   public function verify ( $ids )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array( "ids" => $ids );
     return $this->request( "torrent-verify", $request );
   }
@@ -195,8 +195,8 @@ class TransmissionRPC
    */
   public function get ( $ids = array(), $fields = array() )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
-    if ( count( $fields ) == 0 ) $fields = array( "id", "name", "status", "doneDate", "haveValid", "totalSize","uploadRatio" );	// Defaults
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
+    if ( count( $fields ) == 0 ) $fields = array( "id", "name", "status", "doneDate", "haveValid", "totalSize","uploadRatio" );  // Defaults
     $request = array(
       "fields" => $fields,
       "ids" => $ids
@@ -230,8 +230,8 @@ class TransmissionRPC
   public function set ( $ids = array(), $arguments = array() )
   {
     // See https://trac.transmissionbt.com/browser/trunk/doc/rpc-spec.txt for available fields
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
-    if ( !isset( $arguments['ids'] ) ) $arguments['ids'] = $ids;	// Any $ids given in $arguments overrides the method parameter
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
+    if ( !isset( $arguments['ids'] ) ) $arguments['ids'] = $ids;  // Any $ids given in $arguments overrides the method parameter
     return $this->request( "torrent-set", $arguments );
   }
 
@@ -266,6 +266,8 @@ class TransmissionRPC
         $extra_options['download-dir'] = $save_path;
     }
     $extra_options['filename'] = $torrent_location;
+    
+    
     return $this->request( "torrent-add", $extra_options );
   }
 
@@ -302,7 +304,7 @@ class TransmissionRPC
    */
   public function remove ( $ids, $delete_local_data = false )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array(
       "ids" => $ids,
       "delete-local-data" => $delete_local_data
@@ -319,7 +321,7 @@ class TransmissionRPC
    */
   public function move ( $ids, $target_location, $move_existing_data = true )
   {
-    if ( !is_array( $ids ) ) $ids = array( $ids );	// Convert $ids to an array if only a single id was passed
+    if ( !is_array( $ids ) ) $ids = array( $ids );  // Convert $ids to an array if only a single id was passed
     $request = array(
       "ids" => $ids,
       "location" => $target_location,
@@ -453,23 +455,23 @@ class TransmissionRPC
    */  
   protected function cleanRequestData ( $array )
   {
-    if ( !is_array( $array ) || count( $array ) == 0 ) return null;	// Nothing to clean
-    setlocale( LC_NUMERIC, 'en_US.utf8' );	// Override the locale - if the system locale is wrong, then 12.34 will encode as 12,34 which is invalid JSON
+    if ( !is_array( $array ) || count( $array ) == 0 ) return null;  // Nothing to clean
+    setlocale( LC_NUMERIC, 'en_US.utf8' );  // Override the locale - if the system locale is wrong, then 12.34 will encode as 12,34 which is invalid JSON
     foreach ( $array as $index => $value )
     {
-      if( is_object( $value ) ) $array[$index] = $value->toArray();	// Convert objects to arrays so they can be JSON encoded
-      if( is_array( $value ) ) $array[$index] = $this->cleanRequestData( $value );	// Recursion
-      if( empty( $value ) && $value !== 0 )	// Remove empty members
+      if( is_object( $value ) ) $array[$index] = $value->toArray();  // Convert objects to arrays so they can be JSON encoded
+      if( is_array( $value ) ) $array[$index] = $this->cleanRequestData( $value );  // Recursion
+      if( empty( $value ) && $value !== 0 )  // Remove empty members
       {
         unset( $array[$index] );
         continue; // Skip the rest of the tests - they may re-add the element.
       }
-      if( is_numeric( $value ) ) $array[$index] = $value+0;	// Force type-casting for proper JSON encoding (+0 is a cheap way to maintain int/float/etc)
-      if( is_bool( $value ) ) $array[$index] = ( $value ? 1 : 0);	// Store boolean values as 0 or 1
+      if( is_numeric( $value ) ) $array[$index] = $value+0;  // Force type-casting for proper JSON encoding (+0 is a cheap way to maintain int/float/etc)
+      if( is_bool( $value ) ) $array[$index] = ( $value ? 1 : 0);  // Store boolean values as 0 or 1
       if( is_string( $value ) ) {
         if ( mb_detect_encoding($value,"auto") !== 'UTF-8' ) {
           $array[$index] = mb_convert_encoding($value, "UTF-8");
-          //utf8_encode( $value );	// Make sure all data is UTF-8 encoded for Transmission
+          //utf8_encode( $value );  // Make sure all data is UTF-8 encoded for Transmission
         }      
       }
     }
@@ -493,7 +495,7 @@ class TransmissionRPC
     {
       if( is_array( $array[$index] ) || is_object( $array[$index] ) )
       {
-        $array[$index] = $this->cleanResultObject( $array[$index] );	// Recursion
+        $array[$index] = $this->cleanResultObject( $array[$index] );  // Recursion
       }
       if ( strstr( $index, '-' ) )
       {
@@ -525,7 +527,7 @@ class TransmissionRPC
     if ( !is_array( $arguments ) )
       throw new TransmissionRPCException( 'Arguments must be given as array', TransmissionRPCException::E_INVALIDARG );
     
-    $arguments = $this->cleanRequestData( $arguments );	// Sanitize input
+    $arguments = $this->cleanRequestData( $arguments );  // Sanitize input
     
 // Grab the X-Transmission-Session-Id if we don't have it already
     if( !$this->session_id )
@@ -540,7 +542,7 @@ class TransmissionRPC
     $data = json_encode( $data );
     
     // performs the HTTP POST
-    $contextopts = $this->default_context_opts;	// Start with the defaults
+    $contextopts = $this->default_context_opts;  // Start with the defaults
     $contextopts['http']['method'] = 'POST';
     $contextopts['http']['header'] = 'Content-type: application/json'."\r\n".
                                      'X-Transmission-Session-Id: '.$this->session_id."\r\n";
@@ -553,16 +555,23 @@ class TransmissionRPC
     if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: Stream context created with options:" .
                             PHP_EOL . print_r( $contextopts, true );
     
-    $context  = stream_context_create( $contextopts );	// Create the context for this request
+    $context  = stream_context_create( $contextopts );  // Create the context for this request
     if( $this->debug ){
         echo "<br>URL:".$this->url;
     }
-    if ( $fp = fopen( $this->url, 'r', false, $context ) ) {	// Open a filepointer to the data, and use fgets to get the result
+    //var_dump($contextopts );
+    $fp = @fopen( $this->url, 'r', false, $context ) ;
+    //echo '<br>FP';
+    //var_dump($fp);
+    
+    
+    if ( $fp ) {  // Open a filepointer to the data, and use fgets to get the result
       $response = '';
       while( $row = fgets( $fp ) ) {
         $response.= trim( $row )."\n";
       }
       if( $this->debug ){
+        echo "<br>RESPONSE=>";
           var_dump($response);
           echo "<br>TRANSMISSIONRPC_DEBUG:: request( method=$method, ...):: POST Result: ".
                               PHP_EOL . print_r( $response, true );
@@ -570,6 +579,7 @@ class TransmissionRPC
     } else
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
     
+        
     // Check the response (headers etc)
     $stream_meta = stream_get_meta_data( $fp );
     fclose( $fp );
@@ -583,7 +593,7 @@ class TransmissionRPC
     elseif( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "409" )
       throw new TransmissionRPCException( "Invalid X-Transmission-Session-Id. Please try again after calling GetSessionID().", TransmissionRPCException::E_SESSIONID );
     
-    return $this->return_as_array ? json_decode( $response, true ) : $this->cleanResultObject( json_decode( $response ) );	// Return the sanitized result
+    return $this->return_as_array ? json_decode( $response, true ) : $this->cleanResultObject( json_decode( $response ) );  // Return the sanitized result
   }
 
   /**
@@ -598,7 +608,7 @@ class TransmissionRPC
       throw new TransmissionRPCException( "Class must be initialized before GetSessionID() can be called.", TransmissionRPCException::E_INVALIDARG );
     
     // Setup the context
-    $contextopts = $this->default_context_opts;	// Start with the defaults
+    $contextopts = $this->default_context_opts;  // Start with the defaults
    
     // Make sure it's blank/empty (reset)
     $this->session_id = null;
@@ -613,7 +623,7 @@ class TransmissionRPC
     $context  = stream_context_create( $contextopts );
     
 // Create the context for this request
-    if ( ! $fp = @fopen( $this->url, 'r', false, $context ) )	// Open a filepointer to the data, and use fgets to get the result
+    if ( ! $fp = @fopen( $this->url, 'r', false, $context ) )  // Open a filepointer to the data, and use fgets to get the result
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
     
     // Check the response (headers etc)
@@ -628,7 +638,7 @@ class TransmissionRPC
       throw new TransmissionRPCException( "Timed out connecting to {$this->url}", TransmissionRPCException::E_CONNECTION );
     }if( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "401" )
       throw new TransmissionRPCException( "Invalid username/password.", TransmissionRPCException::E_AUTHENTICATION );
-    elseif( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "409" )	// This is what we're hoping to find
+    elseif( substr( $stream_meta['wrapper_data'][0], 9, 3 ) == "409" )  // This is what we're hoping to find
     {
       // Loop through the returned headers and extract the X-Transmission-Session-Id
       foreach( $stream_meta['wrapper_data'] as $header )
@@ -641,7 +651,7 @@ class TransmissionRPC
           break;
         }
       }
-      if( ! $this->session_id ) {	// Didn't find a session_id
+      if( ! $this->session_id ) {  // Didn't find a session_id
         throw new TransmissionRPCException( "Unable to retrieve X-Transmission-Session-Id", TransmissionRPCException::E_SESSIONID );
       }
     } else {

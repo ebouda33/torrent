@@ -149,7 +149,7 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
         {
             xtype:'fieldset',
             title : 'Location for Download',
-            height:200,
+            minHeight:200,
             items:[
                 {
                     xtype:'panel',
