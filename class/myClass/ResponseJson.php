@@ -148,7 +148,8 @@ class ResponseJson {
         $plugin = filter_input(INPUT_GET, self::$PLUGIN);
         if(!is_null($url) && $url !== false){
 //                $url = json_decode($url);
-            if(stripos('magnet',$url) !== false){
+          
+            if(stripos($url,'magnet') !== false && stripos($url,'magnet') === 0){
                 $urlM = str_replace('@', '&tr', $url) ;
                 $retour = self::toMagnet($token, $urlM, $retour);
             }elseif($plugin !== false){
@@ -176,16 +177,15 @@ class ResponseJson {
         $config = Services::loadSettings($token);
         $proxy = self::getProxy($config);
         $location = filter_input(INPUT_GET, "location");
+      
         try{
             $transmission = new TransmissionRPC($config['transmission_url'], $config['transmission_user'], $config['transmission_password'],$proxy);
-//            var_dump($url);
-//            $transmission->setDebug(true);
+           // $transmission->setDebug(true);
             if($meta_info){
                 $result =  $transmission->add_metainfo($url,$location);
             }else{
                 $result =  $transmission->add($url,$location);
             }
-//            var_dump($result);
             $id = 0;
             if(isset($result->arguments->torrent_duplicate)){
                 $id = $result->arguments->torrent_duplicate->id;
@@ -198,7 +198,10 @@ class ResponseJson {
         }catch(TransmissionRPCException $exc){
             $retour['message']= "tansmission en erreur ".$exc->getMessage();  
         }
-
+      
+      ///echo "<br/>RETOUR";
+      //var_dump($retour);
+       //  die;
         return $retour;
     }
     

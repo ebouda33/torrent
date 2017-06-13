@@ -228,7 +228,7 @@ class Nextorrent extends PluginGenerique{
             $elements = $arbre->getElementsByTagName('div');
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){
-                    if("download" === strtolower($elem->getAttribute('class'))){
+                    if("btn-magnet" === strtolower($elem->getAttribute('class'))){
                         $urlMagnet = $this->getUrlMagnet($elem);
                     }
                 }
@@ -242,13 +242,14 @@ class Nextorrent extends PluginGenerique{
     private function getUrlMagnet(DOMElement $div){
 
         $a = new DOMNodeRecursiveIterator($div->childNodes);
+        
         $url = "";
         $caption="";
-        if(count($a)>1){
-            $url = $a[2]->getAttribute('href');
-            $caption = $a[2]->textContent;
+        if(count($a)>0){
+            $url = $a[0]->getAttribute('href');
+            $caption = $a[0]->textContent;
         }
-
+         
         return array("url"=>$url,"caption"=>$caption);
     }
 }
