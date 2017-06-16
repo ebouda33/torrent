@@ -10,6 +10,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     requires : ['MyTorrent.store.Torrent'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
     zoneSearch : null,
+    height : '100%',
     listeners : {
       initialize : function(grid,eOpts){
           ancestor = grid.getBubbleParent().getItems().items;
@@ -86,7 +87,7 @@ Ext.define('MyTorrent.view.grid.GridResult',{
           
            renderer : function (value,record,index,cell){
                //console.log(container,position);
-               if(value.indexOf('data:image')>-1){
+               if(value !== null && value.indexOf('data:image')>-1){
                     cell.setEncodeHtml (false);
                     return '<img src="'+value+'" alt=\''+record.data.categoryLabel+'\' title=\''+record.data.categoryLabel+'\' />';
                 }
