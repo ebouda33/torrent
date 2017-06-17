@@ -2,7 +2,6 @@
 Ext = Ext ||'';
 Ext.define('MyTorrent.view.login.Login', {
     extend: 'Ext.MessageBox',
-//    extend: 'Ext.window.MessageBox',
     xtype: 'login',
     
     requires: [
@@ -14,10 +13,8 @@ Ext.define('MyTorrent.view.login.Login', {
     controller: 'login',
     bodyPadding: 10,
     title: 'Identification System',
-//    closable: true,
     items: {
         xtype: 'formpanel',
-//        reference: 'formLogin',
         standardSubmit : false,
         submitOnAction : true,
         url : 'torrentJson.php',
@@ -27,10 +24,11 @@ Ext.define('MyTorrent.view.login.Login', {
             xtype: 'emailfield',
             name: 'username',
             placeHolder : 'Email',
-            fieldLabel: 'Username',
+			label: '&nbsp;',
+			labelWidth : 20,
+			labelCls:"x-fa fa-envelope-o fa-fw input-group",
             msgTarget: 'top',
             required: true,
-//            formBind: true,
             listeners : {
                  change : function ( field, newValue , oldValue , eOpts ){
                     if(newValue !== oldValue){
@@ -45,13 +43,13 @@ Ext.define('MyTorrent.view.login.Login', {
             }
         }, {
             xtype: 'passwordfield',
-//            xtype : 'textfield',
             name: 'password',
             placeHolder : 'Password',
             inputType: 'password',
-            fieldLabel: 'Password',
+            label: '&nbsp;',
+			labelWidth : 20,
+			labelCls:"x-fa fa-key fa-fw input-group",
             required: true,
-//            formBind: true,
             listeners : {
                  change : function ( field, newValue , oldValue , eOpts ){
                     if(newValue !== oldValue){
@@ -63,7 +61,6 @@ Ext.define('MyTorrent.view.login.Login', {
         },{
             xtype : 'button',
             text : 'login',
-//            formBind: true,
             disabled: true,
 
             handler : 'onLoginClick'

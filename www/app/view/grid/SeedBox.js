@@ -7,9 +7,6 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
     title : '',
     requires : ['MyTorrent.store.SeedBox'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
-    layout: 'fit',
-    height : '100%',
-    minHeight : 800,
     
     listeners : {
       initialize : function(grid,eOpts){
@@ -24,7 +21,9 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
       },
       itemmouseleave : function (grid , row , target , record , e , eOpts ){
           
-      }
+      },
+	   
+
     },
     scrollable : true,
     items :[{
@@ -38,9 +37,10 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
                     
                     text:'Refresh',
                     textAlign : 'bottom',
-                    iconCls : 'x-fa fa-refresh',
+                    iconCls : 'x-fa fa-refresh  fa-fw',
                     handler : function(){
-                        MyTorrent.getApplication().loadStoreSeedBox();
+						this.setIconCls('x-fa fa-refresh  fa-fw fa-spin');
+                        MyTorrent.getApplication().loadStoreSeedBox(this);
                     }
             }]
         }],
@@ -62,7 +62,7 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
             dataIndex: 'name',
 //                    sortable: false,  // column cannot be sorted
             width: 250,
-            flex : 1.5,
+            flex : 2,
             resizable : true,
             align : 'left'
         },
@@ -94,7 +94,6 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
             width: 70,
             resizable : true,
             align : 'left',
-            flex:1,
             renderer : function(value,record){
                 return MyTorrent.util.Util.statusSeedBox(value);
             }

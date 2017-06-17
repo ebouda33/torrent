@@ -21,21 +21,14 @@ Ext.define('MyTorrent.view.main.SeedBox',{
 //           }
         }
    },
-   layout : 'fit',
+   height:'100%',
    items:[
        {
            xtype : 'seedboxresult',
-           minHeight : 800,
-           height : '100%',
-           responsiveConfig: {
-                wide: {
-                    width : '100%',
-                    height : '100%'
-                },
-                tall: {
-                    width : '100%'
-                }
-            },
+           minHeight : 200,
+		   height:'100%',
+           layout : 'fit',
+		   width : '100%',
            scrollable : true,
            style : {textAlign : 'left'},
            plugins : [{type:'gridcolumnresizing'},{type:'gridviewoptions'},{type:'gridpagingtoolbar'},{type:'responsive'}]

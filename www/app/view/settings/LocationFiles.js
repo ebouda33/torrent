@@ -86,7 +86,9 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
             labelWidth : 0,
             margin : 0,
             layout : 'vbox',
+			scrollable:true,
             width: '100%',
+			height:'100%',
             items:[
                 {
                     xtype: 'textfield',
@@ -110,8 +112,9 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
 
                 },{
                     xtype : 'grid',
-                    height : 200,
+                    minHeight : 200,
                     tbar : 'bottom',
+					scrollable : true,
                     listeners :{
                         
                       itemtap : function(grid , index , target , record , e , eOpts){
@@ -119,7 +122,7 @@ Ext.define('MyTorrent.view.settings.LocationFiles',{
                           grid.deleteLocation(store,index);
                       } 
                     },
-                    
+                    height : '100%',
                     layout : 'fit',
                     
                     columns: [

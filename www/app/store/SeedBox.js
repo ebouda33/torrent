@@ -43,6 +43,6 @@ Ext.define('MyTorrent.store.SeedBox',{
     
     
 
-
+	
 }
 );

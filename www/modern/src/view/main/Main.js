@@ -57,11 +57,10 @@ Ext.define('MyTorrent.view.main.Main', {
                 }    
             },
             iconCls: 'x-fa fa-search',
-//            layout: 'fit',
-            
+           layout: 'fit',
+//            height : 500,
             items: [{
                 xtype: 'panelRecherche',
-                //height : '100%',
                 plugins: 'responsive',
                 responsiveConfig: {
                     'width >= height': {
@@ -83,7 +82,41 @@ Ext.define('MyTorrent.view.main.Main', {
                 }
             }]
         },{
-
+            responsiveConfig: {
+                'width < 500': {
+                    title: '',
+                    tooltip : 'Souhait'
+                },
+                'width >= 500': {
+                    title: 'Souhait'
+                }    
+            },
+            iconCls: 'x-fa  fa-paper-plane',
+//            layout: 'fit',
+//            height : 500,
+            items: [{
+                xtype: 'panelSouhait',
+                plugins: 'responsive',
+                responsiveConfig: {
+                    'width >= height': {
+//                        layout : 'hbox'
+                        layout: {
+                            type: 'box',
+                            vertical: false,
+                            align: 'stretch'
+                        }
+                    },
+                    'width < height': {
+//                        layout : 'vbox'
+                        layout: {
+                            type: 'box',
+                            align: 'stretch',
+                            vertical: true
+                       }
+                    }
+                }
+            }]
+        },{
             responsiveConfig: {
                 'width < 500': {
                     title: '',
@@ -93,6 +126,7 @@ Ext.define('MyTorrent.view.main.Main', {
                     title: 'SeedBox'
                 }    
             },
+			scrollable : false,
             iconCls: 'x-fa fa-cloud',
             items: [{
                 xtype: 'seedbox'

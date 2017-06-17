@@ -13,7 +13,7 @@ Ext.define('MyTorrent.Application', {
         'MyTorrent.view.main.Profil',
         'MyTorrent.view.main.Recherche',
         'MyTorrent.view.main.SeedBox',
-        
+        'MyTorrent.view.main.Souhait',
         'MyTorrent.view.login.Login',
         'MyTorrent.view.main.Main'
     ],
@@ -180,7 +180,7 @@ Ext.define('MyTorrent.Application', {
     setStoreSeedBox : function (store){
         this.storeSeedBox = store;
     },
-    loadStoreSeedBox :function(){
+    loadStoreSeedBox :function(refresh){
         
         MyTorrent.getApplication().storeSeedBox.load({
             scope: this,
@@ -196,7 +196,12 @@ Ext.define('MyTorrent.Application', {
                         closable : true,
                         height : 200
                     });
-                }
+                }else{
+					// console.log('store load');
+					if( refresh !== undefined){
+						refresh.setIconCls('x-fa fa-refresh  fa-fw ');
+					}
+				}
 
             }
         });
