@@ -20,7 +20,7 @@ use Parser\plugin\torrent\PluginGenerique;
  * @author xgld8274
  */
 class Nextorrent extends PluginGenerique{
-    private $url = 'https://www.nextorrent.net';
+    private $url = 'https://www.nextorrent.ws';
     private $urlSearch;
     private $proxy = false;
     private $config = false;
@@ -36,8 +36,10 @@ class Nextorrent extends PluginGenerique{
      */
     public function __construct(array $config=null) {
         
+        $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
+		$this->url =  $this->ini['url'];
         $this->name = 'NexTorrent';
-        $this->description = "https://www.nextorrent.net -> torrent en Fr en général, rapide et fiable.";
+        $this->description = $this->url." -> torrent en Fr en général, rapide et fiable.";
         $this->urlSearch =$this->url. '/torrents/recherche/';
         $this->result = array();
         if(!empty($config)){
@@ -46,7 +48,6 @@ class Nextorrent extends PluginGenerique{
                 $this->proxy = true;
             }
         }
-        $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
         
         
     }
@@ -59,7 +60,7 @@ class Nextorrent extends PluginGenerique{
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
         
         $page =$curl->read();
-
+		
         if($page !== false){
             $arbre = new DOMDocument();
             @$arbre->loadHTML($page);
@@ -114,7 +115,7 @@ class Nextorrent extends PluginGenerique{
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
-        foreach ($nodes as $node){
+		foreach ($nodes as $node){
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
             
             if(!is_null($urlTorrent)){

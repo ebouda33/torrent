@@ -14,6 +14,8 @@ use Parser\plugin\torrent\PluginListeResults;
 use Standard\Fichier\ReaderIni;
 use Transmission\TransmissionRPC;
 use Transmission\TransmissionRPCException;
+use myClass\Plex;
+use Standard\Web\ExtJSUtil;
 
 /**
  * Description of ResponseJson
@@ -32,9 +34,34 @@ class ResponseJson {
     private static $SEEDBOX = 'seedbox';
     private static $CATEGORIES = 'categories';
     public static $DOWNLOAD = 'download';
+	public static $PLEX_FILES = 'PLEX_FILES';
     
     private static function loginValide($action,$token){
-        return !(!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token']);
+        // return !(!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'] || (isset($_SESSION['authentification']) || (isset($_SESSION['authentification']) && !$_SESSION['authentification'])));
+		$etatLogin = ($action === self::$LOGIN);
+		if($etatLogin){
+			 return true;
+		}
+		
+		
+		$etatToken = (isset($_SESSION['token']) && !empty($_SESSION['token']) && $token === $_SESSION['token']);
+		$etatAuthent = ((isset($_SESSION['authentification'])) && (isset($_SESSION['authentification']) && $_SESSION['authentification']));
+		$etatGlobal = $etatToken && $etatAuthent;
+		
+		// echo $token ." ".$_SESSION['token'];
+		// echo "#L".$etatLogin; 
+		// echo "<br>";
+		// echo "#T".$etatToken;
+		// echo "<br>";
+		// echo "#A".$etatAuthent;
+		// echo "<br>";
+		// echo "<br>";
+		// echo "#".$etatGlobal ."#";
+		
+		// unset($_SESSION['authentification']);
+		
+		
+		return $etatGlobal;
     }
     
     public static function getDetails(){
@@ -98,21 +125,23 @@ class ResponseJson {
         private static function traitementReponse($action,$token,$retour){
         try{
 //            $configR = new ConfigReader($file);
-            if($action === strtolower(self::$LOGIN)){
+            if(strtolower($action) === strtolower(self::$LOGIN)){
                 $retour = self::toLogin($retour);
-            }else if($action === strtolower(self::$TRANSMISSION)){
+            }else if(strtolower($action) === strtolower(self::$TRANSMISSION)){
                 $retour = self::toTransmission($token,$retour);
-            }else if($action === strtolower(self::$SEARCH)){
+            }else if(strtolower($action) === strtolower(self::$SEARCH)){
                 $retour = self::toSearch($token,$retour);
-            }else if($action === strtolower(self::$PLUGIN)){
+            }else if(strtolower($action) === strtolower(self::$PLUGIN)){
                 $retour = self::toPlugin($retour);
-            }else if($action === strtolower(self::$SETTINGS)){
+            }else if(strtolower($action) === strtolower(self::$SETTINGS)){
                 $retour = self::toSettings($token,$retour);
-            }else if($action === strtolower(self::$SEEDBOX)){
+            }else if(strtolower($action) === strtolower(self::$SEEDBOX)){
                 $retour = self::getSeedbox($token,$retour);
-            }else if($action === strtolower(self::$CATEGORIES)){
+            }else if(strtolower($action) === strtolower(self::$CATEGORIES)){
                 $retour = self::getCategories($token,$retour);
-            }
+            }else if(strtolower($action) === strtolower(self::$PLEX_FILES)){
+				$retour = self::getPlexInfo($token,$retour);
+			}
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
         }catch(TransmissionRPCException $exc){
@@ -136,6 +165,7 @@ class ResponseJson {
             $retour['message'] = '';
 
             $_SESSION['token'] =  $res['token'];
+			$_SESSION['authentification'] = $retour['success'];
 
         }
 
@@ -323,4 +353,20 @@ class ResponseJson {
         }
         return '';
     }
+	
+	private static function getPlexInfo($token,$retour){
+		
+		$node = filter_input(INPUT_GET, 'node');
+		$ini = self::getIniGeneral();
+		$plex = new Plex();
+		if($node === 'root'){
+			$node = $ini[Plex::PATH_PLEX];
+		}
+		$data = $plex->getFiles($node);
+		$retour['data'] = ExtJSUtil::transformExplorerToExtTree($data);
+		$retour['totalCount'] = count($retour['data']);
+		$retour['message'] = '';
+		$retour['success'] = true;
+		return $retour;
+	}
 }

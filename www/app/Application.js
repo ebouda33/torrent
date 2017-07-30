@@ -29,6 +29,8 @@ Ext.define('MyTorrent.Application', {
     listenersPlugins : [],
     listenersSettings : [],
     storeSeedBox : null,
+	storePlexFiles : null,
+	treePlexFiles : null,
     plugin : null,
     configPanel : null,
     launch: function () {
@@ -87,8 +89,9 @@ Ext.define('MyTorrent.Application', {
     },
     logged : function(){
         //construction de la seedbox affecter le store au grid
-            MyTorrent.getApplication().gridSeedBox.setStore(Ext.create('MyTorrent.store.SeedBox',{}));
-            MyTorrent.getApplication().setStoreSeedBox(MyTorrent.getApplication().gridSeedBox.getStore());    
+            MyTorrent.getApplication().gridSeedBox.setStore(Ext.create('MyTorrent.store.SeedBox'));
+            MyTorrent.getApplication().setStoreSeedBox(MyTorrent.getApplication().gridSeedBox.getStore());  
+			MyTorrent.getApplication().loadStorePlexFiles();			
             //determine si seedbox autorise ou non
             localStorage.setItem("MyTorrentSeebBox",false);
             
@@ -205,5 +208,14 @@ Ext.define('MyTorrent.Application', {
 
             }
         });
-    }
+    },
+	
+	loadStorePlexFiles : function(){
+		if(MyTorrent.getApplication().storePlexFiles === null){
+			token = localStorage.getItem("MyTorrentToken");
+			MyTorrent.getApplication().storePlexFiles = Ext.create('MyTorrent.store.PlexFiles');
+			MyTorrent.getApplication().treePlexFiles.setStore(MyTorrent.getApplication().storePlexFiles);
+		}
+		MyTorrent.getApplication().storePlexFiles.load();
+	}
 });

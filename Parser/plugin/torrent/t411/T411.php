@@ -38,8 +38,11 @@ class T411 extends PluginGenerique{
     
     function __construct(Array $config=null) {
         
+        $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
+		
+		$this->url =  $this->ini['url'];
         $this->name = 'T411';
-        $this->description = "https://api.t411.ai -> Le célébre T411.Il faut un compte pour fonctionner.";
+        $this->description = $this->url." -> Le célébre T411.Il faut un compte pour fonctionner.";
         
         if(!empty($config)){
 //            $this->config = $config->getConfig();
@@ -59,7 +62,6 @@ class T411 extends PluginGenerique{
             }
         
         }
-        $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
     }
 
     public function getResult() {

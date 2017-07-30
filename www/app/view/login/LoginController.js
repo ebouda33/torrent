@@ -42,8 +42,7 @@ Ext.define('MyTorrent.view.login.LoginController', {
         
         localStorage.setItem("MyTorrentLoggedIn", true);
         localStorage.setItem("MyTorrentToken", token);
-        //TODO charger fichier config
-        // Ext.Msg.alert("Bienvenue "+name); 
+        Ext.toast("Bienvenue "+name);
         controller.refreshApp();
     },
     failure: function(controller,button) { 
