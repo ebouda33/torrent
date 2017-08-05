@@ -20,7 +20,7 @@ use Parser\plugin\torrent\PluginGenerique;
  * @author xgld8274
  */
 class Nextorrent extends PluginGenerique{
-    private $url = 'https://www.nextorrent.ws';
+    private $url = '';
     private $urlSearch;
     private $proxy = false;
     private $config = false;
@@ -38,9 +38,10 @@ class Nextorrent extends PluginGenerique{
         
         $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
 		$this->url =  $this->ini['url'];
+                
         $this->name = 'NexTorrent';
         $this->description = $this->url." -> torrent en Fr en général, rapide et fiable.";
-        $this->urlSearch =$this->url. '/torrents/recherche/';
+        $this->urlSearch =$this->url. '/recherche/';
         $this->result = array();
         if(!empty($config)){
             $this->config = $config;
@@ -60,18 +61,15 @@ class Nextorrent extends PluginGenerique{
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
         
         $page =$curl->read();
-		
-        if($page !== false){
+	if($page !== false){
             $arbre = new DOMDocument();
             @$arbre->loadHTML($page);
             $elements = $arbre->getElementsByTagName('table');
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){
                     if("table table-hover" === strtolower($elem->getAttribute('class'))){
-                       
                         $domnodes = new DOMNodeRecursiveIterator($elem->childNodes);
                         if($domnodes->getChildren()->count()>0){
-                            
                             $this->parcoursDomResult($domnodes->getChildren());
                         }
                     }
@@ -115,7 +113,7 @@ class Nextorrent extends PluginGenerique{
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
-		foreach ($nodes as $node){
+        foreach ($nodes as $node){
             $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
             
             if(!is_null($urlTorrent)){
@@ -180,6 +178,7 @@ class Nextorrent extends PluginGenerique{
        $size = 0;
        $leecher = 0;
        $seeder = 0;
+       
        if(count($tr)>6){
            $tdName = new DOMNodeRecursiveIterator($tr[0]->childNodes);
 //la categorie et le nom du torrent sont contenu dans le meme td

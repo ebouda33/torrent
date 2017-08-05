@@ -117,7 +117,9 @@ Ext.define('MyTorrent.view.settings.Settings',{
     },
     setSettings : function(data){
         for(var opt in data){
-            Ext.getCmp(opt).setValue(data[opt]);
+            if(Ext.getCmp(opt) !== undefined){
+                Ext.getCmp(opt).setValue(data[opt]);
+            }
         }
     }
 });
