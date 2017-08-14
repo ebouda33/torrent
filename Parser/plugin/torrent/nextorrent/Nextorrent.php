@@ -178,7 +178,6 @@ class Nextorrent extends PluginGenerique{
        $size = 0;
        $leecher = 0;
        $seeder = 0;
-       
        if(count($tr)>6){
            $tdName = new DOMNodeRecursiveIterator($tr[0]->childNodes);
 //la categorie et le nom du torrent sont contenu dans le meme td
