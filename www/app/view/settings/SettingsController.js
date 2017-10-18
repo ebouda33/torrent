@@ -18,15 +18,24 @@ Ext.define('MyTorrent.view.settings.SettingsController', {
             if(fieldset.xtype === 'fieldset'){
                 var cmp = fieldset.getItems().items;
                 Ext.each(cmp,function(c,index){
+                    var value = '';
+                    var name = '';
                     if(c.xtype === 'fieldset'){
                         var cmp = c.getItems().items;
                         Ext.each(cmp,function(c1,index){
                             if(c1.xtype !== 'title'){
-                                params[c1.getName()] = c1.getValue();
+                                name = c.getTitle()+"@"+c1.getName();
+                                value = c1.getValue();
                             }
                         });
                     }else if(c.xtype !== 'title'){
-                        params[c.getName()] = c.getValue();
+                        name = c.getName();
+                        value = c.getValue();
+                    }
+                    if(name.length > 0){
+                        name = fieldset.getTitle()+"@"+name;
+                        params[name] = value;
+//                        console.log('Sett:',name,value);
                     }
                 });
 

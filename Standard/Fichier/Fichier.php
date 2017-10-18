@@ -49,7 +49,7 @@ class Fichier {
 	 * @param String $filename nom du fichier
 	 
 	 */
-	public function __construct($path,$filename){
+	public function __construct($path,$filename,$create=false){
 		$this->creerDossier($path);
 		$this->path = $path;
 		$this->filename = $filename;
@@ -58,6 +58,8 @@ class Fichier {
 		$this->error = false;
 		$this->msgError = "";
 		$this->file = $this->genererChemin();
+                
+                
 	}
 	
 	
@@ -596,8 +598,24 @@ class Fichier {
             }
             return null;
         }
+        
+        
+        public function arr2ini(array $tableau){
+            foreach ($tableau as $key => $section){
+                if(is_array($section)){
+                    $this->ecrireLigneDansFichier("",true);
+                    $this->ecrireLigneDansFichier("[".$key."]", true);
+                    $this->arr2ini($section);
+                    
+                }else{
+                    $this->ecrireLigneDansFichier($key ."=\"".$section."\"", true);
+                }
+            }
+        }
+        
+        public function ecraseFichier(){
+            $this->creerFichier('w');
+            
+        }
 	
 }
-
-
-?>

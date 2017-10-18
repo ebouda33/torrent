@@ -93,18 +93,18 @@ Ext.define('MyTorrent.view.settings.Settings',{
                 Ext.each(plugin.options,function(opt,index){
                     for(var option in opt){
                         sitems.push({
-                        xtype : 'passwordfield',
-//                        xtype : 'textfield',
+//                        xtype : 'passwordfield',
+                        xtype : 'textfield',
                         label : option,
                         name : option,
                         id : option,
-                        placeHolder : option
-
+                        placeHolder : opt[option],
+                        value : opt[option]
+                        
                     });
                     }
                     
                 });
-                
                 items.push({
                     xtype : 'fieldset',
                     title : plugin.name,

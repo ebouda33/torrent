@@ -3,8 +3,6 @@ session_start();
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'init_autoloader.php';
 
 use myClass\ResponseJson;
-use Standard\Fichier\Fichier;
-use Standard\Web\Request;
 
 set_time_limit(120);
 /* 

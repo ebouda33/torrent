@@ -37,7 +37,7 @@ class Nextorrent extends PluginGenerique{
     public function __construct(array $config=null) {
         
         $this->ini = \Standard\Fichier\ReaderIni::read(dirname(__FILE__).DIRECTORY_SEPARATOR.'plugin.ini');
-		$this->url =  $this->ini['url'];
+		$this->url =  $this->ini['settings']['url'];
                 
         $this->name = 'NexTorrent';
         $this->description = $this->url." -> torrent en Fr en général, rapide et fiable.";
