@@ -176,7 +176,6 @@ class Services {
         $file = new Fichier($filePath, $fileName,true);
         $file->ecraseFichier();
         $file->ecrireLigneDansFichier("; this is an INI file", true);
-        var_dump($file->getNomFichier(),$file->genererChemin());
         $file->arr2ini($data);
        /* foreach($data as $key => $value){
             $file->ecrireLigneDansFichier($value, true);
