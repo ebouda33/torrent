@@ -28,6 +28,8 @@ class Nextorrent extends PluginGenerique{
     
     private $success = false;
     private $totalCount = 0;
+
+    private $message= '';
     
     private $ini;
     /**
@@ -41,7 +43,7 @@ class Nextorrent extends PluginGenerique{
                 
         $this->name = 'NexTorrent';
         $this->description = $this->url." -> torrent en Fr en général, rapide et fiable.";
-        $this->urlSearch =$this->url. '/recherche/';
+        $this->urlSearch =$this->url. '/search_torrent/';
         $this->result = array();
         if(!empty($config)){
             $this->config = $config;
@@ -54,20 +56,21 @@ class Nextorrent extends PluginGenerique{
     }
     
     
-    public function search($search) {
+    public function search($search,array $options=null) {
         $searchPageUrl = $this->urlSearch.$search;
         $urlProxy = $this->proxy?$this->config['proxy_url']:null;
         $searchPageUrl .= ($this->getStart() > 0)?'/'.intval($this->getStart())+1:'';
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
         
         $page =$curl->read();
-	if($page !== false){
+	    if($page !== false){
             $arbre = new DOMDocument();
             @$arbre->loadHTML($page);
             $elements = $arbre->getElementsByTagName('table');
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){
-                    if("table table-hover" === strtolower($elem->getAttribute('class'))){
+                    if("table table-striped table-bordered cust-table" === strtolower($elem->getAttribute('class'))){
+                        var_dump($elem);
                         $domnodes = new DOMNodeRecursiveIterator($elem->childNodes);
                         if($domnodes->getChildren()->count()>0){
                             $this->parcoursDomResult($domnodes->getChildren());
@@ -78,6 +81,8 @@ class Nextorrent extends PluginGenerique{
             }
             $this->totalCount = $this->parcoursDomPagination($arbre);
             $this->success = true;
+        }else{
+	        $this->message = 'impossible de recuperer les torrents sur le plugin, verifier l\'url';
         }
     }
 
@@ -251,4 +256,12 @@ class Nextorrent extends PluginGenerique{
          
         return array("url"=>$url,"caption"=>$caption);
     }
+
+    public function getMessage(): String
+    {
+        return $this->message;
+    }
+
+
 }
+

@@ -22,10 +22,11 @@ interface PluginInterface {
     public function getResultSuccess();
     /**
      * @static recupere les infos inherent au torrent
+     * @param namePlugin code of plugin
      */
     public function getInfo($namePlugin);
     
-    public function search($motif);
+    public function search($motif,array $options=null);
         
-    
+    public function getMessage(): String ;
 }

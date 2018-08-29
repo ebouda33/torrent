@@ -24,7 +24,7 @@ class CurlUrl {
         
         curl_setopt($this->handler, CURLOPT_URL, $url);
         if($useProxy){
-            $this->defineProxy($urlProxy);
+            $this->defineProxy(str_replace(["http://","tcp://"],"",$urlProxy));
         }
         curl_setopt($this->handler,CURLOPT_HEADER,false);
         curl_setopt($this->handler, CURLINFO_HEADER_OUT, true);

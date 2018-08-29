@@ -122,10 +122,13 @@ Ext.define('MyTorrent.view.recherche.Torrent',{
                     //rafraichir le grid
                     gridResultat.refreshGrid();
                     store.load({
+
                         scope: this,
                         callback: function(records, operation, success) {
                             // the operation object
                             // contains all of the details of the load operation
+                            store.setPageSize(store.getParams().limit);
+                            gridResultat.preventStore(store);
                             me.setDisabled(false);
                             if(!success){
                                 Ext.Msg.show({

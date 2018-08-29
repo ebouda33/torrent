@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Parser\DOM;
 
 use ArrayIterator;
@@ -21,12 +15,14 @@ use RecursiveIteratorIterator;
 class DOMNodeRecursiveIterator extends ArrayIterator implements RecursiveIterator {
  
   public function __construct (DOMNodeList $node_list) {
-   
+
     $nodes = array();
-    foreach($node_list as $node) {
-      $nodes[] = $node;
+    if($node_list != null){
+        foreach($node_list as $node) {
+          $nodes[] = $node;
+        }
     }
-   
+
     parent::__construct($nodes);
    
   }
@@ -41,7 +37,10 @@ class DOMNodeRecursiveIterator extends ArrayIterator implements RecursiveIterato
 
  
   public function getChildren () {
-    return new self($this->current()->childNodes);
+      if($this->hasChildren()){
+        return new self($this->current()->childNodes);
+      }
+      return null;
   }
   
 }

@@ -1,8 +1,6 @@
 <?php
-
-use Transmission\TransmissionRPC;
-use Transmission\TransmissionRPCException;
 namespace Transmission;
+
 /**
  * Transmission bittorrent client/daemon RPC communication class
  * Copyright (C) 2010 Johan Adriaans <johan.adriaans@gmail.com>,
@@ -521,9 +519,10 @@ class TransmissionRPC
    */
   protected function request( $method, $arguments )
   {
+
     // Check the parameters
     if ( !is_scalar( $method ) )
-      throw new TransmissionRPCException( 'Method name has no scalar value', TransmissionRPCException::E_INVALIDARG );
+      throw new TransmissionRPCException( 'Method name has no scalar value', TransmissionRPCException::E_INVALIDMETH );
     if ( !is_array( $arguments ) )
       throw new TransmissionRPCException( 'Arguments must be given as array', TransmissionRPCException::E_INVALIDARG );
     
@@ -533,7 +532,8 @@ class TransmissionRPC
     if( !$this->session_id )
       if( !$this->GetSessionID() )
         throw new TransmissionRPCException( 'Unable to acquire X-Transmission-Session-Id', TransmissionRPCException::E_SESSIONID );
-    
+
+
     // Build (and encode) request array
     $data = array(
       "method" => $method,
@@ -617,11 +617,14 @@ class TransmissionRPC
     if ( $this->username && $this->password )
       $contextopts['http']['header'] = sprintf( "Authorization: Basic %s\r\n", base64_encode( $this->username.':'.$this->password ) );
     
-    if( $this->debug ) echo "<br>TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream context created with options:".
+    if( $this->debug ){
+        echo "<br>TRANSMISSIONRPC_DEBUG:: GetSessionID():: Stream context created with options:".
                             PHP_EOL . print_r( $contextopts, true );
-    
+    }
+
+
+
     $context  = stream_context_create( $contextopts );
-    
 // Create the context for this request
     if ( ! $fp = @fopen( $this->url, 'r', false, $context ) )  // Open a filepointer to the data, and use fgets to get the result
       throw new TransmissionRPCException( 'Unable to connect to '.$this->url, TransmissionRPCException::E_CONNECTION );
@@ -664,8 +667,8 @@ class TransmissionRPC
    * 
    */
   private function defineProxy(){
-    if($this->proxy){
-          $this->default_context_opts['http']['proxy'] = 'tcp://127.0.0.1:3128' ;
+    if($this->proxy !== false){
+          $this->default_context_opts['http']['proxy'] = $this->proxy_url ;
     }
   }
   
@@ -678,12 +681,13 @@ class TransmissionRPC
    * @param string $username
    * @param string $password
    */
-  public function __construct( $url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null,$proxy=false, $return_as_array = false )
+  public function __construct( $url = 'http://localhost:9091/transmission/rpc', $username = null, $password = null,$proxy=false,$proxy_url="", $return_as_array = false )
   {
     // server URL
     $this->url = $url;
     
     $this->proxy = $proxy;
+    $this->proxy_url = $proxy_url;
     $this->defineProxy();
     // Username & password
     $this->username = $username;

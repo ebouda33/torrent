@@ -25,6 +25,7 @@ if($action === ResponseJson::$DOWNLOAD){
     
     echo ResponseJson::returnTorrent();
 }else{
+    //header('Content-Type: application/json');
     echo ResponseJson::returnResponse();
 }
 

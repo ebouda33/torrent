@@ -33,7 +33,7 @@ Ext.define('MyTorrent.store.Torrent',{
                 type : 'ajax',
                 url :  config.url
                 ,method : 'GET'
-                ,extraParams : {action:'search','categorie':config.categorie,'search':config.search,'plugins':config.plugins,token:localStorage.getItem("MyTorrentToken")}
+                ,extraParams : {limit:100,action:'search','categorie':config.categorie,'search':config.search,'plugins':config.plugins,token:localStorage.getItem("MyTorrentToken")}
                 ,reader : {
                     type : 'json',
                     rootProperty : 'data',

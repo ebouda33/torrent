@@ -23,7 +23,7 @@ class UsersTable extends \Standard\SQL\Model{
      */
     public function authentification($user,$pwd){
         $select = "select token,name from users where email = :email and password = md5(:pwd)";
-        
+
         $res = $this->execute($select, array(':email'=>$user,':pwd'=>$pwd));
         
         if(count($res)>0){

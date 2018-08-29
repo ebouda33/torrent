@@ -2,11 +2,10 @@ var Ext = Ext || {};
 
 Ext.define('MyTorrent.view.grid.GridResult',{
     extend : 'Ext.grid.Grid',
-//    extend : 'Ext.grid.Panel',
     xtype : 'torrentresult',
     title : 'Résultat',
     collapsible : true,
-//            layout : 'fit',
+
     requires : ['MyTorrent.store.Torrent'],
     emptyText : '<h1 style="margin:20px">No matching results</h1>',
     zoneSearch : null,
@@ -219,5 +218,15 @@ Ext.define('MyTorrent.view.grid.GridResult',{
     setSearchZone : function (zone){
         var me = this;
         me.zoneSearch = zone;
+    },
+    preventStore : function (store) {
+        const plugins = this.getPlugins();
+        const plugin = plugins.filter(plugin => {
+            return plugin.type === "gridpagingtoolbar";
+        })[0];
+        plugin.setPageSize(store.pageSize);
+        plugin.setTotalPages(Math.ceil(store.getTotalCount()/plugin.getPageSize()));
+
     }
+
 });

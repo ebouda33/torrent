@@ -35,6 +35,8 @@ class ResponseJson {
     private static $CATEGORIES = 'categories';
     public static $DOWNLOAD = 'download';
 	public static $PLEX_FILES = 'PLEX_FILES';
+
+	private static $LIMITPAGESIZE = 100;
     
     private static function loginValide($action,$token){
         // return !(!isset($_SESSION['token']) && $action !== self::$LOGIN) || (isset($_SESSION['token']) && empty($_SESSION['token']) && $token !== $_SESSION['token'] || (isset($_SESSION['authentification']) || (isset($_SESSION['authentification']) && !$_SESSION['authentification'])));
@@ -145,6 +147,7 @@ class ResponseJson {
         }catch(PluginException $exc){
             $retour['message'] = $exc->getMessage();
         }catch(TransmissionRPCException $exc){
+            var_dump($exc);
             $retour['message'] = "Probleme de connexion à la SeedBox <br>".$exc->getMessage();
         }
         
@@ -205,7 +208,7 @@ class ResponseJson {
     
     private static function toMagnet($token,$url,$retour,$meta_info = false){
         $config = Services::loadSettings($token);
-        $proxy = self::getProxy($config);
+        $proxy = self::isProxy($config);
         $location = filter_input(INPUT_GET, "location");
       
         try{
@@ -249,7 +252,7 @@ class ResponseJson {
             $torrent = new $classname($config);
             
             $start = filter_input(INPUT_GET, 'start')!== false?filter_input(INPUT_GET, 'start'):0;
-            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):25;
+            $limit = filter_input(INPUT_GET, 'limit')!== false?filter_input(INPUT_GET, 'limit'):100;
 //            $search .= '/'.(intval($start)+1);
             $torrent->setStart($start);
             $torrent->setLimit($limit);
@@ -258,7 +261,8 @@ class ResponseJson {
             $retour['success'] =$torrent->getResultSuccess() ;
             $retour['data']= $torrent->getResult() instanceof PluginListeResults ?$torrent->getResult()->getArrayCopy():null;
             $retour['totalCount'] = $torrent->getResultTotalCount();
-            $retour['message'] = '';
+            $retour['message'] = $torrent->getMessage();
+            $retour['pageSize'] = self::$LIMITPAGESIZE;
         }
 
         return $retour;
@@ -274,7 +278,7 @@ class ResponseJson {
     }
     
     
-    private static function getProxy($reader){
+    private static function isProxy($reader){
         
         $proxy = false;
         if(!empty($reader['proxy_url'])){
@@ -302,10 +306,14 @@ class ResponseJson {
     private static function getSeedbox($token,$retour){
         $retour['message'] = 'Problème sur les settings';
         $settings = Services::loadSettings($token);
-        $proxy = self::getProxy($settings);
+        $proxy = self::isProxy($settings);
 //        var_dump($settings);
+        $proxyurl = null;
+        if($proxy){
+            $proxyurl = $settings['proxy_url'];
+        }
         if(isset($settings['transmission_url']) && isset($settings['transmission_user']) && isset($settings['transmission_password']) ){
-            $transmission = new TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy);
+            $transmission = new TransmissionRPC($settings['transmission_url'],$settings['transmission_user'],$settings['transmission_password'],$proxy,$proxyurl);
 
             $elements = $transmission->get();
             $stats = $transmission->sstats();
@@ -314,6 +322,7 @@ class ResponseJson {
             $retour['stats'] = $stats;
             $retour['message'] = '';
             $retour['totalCount'] = count($retour['data']);
+            $retour['pageSize'] = self::$LIMITPAGESIZE;
         }
         return $retour;
     }
@@ -360,7 +369,9 @@ class ResponseJson {
 		$ini = self::getIniGeneral();
 		$plex = new Plex();
 		if($node === 'root'){
-			$node = $ini[Plex::PATH_PLEX];
+		    if(key_exists(Plex::PATH_PLEX,$ini)){
+			    $node = $ini[Plex::PATH_PLEX];
+            }
 		}
 		$data = $plex->getFiles($node);
 		$retour['data'] = ExtJSUtil::transformExplorerToExtTree($data);

@@ -5,6 +5,11 @@ namespace Transmission;
  */
 class TransmissionRPCException extends \Exception
 {
+    /**
+     * Exception: Invalid method
+     */
+    const E_INVALIDMETH = -5;
+
   /**
    * Exception: Invalid arguments
    */

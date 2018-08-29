@@ -23,7 +23,7 @@ abstract class PluginGenerique implements PluginInterface{
     protected $name;
     protected $options=null;
     protected $start = 0;
-    protected $limit = 25;
+    protected $limit = 100;
     protected $categorie = null;
     
 
@@ -75,7 +75,7 @@ abstract class PluginGenerique implements PluginInterface{
     }
     
     public function __destruct() {
-        unset($this);
+        //unset($this);
     }
     
     public static function getPluginClassName($id){

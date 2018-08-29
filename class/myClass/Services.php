@@ -23,7 +23,7 @@ class Services {
     //put your code here
     //determiner l environnement
     public static function getEnvironnement(){
-        return 'prod';
+        return 'dev';
         
     }
     public static function authentification($user,$pwd){
