@@ -63,9 +63,9 @@ class Torrent9 extends PluginGenerique{
         $curl = new CurlUrl($searchPageUrl,$this->proxy,$urlProxy);
 
         $page =$curl->read();
+
 	    if($page !== false){
             $arbre = new DOMDocument();
-
             @$arbre->loadHTML($page);
             $elements = $arbre->getElementsByTagName('table');
 
@@ -124,30 +124,51 @@ class Torrent9 extends PluginGenerique{
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
+        echo "
+        <style scoped>
+            ol {
+              counter-reset: section;                /* On crée une nouvelle instance du
+                                                        compteur section avec chaque ol */
+              list-style-type: none;
+            }
+            li::before {
+              counter-increment: section;            /* On incrémente uniquement cette
+                                                        instance du compteur */
+              content: counters(section,\".\") \" \";    /* On ajoute la valeur de toutes les
+                                                        instances séparées par \".\". */
+                                                     /* Si on doit supporter < IE8 il faudra
+                                                        faire attention à ce qu'il n'y ait 
+                                                        aucun blanc après ',' */
+            }
+        </style>
+        ";
+        echo "<ol >";
         foreach ($nodes as $node){
             if($node instanceof DOMElement){
 
                 $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
                 if(!is_null($urlTorrent)){
-                    $this->generateResult($urlTorrent);
+                    $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
+//                    $urlMagnet = "";
+
+                    echo "<li>".$urlMagnet ."</li>";
+                    $this->generateResult($urlTorrent,$urlMagnet);
 
                 }
             }
 
         }
-
+        echo "</ol>";
         
     }
     
-    private function generateResult(array $urlTorrent){
-       // $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
+    private function generateResult(array $urlTorrent,$urlMagnet){
         $index = count($this->result);
         if(!isset($this->result[$index])){
             $this->result[$index] = array();
         }
         $this->result[$index]['titre'] =  $urlTorrent['caption'];
-//        $this->result[$index]['magnet'] =  $urlMagnet['url'];
-        $this->result[$index]['magnet'] =  '';
+        $this->result[$index]['magnet'] =  $urlMagnet;
         $this->result[$index]['size'] =  $urlTorrent['size'];
         $this->result[$index]['seeder'] =  $urlTorrent['seeder'];
         $this->result[$index]['leecher'] =  $urlTorrent['leecher'];
@@ -220,47 +241,34 @@ class Torrent9 extends PluginGenerique{
         return array('image'=>$image,'label'=>$cat);
     }
     
-    private function getTextContent($tr,$index=1){
-        $td = new DOMNodeRecursiveIterator($tr->childNodes);
-        return $td[$index]->textContent;
-        
-    }
 
     private function getMagnet($url){
-       $urlMagnet = array();
-       $urlProxy = $this->proxy?$this->config['proxy_url']:null;
+        $urlMagnet = array();
+        $urlProxy = $this->proxy?$this->config['proxy_url']:null;
         $curl = new CurlUrl($url,$this->proxy,$urlProxy);
+
         $page =$curl->read();
+
         if($page !== false){
             $arbre = new DomDocument();
             @$arbre->loadHTML($page);
-            $elements = $arbre->getElementsByTagName('div');
+            $elements = $arbre->getElementsByTagName('a');
+            unset($arbre);
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){
-                    if("btn-magnet" === strtolower($elem->getAttribute('class'))){
-                        $urlMagnet = $this->getUrlMagnet($elem);
+                    if("btn btn-danger download" === strtolower($elem->getAttribute('class')) && stripos($elem->getAttribute('href'),"magnet:?") !== false){
+                        $urlMagnet = $elem->getAttribute('href');
+
                     }
                 }
             }
-       }
-       $curl->close();
-       return $urlMagnet;
-
-    }
-
-    private function getUrlMagnet(DOMElement $div){
-
-        $a = new DOMNodeRecursiveIterator($div->childNodes);
-        
-        $url = "";
-        $caption="";
-        if(count($a)>0){
-            $url = $a[0]->getAttribute('href');
-            $caption = $a[0]->textContent;
         }
-         
-        return array("url"=>$url,"caption"=>$caption);
+        $curl->close();
+        unset($curl);
+        return $urlMagnet;
+
     }
+
 
     public function getMessage(): String
     {
