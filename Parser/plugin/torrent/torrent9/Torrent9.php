@@ -75,7 +75,7 @@ class Torrent9 extends PluginGenerique{
                         $nodes = $elem->childNodes->item(1);
 //                        var_dump($nodes);
 //                        die;
-                        if($nodes->hasChildNodes()){
+                        if($nodes !== null && $nodes->hasChildNodes()){
 //                            echo 'enfants';
 //                            var_dump($nodes->childNodes);
 //                            die;
