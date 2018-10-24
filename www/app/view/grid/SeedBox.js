@@ -110,15 +110,15 @@ Ext.define('MyTorrent.view.grid.SeedBox',{
         },{
             text : 'ratio',
             dataIndex : 'uploadRatio',
-            width: 50,
+            width: 60,
             resizable : false,
             align : 'left',
             renderer : function(value,record){
+                var returnValue = 0;
                 if(!isNaN(value)){
-                    return Math.floor((value*10))/10;
+                    returnValue = Math.floor((value*10))/10;
                 }
-                
-                return 0; 
+                return returnValue;
             }
         }
     ]
