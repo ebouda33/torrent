@@ -78,6 +78,7 @@ class Torrent9 extends PluginGenerique{
                         if($nodes->hasChildNodes()){
 //                            echo 'enfants';
 //                            var_dump($nodes->childNodes);
+//                            die;
                             $this->parcoursDomResult(new DOMNodeRecursiveIterator($nodes->childNodes));
                         }
 
@@ -124,42 +125,42 @@ class Torrent9 extends PluginGenerique{
     }
 
     private function parcoursDomResult(DOMNodeRecursiveIterator $nodes){
-        echo "
-        <style scoped>
-            ol {
-              counter-reset: section;                /* On crée une nouvelle instance du
-                                                        compteur section avec chaque ol */
-              list-style-type: none;
-            }
-            li::before {
-              counter-increment: section;            /* On incrémente uniquement cette
-                                                        instance du compteur */
-              content: counters(section,\".\") \" \";    /* On ajoute la valeur de toutes les
-                                                        instances séparées par \".\". */
-                                                     /* Si on doit supporter < IE8 il faudra
-                                                        faire attention à ce qu'il n'y ait 
-                                                        aucun blanc après ',' */
-            }
-        </style>
-        ";
-        echo "<ol >";
+//        echo "
+//        <style scoped>
+//            ol {
+//              counter-reset: section;                /* On crée une nouvelle instance du
+//                                                        compteur section avec chaque ol */
+//              list-style-type: none;
+//            }
+//            li::before {
+//              counter-increment: section;            /* On incrémente uniquement cette
+//                                                        instance du compteur */
+//              content: counters(section,\".\") \" \";    /* On ajoute la valeur de toutes les
+//                                                        instances séparées par \".\". */
+//                                                     /* Si on doit supporter < IE8 il faudra
+//                                                        faire attention à ce qu'il n'y ait
+//                                                        aucun blanc après ',' */
+//            }
+//        </style>
+//        ";
+//        echo "<ol >";
         foreach ($nodes as $node){
             if($node instanceof DOMElement){
-
                 $urlTorrent = $this->getUrlTorrent(new DOMNodeRecursiveIterator($node->childNodes));
                 if(!is_null($urlTorrent)){
                     $urlMagnet = $this->getMagnet($this->url.$urlTorrent['url']);
 //                    $urlMagnet = "";
 
-                    echo "<li>".$urlMagnet ."</li>";
+//                    echo "<li>".$urlMagnet ."</li>";
                     $this->generateResult($urlTorrent,$urlMagnet);
 
                 }
             }
 
         }
-        echo "</ol>";
-        
+//        echo "</ol>";
+
+
     }
     
     private function generateResult(array $urlTorrent,$urlMagnet){
@@ -180,8 +181,10 @@ class Torrent9 extends PluginGenerique{
 
     public function getResult(){
         $retour = new \Parser\plugin\torrent\PluginListeResults();
+//        $retour = [];
         foreach($this->result as $resultat){
-            $results = new \Parser\plugin\torrent\PluginResults();
+//            $results = new \Parser\plugin\torrent\PluginResults();
+            $results = [];
             $results['title'] = $resultat['titre'];
 //            $results['category'] = $resultat['category'];
             $results['leecher'] = $resultat['leecher'];
@@ -207,7 +210,7 @@ class Torrent9 extends PluginGenerique{
 
     private function getUrlTorrent(DOMNodeRecursiveIterator $tr){
         if(count($tr)>6){
-
+//            var_dump($tr);
             //la categorie et le nom du torrent sont contenu dans le meme td
             $tdName = new DOMNodeRecursiveIterator($tr[1]->childNodes);
 
@@ -252,7 +255,7 @@ class Torrent9 extends PluginGenerique{
         if($page !== false){
             $arbre = new DomDocument();
             @$arbre->loadHTML($page);
-            $elements = $arbre->getElementsByTagName('a');
+            $elements = @$arbre->getElementsByTagName('a');
             unset($arbre);
             foreach ($elements as $elem) {
                 if($elem->hasAttribute('class')){

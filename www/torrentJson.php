@@ -4,7 +4,7 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'ini
 
 use myClass\ResponseJson;
 
-set_time_limit(60);
+set_time_limit(180);
 /* 
  * page permettant de traiter les demandes du front
  */
